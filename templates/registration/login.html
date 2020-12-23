@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>Entrar</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--===============================================================================================-->
+  <link rel="icon" type="image/png" href="{% static 'core/images/icons/favicon.ico' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'core/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" type="text/css"
+        href="{% static 'core/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{% static 'core/css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'registration/css/util.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'registration/css/main.css' %}">
+  <!--===============================================================================================-->
+</head>
+<body>
+
+<div class="limiter">
+  <div class="container-login100">
+    <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+      <form  method="post" action="{% url 'login' %}" class="login100-form validate-form">
+        {% csrf_token %}
+        <span class="login100-form-title p-b-49">
+          <img src="{% static 'core/images/calango.png' %}" width="55px" class="float-left">
+          COJ <span style="color: #FF7C5D">.</span>
+          <img src="{% static 'core/images/unb.png' %}" width="70px" class="float-right mt-2">
+        </span>
+
+          {% if form.errors %}
+    {{ form.errors }}
+  {% endif %}
+        <div class="wrap-input100 validate-input m-b-23" data-validate="O usuário é obrigatório">
+          <span class="label-input100">Usuário</span>
+          <input id="id_username" class="input100" type="text" name="username" placeholder="Digite seu usuário">
+          <span class="focus-input100" data-symbol="&#xf206;"></span>
+        </div>
+
+        <div class="wrap-input100 validate-input" data-validate="A senha é obrigatória">
+          <span class="label-input100">Senha</span>
+          <input id="id_password" class="input100" type="password" name="password" placeholder="Digite sua senha">
+          <span class="focus-input100" data-symbol="&#xf190;"></span>
+        </div>
+
+        <div class="text-right p-t-8 p-b-31">
+{#          <a href="#">#}
+{#            Forgot password?#}
+{#          </a>#}
+        </div>
+
+        <div class="container-login100-form-btn">
+          <div class="wrap-login100-form-btn">
+            <div class="login100-form-bgbtn"></div>
+            <button type="submit" class="btn login100-form-btn">Entrar</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'core/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'registration/js/main.js' %}"></script>
+
+</body>
+</html>
