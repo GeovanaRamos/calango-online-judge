@@ -5,3 +5,36 @@
     --tertiary: #FF7C5D;
 	--error: #c80000
 }
+
+@font-face {
+  font-family: Poppins-Regular;
+  src: url('../../core/fonts/poppins/Poppins-Regular.ttf');
+}
+
+@font-face {
+  font-family: Poppins-Medium;
+  src: url('../../core/fonts/poppins/Poppins-Medium.ttf');
+}
+
+@font-face {
+  font-family: Poppins-Bold;
+  src: url('../../core/fonts/poppins/Poppins-Bold.ttf');
+}
+
+@font-face {
+  font-family: Poppins-SemiBold;
+  src: url('../../core/fonts/poppins/Poppins-SemiBold.ttf');
+}
+
+.logo {
+  display: block;
+  font-family: Poppins-SemiBold;
+  font-size: 39px;
+  color: var(--secondary);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.active {
+  background-color: var(--primary) !important;
+}

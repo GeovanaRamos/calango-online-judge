@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <title>COJ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--===============================================================================================-->
+  <link rel="icon" type="image/png" href="{% static 'core/images/icons/favicon.ico' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'core/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" type="text/css"
+        href="{% static 'core/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{% static 'core/css/base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'judge/css/base.css' %}">
+  <!--===============================================================================================-->
+  {% block css %}
+  {% endblock %}
+</head>
+<body>
+
+<div class="d-flex" id="wrapper">
+
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+{#    <div class="sidebar-heading">Start Bootstrap</div>#}
+    <span class="sidebar-heading logo m-3">
+          <img src="{% static 'core/images/calango.png' %}" width="50px" class="float-left">
+          COJ <span style="color: #FF7C5D">.</span>
+    </span>
+    <div class="list-group list-group-flush sticky-top position-fixed">
+      <a href="#" class="list-group-item list-group-item-action active">Início</a>
+      <a href="#" class="list-group-item list-group-item-action">Listas</a>
+      <a href="#" class="list-group-item list-group-item-action">Questões</a>
+      <a href="#" class="list-group-item list-group-item-action">Submissões</a>
+      <a href="#" class="list-group-item list-group-item-action">Sair</a>
+    </div>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+    <div style="width: 100%; ">
+      <button id="menu-toggle">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="container-fluid">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </div>
+  <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+
+<script src="{% static 'core/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<script>
+    $("#menu-toggle").click(function (e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+
+{% block js %}
+{% endblock %}
+
+</body>
+</html>
