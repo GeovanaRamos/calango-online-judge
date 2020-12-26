@@ -26,7 +26,6 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-
         return self.create_user(email, password, **extra_fields)
 
 
@@ -61,7 +60,6 @@ class Professor(models.Model):
         return self.user.full_name
 
     def clean(self):
-        super(Professor, self).clean()
         if Student.objects.filter(user=self.user).exists():
             raise ValidationError('Este usuário já é um aluno.')
 
@@ -69,7 +67,8 @@ class Professor(models.Model):
 class CourseClass(StrAsModelName):
     year = models.IntegerField(verbose_name='Ano')
     semester = models.IntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 3)])
-    professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=models.RESTRICT)
+    professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=models.RESTRICT,
+                                  related_name='classes')
 
     class Meta:
         verbose_name = 'Turma'
@@ -81,7 +80,7 @@ class Student(models.Model):
     registration_number = models.IntegerField(verbose_name='Matrícula', unique=True,
                                               help_text='Digite a matrícula somente com números. '
                                                         'Ex 160123456')
-    classes = models.ManyToManyField(CourseClass, verbose_name='Turmas', blank=True)
+    classes = models.ManyToManyField(CourseClass, verbose_name='Turmas', blank=True, related_name='students')
 
     class Meta:
         verbose_name = 'Aluno'
@@ -96,7 +95,14 @@ class Student(models.Model):
 
 
 class Question(StrAsModelName):
+    class Subjects(models.IntegerChoices):
+        SEQ = 0, "ESTRUTURAS SEQUENCIAIS E CONDICIONAIS"
+        MOD = 1, "MODULARIZAÇÃO"
+        COND = 2, "ESTRUTURAS CONDICIONAIS E DE REPETIÇÃO"
+        VET = 4, "VETORES"
+
     description = models.TextField(verbose_name='Enunciado')
+    subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=60)
 
     class Meta:
         verbose_name = 'Questão'
@@ -108,7 +114,7 @@ class TestCase(models.Model):
                               help_text='Cada entrada separada por vírgula e em ordem de leitura.')
     output = models.TextField(verbose_name='Saída',
                               help_text='String única com \\n explícito se necessário.')
-    question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.CASCADE, related_name='cases')
 
     class Meta:
         verbose_name = 'Caso de Teste'
@@ -119,17 +125,32 @@ class TestCase(models.Model):
 
 
 class QuestionList(StrAsModelName):
-    start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
-    due_date = models.DateTimeField(verbose_name="Data de Término", auto_now=False, auto_now_add=False)
-    questions = models.ManyToManyField(Question, verbose_name="Questões")
+    questions = models.ManyToManyField(Question, verbose_name='Questões', related_name='lists')
 
     class Meta:
         verbose_name = 'Lista de Exercícios'
         verbose_name_plural = 'Listas de Exercicíos'
 
+    def student_has_concluded(self, student):
+        questions = self.questions
+        submissions = Submission.objects.filter(student=student, question__in=questions)
+        return questions.count() == submissions.count()
+
+
+class QuestionListApplication(StrAsModelName):
+    start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
+    due_date = models.DateTimeField(verbose_name="Data de Término", auto_now=False, auto_now_add=False)
+    course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=models.RESTRICT,
+                                     related_name='applications')
+    question_list = models.ForeignKey(QuestionList, verbose_name='Lista de Exercícios',
+                                      on_delete=models.RESTRICT, related_name='applications')
+
+    class Meta:
+        verbose_name = 'Agendamento de Lista'
+        verbose_name_plural = 'Agendamentos de Listas'
+
 
 class Submission(models.Model):
-
     class Results(models.IntegerChoices):
         ACCEPTED = 0, "Aceito"
         WRONG_ANSWER = 1, "Resposta Incorreta"
@@ -140,6 +161,8 @@ class Submission(models.Model):
         MEMORY_LIMIT_EXCEEDED = 6, "Limite de Memória Excedido"
         POSSIBLE_RUNTIME_ERROR = 7, "Possível Erro de Execução"
 
+    question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.RESTRICT, related_name='submissions')
+    student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=models.RESTRICT, related_name='submissions')
     code = models.TextField(verbose_name="Código")
     submitted_at = models.DateTimeField(verbose_name='Submetido em', auto_now_add=True, editable=False)
     judged_at = models.DateTimeField(verbose_name='Julgado em', blank=True, editable=False, null=True)
