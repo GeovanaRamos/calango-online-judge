@@ -48,6 +48,14 @@ class User(AbstractUser):
     def __str__(self):
         return self.full_name
 
+    def get_classes(self):
+        if hasattr(self, 'student'):
+            return self.student.classes.all()
+        elif hasattr(self, 'professor'):
+            return CourseClass.objects.filter(teacher=self.professor)
+        else:
+            return CourseClass.objects.none()
+
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name='Usuário')
@@ -131,11 +139,6 @@ class QuestionList(StrAsModelName):
         verbose_name = 'Lista de Exercícios'
         verbose_name_plural = 'Listas de Exercicíos'
 
-    def student_has_concluded(self, student):
-        questions = self.questions
-        submissions = Submission.objects.filter(student=student, question__in=questions)
-        return questions.count() == submissions.count()
-
 
 class QuestionListApplication(StrAsModelName):
     start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
@@ -148,6 +151,11 @@ class QuestionListApplication(StrAsModelName):
     class Meta:
         verbose_name = 'Agendamento de Lista'
         verbose_name_plural = 'Agendamentos de Listas'
+
+    def student_has_concluded(self, student):
+        questions = self.question_list.questions
+        submissions = Submission.objects.filter(student=student, question__in=questions.all())
+        return questions.count() == submissions.count()
 
 
 class Submission(models.Model):
