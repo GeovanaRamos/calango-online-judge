@@ -1,3 +1,6 @@
+
+/* ----------- SIDEBAR -----------------*/
+
 #wrapper {
     overflow-x: hidden;
 }
@@ -10,6 +13,7 @@
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
     border-right: 1px solid rgba(0,0,0,.125);
+    font-family: Poppins-Regular, sans-serif;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -76,3 +80,14 @@
 #sidebar-wrapper .list-group {
     padding-right: 50px;
 }
+
+.active {
+  background-color: var(--primary) !important;
+}
+
+/* ----------- GENERAL STYLING --------*/
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Poppins-Medium, sans-serif;
+}
+

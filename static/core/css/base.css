@@ -28,13 +28,9 @@
 
 .logo {
   display: block;
-  font-family: Poppins-SemiBold;
+  font-family: Poppins-SemiBold, serif;
   font-size: 39px;
   color: var(--secondary);
   line-height: 1.2;
   text-align: center;
-}
-
-.active {
-  background-color: var(--primary) !important;
 }

@@ -1,0 +1,42 @@
+{% extends "judge/base.html" %}
+
+{% block nav_2 %}<a href="#" class="list-group-item list-group-item-action active">Listas</a>{% endblock %}
+
+{% block content %}
+
+  {# {% if user.professor %}#}
+  {#    <a class="ml-3 btn btn-primary float-right" style="width: 150px" href="#">Criar Lista</a>#}
+  {#    <a class="mr-3 btn btn-primary float-right" style="width: 150px" href="#">Agendar Lista</a>#}
+  {# {% endif %}#}
+
+  <h2 class="mb-5">Listas de Exercícios</h2>
+  <div class="table-responsive">
+    <table class="table">
+
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Início</th>
+        <th>Término</th>
+        <th class="text-center">Status</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for object in object_list %}
+        <tr>
+          <td><a href="#">{{ object.name }}</a></td>
+          <td>{{ object.start_date|date:'d/m/Y H:s' }}</td>
+          <td>{{ object.due_date|date:'d/m/Y H:s' }}</td>
+          <td class="text-center">
+            {% if object.concluded %}<i class="fa fa-check" title="Concluída"></i>
+            {% else %}<i class="fa fa-window-minimize" title="Não concluída"></i>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+{% endblock content %}
