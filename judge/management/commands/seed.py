@@ -33,5 +33,6 @@ class Command(BaseCommand):
             mixer.blend(models.TestCase, question=mixer.SELECT)
 
         for _ in range(30):
-            mixer.blend(models.Submission, question=mixer.SELECT, student=mixer.SELECT)
+            mixer.blend(models.Submission, question=mixer.SELECT, student=mixer.SELECT,
+                        result=models.Submission.Results.ACCEPTED)
 

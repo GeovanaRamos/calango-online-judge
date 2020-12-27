@@ -1,0 +1,40 @@
+{% extends "judge/base.html" %}
+
+{% block nav_2 %}<a href="#" class="list-group-item list-group-item-action active">Listas</a>{% endblock %}
+
+{% block content %}
+
+  {# {% if user.professor %}#}
+{#      <a class="btn btn-primary float-right" style="width: 150px" href="#">Editar Lista</a>#}
+  {# {% endif %}#}
+
+  <h2 class="mb-5">Detalhes da Lista</h2>
+  <div class="container mt-5">
+    <p><strong>Nome:</strong>{{ object.name }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:s' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:s' }}</p>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Assunto</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for question in questions %}
+        <tr>
+          <td><a href="#">{{ question.name }}</a></td>
+          <td>{{ question.get_subject_display }}</td>
+          <td>{{ question.result }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+{% endblock content %}

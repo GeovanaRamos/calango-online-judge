@@ -103,11 +103,11 @@ class Student(models.Model):
 
 
 class Question(StrAsModelName):
-    class Subjects(models.IntegerChoices):
-        SEQ = 0, "ESTRUTURAS SEQUENCIAIS E CONDICIONAIS"
-        MOD = 1, "MODULARIZAÇÃO"
-        COND = 2, "ESTRUTURAS CONDICIONAIS E DE REPETIÇÃO"
-        VET = 4, "VETORES"
+    class Subjects(models.TextChoices):
+        SEQ = 'SEQ', "Estruturas Sequenciais e Condicionais"
+        MOD = 'MOD', "Modularização"
+        COND = 'COND', "Estruturas Concidionais e de Repetição"
+        VET = 'VET', "Vetores"
 
     description = models.TextField(verbose_name='Enunciado')
     subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=60)
@@ -115,6 +115,13 @@ class Question(StrAsModelName):
     class Meta:
         verbose_name = 'Questão'
         verbose_name_plural = 'Questões'
+
+    def get_status_for_student(self, student):
+        submission = Submission.objects.filter(question=self, student=student)
+        if submission.exists():
+            return submission[0].get_result_display()
+        else:
+            return "Sem Submissão"
 
 
 class TestCase(models.Model):
@@ -159,15 +166,15 @@ class ListSchedule(StrAsModelName):
 
 
 class Submission(models.Model):
-    class Results(models.IntegerChoices):
-        ACCEPTED = 0, "Aceito"
-        WRONG_ANSWER = 1, "Resposta Incorreta"
-        PRESENTATION_ERROR = 2, "Erro de Apresentação"
-        COMPILATION_ERROR = 3, "Erro de Compilação"
-        RUNTIME_ERROR = 4, "Erro de Execução"
-        TIME_LIMIT_EXCEEDED = 5, "Limite de Tempo Excedido"
-        MEMORY_LIMIT_EXCEEDED = 6, "Limite de Memória Excedido"
-        POSSIBLE_RUNTIME_ERROR = 7, "Possível Erro de Execução"
+    class Results(models.TextChoices):
+        ACCEPTED = 'ACCEPTED', "Aceito"
+        WRONG_ANSWER = 'WRONG_ANSWER', "Resposta Incorreta"
+        PRESENTATION_ERROR = 'PRESENTATION_ERROR', "Erro de Apresentação"
+        COMPILATION_ERROR = 'COMPILATION_ERROR', "Erro de Compilação"
+        RUNTIME_ERROR = 'RUNTIME_ERROR', "Erro de Execução"
+        TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED', "Limite de Tempo Excedido"
+        MEMORY_LIMIT_EXCEEDED = 'MEMORY_LIMIT_EXCEEDED', "Limite de Memória Excedido"
+        POSSIBLE_RUNTIME_ERROR = 'POSSIBLE_RUNTIME_ERROR', "Possível Erro de Execução"
 
     question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.RESTRICT, related_name='submissions')
     student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=models.RESTRICT, related_name='submissions')
