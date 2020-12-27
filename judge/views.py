@@ -37,3 +37,8 @@ class ScheduleDetailView(DetailView):
             data['questions'] = questions
 
         return data
+
+
+class QuestionDetailView(DetailView):
+    model = models.Question
+    template_name = 'judge/question_detail.html'

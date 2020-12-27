@@ -15,7 +15,7 @@
     <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:s' }}</p>
   </div>
   <div class="table-responsive">
-    <table class="table">
+    <table class="table table-hover">
 
       <thead>
       <tr>
@@ -28,7 +28,7 @@
       <tbody>
       {% for question in questions %}
         <tr>
-          <td><a href="#">{{ question.name }}</a></td>
+          <td><a href="{% url 'question_detail' question.pk %}">{{ question.name }}</a></td>
           <td>{{ question.get_subject_display }}</td>
           <td>{{ question.result }}</td>
         </tr>
