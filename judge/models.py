@@ -140,13 +140,13 @@ class QuestionList(StrAsModelName):
         verbose_name_plural = 'Listas de Exercicíos'
 
 
-class QuestionListApplication(StrAsModelName):
+class ListSchedule(StrAsModelName):
     start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
     due_date = models.DateTimeField(verbose_name="Data de Término", auto_now=False, auto_now_add=False)
     course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=models.RESTRICT,
-                                     related_name='applications')
+                                     related_name='schedules')
     question_list = models.ForeignKey(QuestionList, verbose_name='Lista de Exercícios',
-                                      on_delete=models.RESTRICT, related_name='applications')
+                                      on_delete=models.RESTRICT, related_name='schedules')
 
     class Meta:
         verbose_name = 'Agendamento de Lista'

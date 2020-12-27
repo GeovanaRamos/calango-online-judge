@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         for i in range(3):
             question_list = mixer.blend(models.QuestionList, questions=questions[i])
-            mixer.blend(models.QuestionListApplication, question_list=question_list,
+            mixer.blend(models.ListSchedule, question_list=question_list,
                         course_class=classes[i])
 
         for _ in range(60):
