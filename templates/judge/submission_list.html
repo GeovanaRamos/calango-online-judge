@@ -20,7 +20,7 @@
       <tbody>
       {% for object in object_list %}
         <tr>
-          <td>{{ object.question.name }}</td>
+          <td><a href="{% url 'submission_detail' object.pk %}">{{ object.question.name }}</a></td>
           <td>{{ object.submitted_at|date:'d/m/Y H:s' }}</td>
           <td>{{ object.judged_at|date:'d/m/Y H:s' }}</td>
           <td>{{ object.get_result_display}}</td>

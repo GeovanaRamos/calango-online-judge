@@ -8,5 +8,6 @@ urlpatterns = [
     path('schedules/<pk>/', views.ScheduleDetailView.as_view(), name='schedule_detail'),
     path('questions/<pk>/', views.QuestionDetailView.as_view(),  name='question_detail'),
     path('submissions/create/<question_pk>', views.SubmissionCreateView.as_view(), name='submission_create'),
-    path('submissions/', views.SubmissionListView.as_view(), name='submission_list')
+    path('submissions/', views.SubmissionListView.as_view(), name='submission_list'),
+    path('submissions/<pk>', views.SubmissionDetailView.as_view(), name='submission_detail')
 ]

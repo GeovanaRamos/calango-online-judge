@@ -1,0 +1,40 @@
+{% extends "judge/base.html" %}
+{% load static %}
+
+
+{% block nav_4 %}<a href="#" class="list-group-item list-group-item-action active">Submissões</a>{% endblock %}
+
+{% block css %}
+   <link rel="stylesheet" type="text/css" href="{% static 'judge/css/submission.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <h2 class="mb-5">Detalhes da Submissão</h2>
+  <div class="container mt-5">
+    <p>
+      <strong>Nome da questão:</strong>
+      <a href="{% url 'question_detail' object.question.pk %}">{{ object.question.name }}</a>
+    </p>
+    <p><strong>Submetido em:</strong> {{ object.submitted_at|date:'d/m/Y H:s' }}</p>
+    <p><strong>Julgado em:</strong> {{ object.judged_at|date:'d/m/Y H:s' }}</p>
+    <p><strong>Resultado:</strong> {{ object.get_result_display }}</p>
+  </div>
+
+  <div id="scaleable-wrapper" class="mt-5">
+      <pre>
+<code>
+  {{ object.code }}
+</code>
+      </pre>
+  </div>
+
+{% endblock %}
+
+{% block js %}
+  <script>
+      $("pre code").html(function (index, html) {
+          return html.trim().replace(/^(.*)$/mg, "<span class=\"line\">$1</span>");
+      });
+  </script>
+{% endblock %}

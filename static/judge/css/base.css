@@ -91,3 +91,12 @@ h1, h2, h3, h4, h5, h6 {
     font-family: Poppins-Medium, sans-serif;
 }
 
+a {
+    color: var(--tertiary);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
