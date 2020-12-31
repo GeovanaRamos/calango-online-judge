@@ -1,0 +1,33 @@
+{% extends "judge/base.html" %}
+
+{% block nav_4 %}<a href="#" class="list-group-item list-group-item-action active">Submissões</a>{% endblock %}
+
+{% block content %}
+
+  <h2 class="mb-5">Submissões</h2>
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Questão</th>
+        <th>Submetido em</th>
+        <th>Julgado em</th>
+        <th>Resultado</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for object in object_list %}
+        <tr>
+          <td>{{ object.question.name }}</td>
+          <td>{{ object.submitted_at|date:'d/m/Y H:s' }}</td>
+          <td>{{ object.judged_at|date:'d/m/Y H:s' }}</td>
+          <td>{{ object.get_result_display}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+{% endblock content %}

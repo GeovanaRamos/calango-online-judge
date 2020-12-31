@@ -58,3 +58,10 @@ class SubmissionCreateView(CreateView):
     def get_success_url(self):
         return reverse('question_detail', kwargs={'pk': self.kwargs['question_pk']})
 
+
+class SubmissionListView(ListView):
+    model = models.Submission
+    template_name = 'judge/submission_list.html'
+
+    def get_queryset(self):
+        return models.Submission.objects.filter(student=self.request.user.student).order_by('-submitted_at')
