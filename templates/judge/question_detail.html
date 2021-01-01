@@ -29,7 +29,7 @@
           {% for case in object.cases.all %}
             <tr>
               <td>{{ case.inputs }}</td>
-              <td>{{ case.output }}</td>
+              <td>{{ case.output|linebreaks }}</td>
             </tr>
           {% endfor %}
           </tbody>

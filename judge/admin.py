@@ -1,5 +1,7 @@
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
+from django.utils.safestring import mark_safe
+
 from judge import models
 
 admin.site.register(models.Student)

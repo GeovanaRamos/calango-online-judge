@@ -173,8 +173,7 @@ class Submission(models.Model):
         COMPILATION_ERROR = 'COMPILATION_ERROR', "Erro de Compilação"
         RUNTIME_ERROR = 'RUNTIME_ERROR', "Erro de Execução"
         TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED', "Limite de Tempo Excedido"
-        MEMORY_LIMIT_EXCEEDED = 'MEMORY_LIMIT_EXCEEDED', "Limite de Memória Excedido"
-        POSSIBLE_RUNTIME_ERROR = 'POSSIBLE_RUNTIME_ERROR', "Possível Erro de Execução"
+        WAITING = 'WAITING', "Aguardando"
 
     question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.RESTRICT, related_name='submissions')
     student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=models.RESTRICT, related_name='submissions')

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'crispy_forms',
+    'django_q',
 
     'judge.apps.JudgeConfig',
 ]
@@ -142,3 +143,12 @@ STATIC_URL = '/static/'
 #####
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+######
+
+# Configure your Q cluster
+# More details https://django-q.readthedocs.io/en/latest/configure.html
+Q_CLUSTER = {
+    "name": "judge",
+    "orm": "default",  # Use Django's ORM + database for broker
+}

@@ -1,6 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
+from django_q.tasks import async_task
+
 from judge import models, forms
+from judge.utils import submit_to_judge_service
 
 
 class ScheduleListView(ListView):
@@ -53,7 +57,10 @@ class SubmissionCreateView(CreateView):
     def form_valid(self, form):
         form.instance.question = models.Question.objects.get(pk=self.kwargs['question_pk'])
         form.instance.student = self.request.user.student
-        return super().form_valid(form)
+        form.instance.result = models.Submission.Results.WAITING
+        self.object = form.save()
+        async_task(submit_to_judge_service, form.instance.code, self.kwargs['question_pk'], self.object)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('question_detail', kwargs={'pk': self.kwargs['question_pk']})
