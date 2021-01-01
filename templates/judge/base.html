@@ -31,19 +31,16 @@
           COJ <span style="color: #FF7C5D">.</span>
     </span>
     <div class="list-group list-group-flush sticky-top position-fixed">
-      {% block nav_1 %}
+      {% block nav_home %}
         <a href="{% url 'home' %}" class="list-group-item list-group-item-action">Início</a>
       {% endblock %}
-      {% block nav_2 %}
+      {% block nav_list %}
         <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
       {% endblock %}
-      {% block nav_3 %}<a href="#" class="list-group-item list-group-item-action">Questões</a>{% endblock %}
-      {% block nav_4 %}
+      {% block nav_sub %}
         <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
       {% endblock %}
-      {% block nav_5 %}
-        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
-      {% endblock %}
+      <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -58,9 +55,10 @@
           Navegação
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px">
-          <a class="dropdown-item" href="#">Início</a>
-          <a class="dropdown-item" href="#">Listas</a>
-          <a class="dropdown-item" href="#">Submissões</a>
+          <a class="dropdown-item" href="{% url 'home' %}">Início</a>
+          <a class="dropdown-item" href="{% url 'schedule_list' %}">Listas</a>
+          <a class="dropdown-item" href="{% url 'submission_list' %}">Submissões</a>
+          <a class="dropdown-item" href="{% url 'logout' %}">Sair</a>
         </div>
       </div>
     </div>

@@ -81,7 +81,7 @@
     padding-right: 50px;
 }
 
-.active {
+#sidebar-wrapper .active {
   background-color: var(--primary) !important;
 }
 
@@ -95,8 +95,17 @@ a {
     color: var(--tertiary);
 }
 
+a:hover {
+    color: #b5563f;
+}
+
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #006D6D;
+    border-color: #006D6D;
 }
 
