@@ -41,7 +41,9 @@
       {% block nav_4 %}
         <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
       {% endblock %}
-      {% block nav_5 %}<a href="#" class="list-group-item list-group-item-action">Sair</a>{% endblock %}
+      {% block nav_5 %}
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
+      {% endblock %}
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
