@@ -27,6 +27,6 @@ def submit_to_judge_service(code, question_pk, submission):
     print(r.json())
     result_json = r.json()
     submission.result = result_json['message']
-    submission.judged_at = timezone.local
+    submission.judged_at = timezone.localtime()
     submission.save()
 
