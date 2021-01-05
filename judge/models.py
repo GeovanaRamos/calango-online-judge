@@ -1,7 +1,6 @@
-from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
+from accounts.models import User, Professor, Student
 
 
 class StrAsModelName(models.Model):
@@ -9,68 +8,6 @@ class StrAsModelName(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class CustomUserManager(BaseUserManager):
-
-    def create_user(self, email=None, password=None, **extra_fields):
-        if not email:
-            raise ValueError('É preciso informar um email.')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email=None, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
-        return self.create_user(email, password, **extra_fields)
-
-
-class User(AbstractUser):
-    full_name = models.CharField(verbose_name="Nome completo", max_length=70)
-    email = models.EmailField(verbose_name="Email", unique=True)
-    username = None
-    first_name = None
-    last_name = None
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name']
-
-    objects = CustomUserManager()
-
-    class Meta:
-        verbose_name = 'Usuário'
-        verbose_name_plural = 'Usuários'
-
-    def __str__(self):
-        return self.full_name
-
-    @property
-    def get_classes(self):
-        if hasattr(self, 'student'):
-            return self.student.classes.all().order_by('-year', '-semester')
-        elif hasattr(self, 'professor'):
-            return CourseClass.objects.filter(teacher=self.professor).order_by('-year', '-semester')
-        else:
-            return CourseClass.objects.none()
-
-
-class Professor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name='Usuário')
-
-    class Meta:
-        verbose_name = 'Professor'
-        verbose_name_plural = 'Professores'
-
-    def __str__(self):
-        return self.user.full_name
-
-    def clean(self):
-        if Student.objects.filter(user=self.user).exists():
-            raise ValidationError('Este usuário já é um aluno.')
 
 
 class CourseClass(StrAsModelName):
@@ -83,33 +20,6 @@ class CourseClass(StrAsModelName):
     class Meta:
         verbose_name = 'Turma'
         verbose_name_plural = 'Turmas'
-
-    def get_questions(self):
-        questions = Question.objects.none()
-        lists = ListSchedule.objects.filter(course_class=self)
-        for lst in lists:
-            questions = questions | lst.question_list.questions.all()
-
-        return questions
-
-
-class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name='Usuário')
-    registration_number = models.IntegerField(verbose_name='Matrícula', unique=True,
-                                              help_text='Digite a matrícula somente com números. '
-                                                        'Ex 160123456')
-    classes = models.ManyToManyField(CourseClass, verbose_name='Turmas', blank=True, related_name='students')
-
-    class Meta:
-        verbose_name = 'Aluno'
-        verbose_name_plural = 'Alunos'
-
-    def __str__(self):
-        return self.user.full_name
-
-    def clean(self):
-        if Professor.objects.filter(user=self.user).exists():
-            raise ValidationError('Este usuário já é um professor.')
 
 
 class Question(StrAsModelName):
@@ -125,13 +35,6 @@ class Question(StrAsModelName):
     class Meta:
         verbose_name = 'Questão'
         verbose_name_plural = 'Questões'
-
-    def get_status_for_student(self, student):
-        submission = Submission.objects.filter(question=self, student=student)
-        if submission.exists():
-            return submission.latest('judged_at').get_result_display()
-        else:
-            return "Sem Submissão"
 
 
 class TestCase(models.Model):
@@ -169,12 +72,6 @@ class ListSchedule(StrAsModelName):
         verbose_name = 'Agendamento de Lista'
         verbose_name_plural = 'Agendamentos de Listas'
 
-    def student_has_concluded(self, student):
-        questions = self.question_list.questions
-        submissions = Submission.objects.filter(
-            student=student, question__in=questions.all(), result=Submission.Results.ACCEPTED)
-        return submissions.count() >= questions.count()
-
 
 class Submission(models.Model):
     class Results(models.TextChoices):
@@ -186,7 +83,8 @@ class Submission(models.Model):
         TIME_LIMIT_EXCEEDED = 'TIME_LIMIT_EXCEEDED', "Limite de Tempo Excedido"
         WAITING = 'WAITING', "Aguardando"
 
-    question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.RESTRICT, related_name='submissions')
+    question = models.ForeignKey(Question, verbose_name='Questão', on_delete=models.RESTRICT,
+                                 related_name='submissions')
     student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=models.RESTRICT, related_name='submissions')
     code = models.TextField(verbose_name="Código")
     submitted_at = models.DateTimeField(verbose_name='Submetido em', auto_now_add=True, editable=False)

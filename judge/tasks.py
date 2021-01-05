@@ -1,9 +1,7 @@
 import json
 import requests
 import re
-
 from django.utils import timezone
-
 from judge import models
 
 

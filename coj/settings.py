@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_q',
 
+    'accounts.apps.AccountsConfig',
     'judge.apps.JudgeConfig',
 ]
 
@@ -115,7 +116,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-AUTH_USER_MODEL = 'judge.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'

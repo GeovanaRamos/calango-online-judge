@@ -1,6 +1,8 @@
 from django.core.management import BaseCommand
 from django.db import transaction
 from mixer.backend.django import mixer
+
+import accounts.models
 from judge import models
 
 
@@ -10,16 +12,16 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **kwargs):
 
-        admin = models.User.objects.create_superuser('geovana@email.com', 'admin', full_name='geovana ramos')
-        models.Student.objects.create(user=admin, registration_number='160122181')
+        admin = accounts.models.User.objects.create_superuser('geovana@email.com', 'admin', full_name='geovana ramos')
+        accounts.models.Student.objects.create(user=admin, registration_number='160122181')
 
         classes = []
         for i in range(3):
-            user = mixer.blend(models.User)
-            professor = mixer.blend(models.Professor, user=user)
+            user = mixer.blend(accounts.models.User)
+            professor = mixer.blend(accounts.models.Professor, user=user)
             classes.append(mixer.blend(models.CourseClass, professor=professor))
-            user = mixer.blend(models.User)
-            student = mixer.blend(models.Student, user=user)
+            user = mixer.blend(accounts.models.User)
+            student = mixer.blend(accounts.models.Student, user=user)
             student.classes.add(classes[i])
 
         questions = [mixer.cycle(10).blend(models.Question) for _ in range(3)]

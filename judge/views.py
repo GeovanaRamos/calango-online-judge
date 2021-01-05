@@ -5,8 +5,8 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.base import TemplateView
 from django_q.tasks import async_task
 
-from judge import models, forms
-from judge.utils import submit_to_judge_service
+from judge import models, forms, helpers
+from judge.tasks import submit_to_judge_service
 
 
 class HomeView(TemplateView):
@@ -16,11 +16,12 @@ class HomeView(TemplateView):
         data = super().get_context_data(**kwargs)
         if hasattr(self.request.user, 'student'):
             lists = models.ListSchedule.objects.filter(
-                course_class__in=self.request.user.get_classes.filter(is_active=True))
+                course_class__in=helpers.get_user_classes(self.request.user))
             data['count_lists'] = lists.count()
-            data['count_concluded'] = sum(1 for lt in lists if lt.student_has_concluded(self.request.user.student))
+            data['count_concluded'] = sum(
+                1 for lt in lists if helpers.student_has_concluded_list_schedule(self.request.user.student, lt))
             data['count_pending'] = data['count_lists'] - data['count_concluded']
-            data['count_questions'] = self.request.user.get_classes.filter(is_active=True).first().get_questions().count()
+            data['count_questions'] = helpers.get_course_class_questions(self.request.user.get_classes.first())
             data['count_submissions'] = models.Submission.objects.filter(student=self.request.user.student).count()
             results = models.Submission.objects.values('result').annotate(count=Count('result'))
             data['result_labels'] = []
@@ -59,7 +60,8 @@ class ScheduleDetailView(DetailView):
         data = super().get_context_data(**kwargs)
 
         if hasattr(self.request.user, 'student'):
-            data['object'].concluded = data['object'].student_has_concluded(self.request.user.student)
+            data['object'].concluded = helpers.student_has_concluded_list_schedule(self.request.user.student,
+                                                                                   data['object'])
             questions = []
             for question in data['object'].question_list.questions.all():
                 question.result = question.get_status_for_student(self.request.user.student)
