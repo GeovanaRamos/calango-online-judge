@@ -48,11 +48,12 @@ class User(AbstractUser):
     def __str__(self):
         return self.full_name
 
+    @property
     def get_classes(self):
         if hasattr(self, 'student'):
-            return self.student.classes.all()
+            return self.student.classes.all().order_by('-year', '-semester')
         elif hasattr(self, 'professor'):
-            return CourseClass.objects.filter(teacher=self.professor)
+            return CourseClass.objects.filter(teacher=self.professor).order_by('-year', '-semester')
         else:
             return CourseClass.objects.none()
 
@@ -74,13 +75,22 @@ class Professor(models.Model):
 
 class CourseClass(StrAsModelName):
     year = models.IntegerField(verbose_name='Ano')
-    semester = models.IntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 3)])
+    semester = models.IntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 2)])
     professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=models.RESTRICT,
                                   related_name='classes')
+    is_active = models.BooleanField(verbose_name='Ativa?', default=True)
 
     class Meta:
         verbose_name = 'Turma'
         verbose_name_plural = 'Turmas'
+
+    def get_questions(self):
+        questions = Question.objects.none()
+        lists = ListSchedule.objects.filter(course_class=self)
+        for lst in lists:
+            questions = questions | lst.question_list.questions.all()
+
+        return questions
 
 
 class Student(models.Model):
@@ -106,7 +116,7 @@ class Question(StrAsModelName):
     class Subjects(models.TextChoices):
         SEQ = 'SEQ', "Estruturas Sequenciais e Condicionais"
         MOD = 'MOD', "Modularização"
-        COND = 'COND', "Estruturas Concidionais e de Repetição"
+        COND = 'COND', "Estruturas Condionais e de Repetição"
         VET = 'VET', "Vetores"
 
     description = models.TextField(verbose_name='Enunciado')
@@ -119,7 +129,7 @@ class Question(StrAsModelName):
     def get_status_for_student(self, student):
         submission = Submission.objects.filter(question=self, student=student)
         if submission.exists():
-            return submission[0].get_result_display()
+            return submission.latest('judged_at').get_result_display()
         else:
             return "Sem Submissão"
 
@@ -161,8 +171,9 @@ class ListSchedule(StrAsModelName):
 
     def student_has_concluded(self, student):
         questions = self.question_list.questions
-        submissions = Submission.objects.filter(student=student, question__in=questions.all())
-        return questions.count() == submissions.count()
+        submissions = Submission.objects.filter(
+            student=student, question__in=questions.all(), result=Submission.Results.ACCEPTED)
+        return submissions.count() >= questions.count()
 
 
 class Submission(models.Model):

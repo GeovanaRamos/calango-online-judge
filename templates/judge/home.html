@@ -1,6 +1,254 @@
 {% extends "judge/base.html" %}
+{% load static %}
 
 {% block nav_home %}<a href="#" class="list-group-item list-group-item-action active">Início</a>{% endblock %}
 
+{% block css %}
+  <style>
+
+      /* Start statistics */
+      .statistics {
+          margin-top: 25px;
+      }
+
+      .statistics .box {
+          background-color: white;
+          padding: 15px;
+          overflow: hidden;
+          box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+      }
+
+      .statistics .box > i {
+          float: left;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          line-height: 60px;
+          font-size: 22px;
+          color: white;
+      }
+
+      .statistics .box .info {
+          float: left;
+          width: auto;
+          margin-left: 10px;
+      }
+
+      .statistics .box .info h3 {
+          margin: 5px 0 5px;
+          display: inline-block;
+      }
+
+
+      /* End statistics */
+      /* Start charts */
+      .charts {
+          margin-top: 25px;
+      }
+
+      .charts .chart-container {
+          background-color: white;
+          padding: 15px;
+          box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;;
+      }
+
+      .charts .chart-container h3 {
+          margin: 0 0 10px;
+          font-size: 17px;
+      }
+
+      .statis .box {
+          position: relative;
+          padding: 15px;
+          overflow: hidden;
+          border-radius: 3px;
+          margin-bottom: 25px;
+      }
+
+      .statis .box h3:after {
+          content: "";
+          height: 2px;
+          width: 70%;
+          margin: auto;
+          display: block;
+          margin-top: 10px;
+      }
+
+      .statis .box i {
+          position: absolute;
+          height: 70px;
+          width: 70px;
+          font-size: 22px;
+          padding: 15px;
+          top: -25px;
+          left: -25px;
+          line-height: 60px;
+          text-align: right;
+          border-radius: 50%;
+      }
+
+      .chrt3 .chart-container {
+          height: 350px;
+          padding: 15px;
+          margin-top: 25px;
+      }
+
+      .chrt3 .box {
+          padding: 15px;
+      }
+
+      .bg-primary {
+          background-color: var(--primary) !important;
+          border-color: var(--primary) !important;
+      }
+
+  </style>
+{% endblock %}
+
 {% block content %}
+  {#  <div class="dropdown float-right">#}
+  {#    <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"#}
+  {#       aria-haspopup="true" aria-expanded="false" style="width: 150px;">#}
+  {#      Turma#}
+  {#    </a>#}
+  {##}
+  {#    <div class="dropdown-menu text-center" aria-labelledby="dropdownMenuLink" style="width: 150px;">#}
+  {#      {% for class in user.get_classes %}#}
+  {#      <a class="dropdown-item" href="#">A - {{ class.year }}/{{ class.semester }}</a>#}
+  {#      {% endfor %}#}
+  {#    </div>#}
+  {#  </div>#}
+
+
+  <div class="row">
+
+    <div class="content">
+      <h2>Calango Online Judge</h2>
+      <p class="ml-1"> Olá, {{ user.full_name.split|first }}. Veja as opções para sua turma APC 2020/1</p>
+    </div>
+
+  </div>
+
+  <section class="statistics">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="box">
+            <i class="fa fa-list-alt fa-fw bg-primary"></i>
+            <div class="info">
+              <h3>{{ count_lists }}</h3>
+              <p>Listas de Exercícios</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box">
+            <i class="fa fa-question fa-fw fa-3x bg-primary"></i>
+            <div class="info">
+              <h3>{{ count_questions }}</h3>
+              <p>Questões</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="box">
+            <i class="fa fa-cloud-upload fa-fw bg-primary"></i>
+            <div class="info">
+              <h3>{{ count_submissions }}</h3>
+              <p>Submissões</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="charts">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h5 class="mb-4">Listas</h5>
+            <canvas id="listsChart" height="180"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container">
+            <h5 class="mb-4">Resultados</h5>
+            <canvas id="resultsChart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+
+{% block js %}
+  {{ result_labels|json_script:"labels" }}
+  {{ result_values|json_script:"values" }}
+  {{ count_concluded|json_script:"concluded" }}
+  {{ count_pending|json_script:"pending" }}
+  <script src="{% static 'core/vendor/chartjs/Chart.min.js' %}"></script>
+  <script>
+      const labels = JSON.parse(document.getElementById('labels').textContent);
+      const values = JSON.parse(document.getElementById('values').textContent);
+      const concluded = JSON.parse(document.getElementById('concluded').textContent);
+      const pending = JSON.parse(document.getElementById('pending').textContent);
+
+      const ctx = document.getElementById('listsChart');
+      data = {
+          datasets: [{
+              data: values,
+              backgroundColor: [
+                  '#e67e22',
+                  '#7fb3d5',
+                  '#d98880',
+                  '#DAF7A6',
+                  '#FFC300',
+                  '#FF5733',
+                  '#b03a2e',
+              ],
+          }],
+          labels: labels
+      };
+
+      const myChart = new Chart(ctx, {
+          type: 'pie',
+          data: data,
+          options: {
+              legend: {
+                  position: 'right',
+              },
+          }
+      });
+      {#    ##################}
+      const ctx2 = document.getElementById('resultsChart');
+      data = {
+          datasets: [{
+              data: [concluded, pending],
+              backgroundColor: [
+                  '#7fb3d5',
+                  '#d98880',
+              ],
+          }],
+
+          // These labels appear in the legend and in the tooltips when hovering different arcs
+          labels: [
+              'Concluído',
+              'Pendente',
+          ],
+
+      };
+
+      const resultsChart = new Chart(ctx2, {
+          type: 'pie',
+          data: data,
+          options: {
+              legend: {
+                  position: 'right',
+              },
+          }
+      });
+  </script>
 {% endblock %}

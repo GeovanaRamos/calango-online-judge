@@ -1,10 +1,36 @@
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic.base import TemplateView
 from django_q.tasks import async_task
 
 from judge import models, forms
 from judge.utils import submit_to_judge_service
+
+
+class HomeView(TemplateView):
+    template_name = 'judge/home.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if hasattr(self.request.user, 'student'):
+            lists = models.ListSchedule.objects.filter(
+                course_class__in=self.request.user.get_classes.filter(is_active=True))
+            data['count_lists'] = lists.count()
+            data['count_concluded'] = sum(1 for lt in lists if lt.student_has_concluded(self.request.user.student))
+            data['count_pending'] = data['count_lists'] - data['count_concluded']
+            data['count_questions'] = self.request.user.get_classes.filter(is_active=True).first().get_questions().count()
+            data['count_submissions'] = models.Submission.objects.filter(student=self.request.user.student).count()
+            results = models.Submission.objects.values('result').annotate(count=Count('result'))
+            data['result_labels'] = []
+            data['result_values'] = []
+            for counting_obj in results:
+                if counting_obj['result']:
+                    data['result_labels'].append(models.Submission.Results(counting_obj['result']).label)
+                    data['result_values'].append(counting_obj['count'])
+
+            return data
 
 
 class ScheduleListView(ListView):
@@ -13,9 +39,9 @@ class ScheduleListView(ListView):
 
     def get_queryset(self):
         return models.ListSchedule.objects.filter(
-            course_class__in=self.request.user.get_classes())
+            course_class__in=self.request.user.get_classes)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
         if hasattr(self.request.user, 'student'):
@@ -29,7 +55,7 @@ class ScheduleDetailView(DetailView):
     model = models.ListSchedule
     template_name = 'judge/schedule_detail.html'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
         if hasattr(self.request.user, 'student'):
@@ -77,5 +103,3 @@ class SubmissionListView(ListView):
 class SubmissionDetailView(DetailView):
     model = models.Submission
     template_name = 'judge/submission_detail.html'
-
-
