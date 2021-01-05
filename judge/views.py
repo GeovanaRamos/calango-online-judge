@@ -21,7 +21,8 @@ class HomeView(TemplateView):
             data['count_concluded'] = sum(
                 1 for lt in lists if helpers.student_has_concluded_list_schedule(self.request.user.student, lt))
             data['count_pending'] = data['count_lists'] - data['count_concluded']
-            data['count_questions'] = helpers.get_course_class_questions(self.request.user.get_classes.first())
+            data['count_questions'] = helpers.get_course_class_questions(
+                helpers.get_user_classes(self.request.user).first()).count()
             data['count_submissions'] = models.Submission.objects.filter(student=self.request.user.student).count()
             results = models.Submission.objects.values('result').annotate(count=Count('result'))
             data['result_labels'] = []
@@ -40,7 +41,7 @@ class ScheduleListView(ListView):
 
     def get_queryset(self):
         return models.ListSchedule.objects.filter(
-            course_class__in=self.request.user.get_classes)
+            course_class__in=helpers.get_user_classes(self.request.user))
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
