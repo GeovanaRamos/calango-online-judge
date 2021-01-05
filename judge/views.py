@@ -16,13 +16,13 @@ class HomeView(TemplateView):
         data = super().get_context_data(**kwargs)
         if hasattr(self.request.user, 'student'):
             lists = models.ListSchedule.objects.filter(
-                course_class__in=helpers.get_user_classes(self.request.user))
+                course_class__in=helpers.get_classes_for_user(self.request.user))
             data['count_lists'] = lists.count()
             data['count_concluded'] = sum(
                 1 for lt in lists if helpers.student_has_concluded_list_schedule(self.request.user.student, lt))
             data['count_pending'] = data['count_lists'] - data['count_concluded']
-            data['count_questions'] = helpers.get_course_class_questions(
-                helpers.get_user_classes(self.request.user).first()).count()
+            data['count_questions'] = helpers.get_questions_for_course_class(
+                helpers.get_classes_for_user(self.request.user).first()).count()
             data['count_submissions'] = models.Submission.objects.filter(student=self.request.user.student).count()
             results = models.Submission.objects.values('result').annotate(count=Count('result'))
             data['result_labels'] = []
@@ -41,7 +41,7 @@ class ScheduleListView(ListView):
 
     def get_queryset(self):
         return models.ListSchedule.objects.filter(
-            course_class__in=helpers.get_user_classes(self.request.user))
+            course_class__in=helpers.get_classes_for_user(self.request.user))
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -65,7 +65,7 @@ class ScheduleDetailView(DetailView):
                                                                                    data['object'])
             questions = []
             for question in data['object'].question_list.questions.all():
-                question.result = question.get_status_for_student(self.request.user.student)
+                question.result = helpers.get_question_status_for_student(self.request.user.student, question)
                 questions.append(question)
 
             data['questions'] = questions

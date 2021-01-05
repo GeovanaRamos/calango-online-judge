@@ -1,16 +1,16 @@
 from judge import models
 
 
-def get_user_classes(user):
+def get_classes_for_user(user):
     if hasattr(user, 'student'):
         return user.student.classes.all().order_by('-year', '-semester').filter(is_active=True)
     elif hasattr(user, 'professor'):
-        return models.CourseClass.objects.filter(teacher=user.professor).order_by('-year', '-semester')
+        return models.CourseClass.objects.filter(professor=user.professor).order_by('-year', '-semester')
     else:
         return models.CourseClass.objects.none()
 
 
-def get_course_class_questions(course_class):
+def get_questions_for_course_class(course_class):
     questions = models.Question.objects.none()
     lists = models.ListSchedule.objects.filter(course_class=course_class)
     for lst in lists:
@@ -19,7 +19,7 @@ def get_course_class_questions(course_class):
     return questions
 
 
-def get_student_question_status(student, question):
+def get_question_status_for_student(student, question):
     submission = models.Submission.objects.filter(student=student, question=question)
     if submission.exists():
         return submission.latest('judged_at').get_result_display()
