@@ -1,6 +1,8 @@
 {% extends "judge/base.html" %}
 
-{% block nav_list %}<a href="#" class="list-group-item list-group-item-action active">Listas</a>{% endblock %}
+{% block nav_list %}
+  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
 
 {% block content %}
 
@@ -10,9 +12,9 @@
 
   <h2 class="mb-5">Detalhes da Lista</h2>
   <div class="container mt-5">
-    <p><strong>Nome:</strong>{{ object.name }}</p>
-    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:s' }}</p>
-    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:s' }}</p>
+    <p><strong>Nome:</strong> {{ object.name }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:m' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:m' }}</p>
   </div>
   <div class="table-responsive">
     <table class="table table-hover">
@@ -21,7 +23,11 @@
       <tr>
         <th>Nome da questão</th>
         <th>Assunto da questão</th>
+        {% if user.student %}
         <th>Status</th>
+        {% else %}
+        <th>Conclusões</th>
+        {% endif %}
       </tr>
       </thead>
 

@@ -24,9 +24,10 @@ class HomeView(TemplateView):
 
         # CHART
         data['count_concluded'] = helpers.get_list_schedule_conclusions(lists, user)
-        data['count_pending'] = data['count_lists'] - data['count_concluded']
+        data['count_pending'] = data['count_lists'] - data['count_concluded'] # TODO professor
 
         submissions_results = helpers.get_submissions_results_for_user(user)
+        print(submissions_results)
         data['result_labels'] = []
         data['result_values'] = []
         data['count_submissions'] = 0
@@ -63,16 +64,16 @@ class ScheduleDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        user = self.request.user
+        questions = data['object'].question_list.questions.all()
+        #TODO add concluded and course_class
 
-        if hasattr(self.request.user, 'student'):
-            data['object'].concluded = helpers.student_has_concluded_list_schedule(self.request.user.student,
-                                                                                   data['object'])
-            questions = []
-            for question in data['object'].question_list.questions.all():
-                question.result = helpers.get_question_status_for_student(self.request.user.student, question)
-                questions.append(question)
+        question_conclusions = []
+        for question in questions:
+            question.result = helpers.get_question_status_for_user(user, question)
+            question_conclusions.append(question)
 
-            data['questions'] = questions
+        data['questions'] = question_conclusions
 
         return data
 

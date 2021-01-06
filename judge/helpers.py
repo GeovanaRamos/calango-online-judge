@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 from judge import models
 
@@ -22,7 +22,7 @@ def get_list_schedules_for_user(user):
     elif hasattr(user, 'professor'):
         # show list of all of the professor's active classes
         classes = get_professor_classes(user.professor)
-        return models.ListSchedule.objects.filter(course_class__in=classes)
+        return models.ListSchedule.objects.filter(course_class__in=classes).distinct()
     elif user.is_superuser:
         return models.ListSchedule.objects.all()
     else:
@@ -32,7 +32,7 @@ def get_list_schedules_for_user(user):
 def student_has_concluded_list_schedule(student, list_schedule):
     questions = list_schedule.question_list.questions
     submissions = models.Submission.objects.filter(
-        student=student, question__in=questions.all(), result=models.Submission.Results.ACCEPTED)
+        student=student, question__in=questions.all(), result=models.Submission.Results.ACCEPTED).distinct()
     return submissions.count() >= questions.count()
 
 
@@ -45,7 +45,7 @@ def get_list_schedule_conclusions(list_schedules, user):
                 conclusions += 1
         return conclusions
     elif hasattr(user, 'professor') or user.is_superuser:
-        # show conclusions of the professor's active classes
+        # show students' conclusions of the professor's active classes
         for ls in list_schedules:
             students = ls.course_class.students.all()
             for student in students:
@@ -58,28 +58,41 @@ def get_list_schedule_conclusions(list_schedules, user):
 
 def get_questions_for_list_schedules(list_schedules):
     return models.Question.objects.filter(
-        lists__schedules__in=list_schedules).count()
+        lists__schedules__in=list_schedules).distinct().count()
 
 
 def get_submissions_results_for_user(user):
-    submissions = models.Submission.objects.none()
 
     if hasattr(user, 'student'):
         # show submissions of student in the lists of the active class
         submissions = models.Submission.objects.filter(student=user.student)
-        return submissions.values('result').annotate(count=Count('result'))
+        return submissions.values('result').annotate(count=Count('pk', distinct=True))
     elif hasattr(user, 'professor') or user.is_superuser:
         # show submissions of the professor's active classes
         classes = get_professor_classes(user.professor)
-        submissions = models.Submission.objects.filter(student__classes__in=classes)
-        return submissions.values('result').annotate(count=Count('result'))
+        submissions = models.Submission.objects.filter(student__classes__in=classes).distinct()
+        return submissions.values('result').annotate(count=Count('pk', distinct=True))
     else:
         return 0
 
 
-def get_question_status_for_student(student, question):
-    submission = models.Submission.objects.filter(student=student, question=question)
-    if submission.exists():
-        return submission.latest('judged_at').get_result_display()
+def get_question_status_for_user(user, question):
+    if hasattr(user, 'student'):
+        # returns the result of the submission
+        submission = models.Submission.objects.filter(student=user.student, question=question)
+        if submission.exists():
+            return submission.latest('judged_at').get_result_display()
+        else:
+            return "Sem Submissão"
+    elif hasattr(user, 'professor'):
+        # returns the count of accepted submissions of the class
+        classes = get_professor_classes(user.professor)
+        submissions = models.Submission.objects.filter(
+            student__classes__in=classes,
+            result=models.Submission.Results.ACCEPTED,
+            question=question,
+        ).distinct()
+        return submissions.count()
     else:
-        return "Sem Submissão"
+        # returns all submissions for question
+        return models.Submission.objects.filter(question=question).count()
