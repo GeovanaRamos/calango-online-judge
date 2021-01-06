@@ -3,16 +3,11 @@ from django.db import models
 from accounts.models import User, Professor, Student
 
 
-class StrAsModelName(models.Model):
-    name = models.CharField(verbose_name='Nome', max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
-class CourseClass(StrAsModelName):
-    year = models.IntegerField(verbose_name='Ano')
-    semester = models.IntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 2)])
+class CourseClass(models.Model):
+    name = models.CharField(verbose_name='Nome', max_length=50,
+                            choices=[('APC', 'Algoritmos e Programação para Computadores')])
+    year = models.PositiveSmallIntegerField(verbose_name='Ano')
+    semester = models.PositiveSmallIntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 2)])
     professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=models.RESTRICT,
                                   related_name='classes')
     is_active = models.BooleanField(verbose_name='Ativa?', default=True)
@@ -21,20 +16,31 @@ class CourseClass(StrAsModelName):
         verbose_name = 'Turma'
         verbose_name_plural = 'Turmas'
 
+    @property
+    def acronym(self):
+        return "".join(e[0] for e in self.name.split())
 
-class Question(StrAsModelName):
+    def __str__(self):
+        return self.acronym + ' - ' + str(self.year) + '/' + str(self.semester)
+
+
+class Question(models.Model):
     class Subjects(models.TextChoices):
         SEQ = 'SEQ', "Estruturas Sequenciais e Condicionais"
         MOD = 'MOD', "Modularização"
         COND = 'COND', "Estruturas Condionais e de Repetição"
         VET = 'VET', "Vetores"
 
+    name = models.CharField(verbose_name='Nome', max_length=35)
     description = models.TextField(verbose_name='Enunciado')
-    subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=60)
+    subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=40)
 
     class Meta:
         verbose_name = 'Questão'
         verbose_name_plural = 'Questões'
+
+    def __str__(self):
+        return self.name
 
 
 class TestCase(models.Model):
@@ -52,7 +58,8 @@ class TestCase(models.Model):
         return self.question.name + '-Saída:' + self.output
 
 
-class QuestionList(StrAsModelName):
+class QuestionList(models.Model):
+    name = models.CharField(verbose_name='Nome', max_length=50)
     questions = models.ManyToManyField(Question, verbose_name='Questões', related_name='lists')
 
     class Meta:
@@ -60,7 +67,8 @@ class QuestionList(StrAsModelName):
         verbose_name_plural = 'Listas de Exercicíos'
 
 
-class ListSchedule(StrAsModelName):
+class ListSchedule(models.Model):
+    name = models.CharField(verbose_name='Nome', max_length=40)
     start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
     due_date = models.DateTimeField(verbose_name="Data de Término", auto_now=False, auto_now_add=False)
     course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=models.RESTRICT,
