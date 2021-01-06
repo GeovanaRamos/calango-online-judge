@@ -57,12 +57,8 @@ def get_list_schedule_conclusions(list_schedules, user):
 
 
 def get_questions_for_list_schedules(list_schedules):
-    # questions = models.Question.objects.none()
-    #
-    # for lst in list_schedules:
-    #     questions = questions | lst.question_list.questions.all()
-
-    return models.Question.objects.filter(lists__schedules__in=list_schedules).count()
+    return models.Question.objects.filter(
+        lists__schedules__in=list_schedules).count()
 
 
 def get_submissions_results_for_user(user):

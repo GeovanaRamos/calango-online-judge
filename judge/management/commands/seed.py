@@ -12,14 +12,16 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **kwargs):
 
-        admin = accounts.models.User.objects.create_superuser('geovana@email.com', 'admin', full_name='geovana ramos')
-        accounts.models.Student.objects.create(user=admin, registration_number='160122181')
+        admin = accounts.models.User.objects.create_superuser('geovana@email.com', 'admin', full_name='Geovana ramos')
+        accounts.models.Student.objects.create(user=admin, registration_number=160122181)
+        prof = accounts.models.User.objects.create_superuser('professor@email.com', 'admin', full_name='Geovana ramos')
+        prof = accounts.models.Professor.objects.create(user=prof)
 
         classes = []
         for i in range(3):
             user = mixer.blend(accounts.models.User)
             professor = mixer.blend(accounts.models.Professor, user=user)
-            classes.append(mixer.blend(models.CourseClass, professor=professor))
+            classes.append(mixer.blend(models.CourseClass, professor=prof))
             user = mixer.blend(accounts.models.User)
             student = mixer.blend(accounts.models.Student, user=user)
             student.classes.add(classes[i])

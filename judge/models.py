@@ -16,12 +16,8 @@ class CourseClass(models.Model):
         verbose_name = 'Turma'
         verbose_name_plural = 'Turmas'
 
-    @property
-    def acronym(self):
-        return "".join(e[0] for e in self.name.split())
-
     def __str__(self):
-        return self.acronym + ' - ' + str(self.year) + '/' + str(self.semester)
+        return self.name + ' - ' + str(self.year) + '/' + str(self.semester)
 
 
 class Question(models.Model):

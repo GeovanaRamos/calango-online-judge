@@ -23,9 +23,8 @@ class HomeView(TemplateView):
         data['count_questions'] = helpers.get_questions_for_list_schedules(lists)
 
         # CHART
-        if data['count_lists'] > 0:
-            data['count_concluded'] = helpers.get_list_schedule_conclusions(lists, user)
-            data['count_pending'] = data['count_lists'] - data['count_concluded']
+        data['count_concluded'] = helpers.get_list_schedule_conclusions(lists, user)
+        data['count_pending'] = data['count_lists'] - data['count_concluded']
 
         submissions_results = helpers.get_submissions_results_for_user(user)
         data['result_labels'] = []
@@ -49,10 +48,11 @@ class ScheduleListView(ListView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        user = self.request.user
 
-        if hasattr(self.request.user, 'student'):
-            for schedule_list in data['object_list']:
-                schedule_list.concluded = schedule_list.student_has_concluded(self.request.user.student)
+        if hasattr(user, 'student'):
+            for ls in data['object_list']:
+                ls.concluded = helpers.student_has_concluded_list_schedule(user.student, ls)
 
         return data
 
