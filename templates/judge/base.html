@@ -37,6 +37,14 @@
       {% block nav_list %}
         <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
       {% endblock %}
+      {% if user.professor %}
+        {% block nav_quest %}
+          <a href="#" class="list-group-item list-group-item-action">Questões</a>
+        {% endblock %}
+        {% block nav_class %}
+          <a href="#" class="list-group-item list-group-item-action">Turmas</a>
+        {% endblock %}
+      {% endif %}
       {% block nav_sub %}
         <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
       {% endblock %}

@@ -168,13 +168,13 @@
         <div class="col-md-6">
           <div class="chart-container">
             <h5 class="mb-4">Listas</h5>
-            <canvas id="listsChart" height="180"></canvas>
+            <canvas id="resultsChart" height="180"></canvas>
           </div>
         </div>
         <div class="col-md-6">
           <div class="chart-container">
             <h5 class="mb-4">Resultados</h5>
-            <canvas id="resultsChart" height="180"></canvas>
+            <canvas id="listsChart" height="180"></canvas>
           </div>
         </div>
       </div>
@@ -223,6 +223,11 @@
           }
       });
       {#    ##################}
+      let lists_labels;
+      if (concluded == 0 && pending == 0)
+          lists_values = []
+      else
+          lists_labels = ['Concluído', 'Pendente']
       const ctx2 = document.getElementById('resultsChart');
       data = {
           datasets: [{
@@ -232,15 +237,8 @@
                   '#d98880',
               ],
           }],
-
-          // These labels appear in the legend and in the tooltips when hovering different arcs
-          labels: [
-              'Concluído',
-              'Pendente',
-          ],
-
+          labels: lists_labels
       };
-
       const resultsChart = new Chart(ctx2, {
           type: 'pie',
           data: data,

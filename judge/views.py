@@ -14,25 +14,30 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        if hasattr(self.request.user, 'student'):
-            lists = models.ListSchedule.objects.filter(
-                course_class__in=helpers.get_classes_for_user(self.request.user))
-            data['count_lists'] = lists.count()
-            data['count_concluded'] = sum(
-                1 for lt in lists if helpers.student_has_concluded_list_schedule(self.request.user.student, lt))
-            data['count_pending'] = data['count_lists'] - data['count_concluded']
-            data['count_questions'] = helpers.get_questions_for_course_class(
-                helpers.get_classes_for_user(self.request.user).first()).count()
-            data['count_submissions'] = models.Submission.objects.filter(student=self.request.user.student).count()
-            results = models.Submission.objects.values('result').annotate(count=Count('result'))
-            data['result_labels'] = []
-            data['result_values'] = []
-            for counting_obj in results:
-                if counting_obj['result']:
-                    data['result_labels'].append(models.Submission.Results(counting_obj['result']).label)
-                    data['result_values'].append(counting_obj['count'])
 
-            return data
+        user = self.request.user
+        lists = helpers.get_list_schedules_for_user(user)
+
+        # BOX
+        data['count_lists'] = lists.count()
+        data['count_questions'] = helpers.get_questions_for_list_schedules(lists)
+
+        # CHART
+        if data['count_lists'] > 0:
+            data['count_concluded'] = helpers.get_list_schedule_conclusions(lists, user)
+            data['count_pending'] = data['count_lists'] - data['count_concluded']
+
+        submissions_results = helpers.get_submissions_results_for_user(user)
+        data['result_labels'] = []
+        data['result_values'] = []
+        data['count_submissions'] = 0
+        for counting_obj in submissions_results:
+            if counting_obj['result']:
+                data['result_labels'].append(models.Submission.Results(counting_obj['result']).label)
+                data['result_values'].append(counting_obj['count'])
+                data['count_submissions'] += counting_obj['count']
+
+        return data
 
 
 class ScheduleListView(ListView):
@@ -40,8 +45,7 @@ class ScheduleListView(ListView):
     template_name = 'judge/schedule_list.html'
 
     def get_queryset(self):
-        return models.ListSchedule.objects.filter(
-            course_class__in=helpers.get_classes_for_user(self.request.user))
+        return helpers.get_list_schedules_for_user(self.request.user)
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
