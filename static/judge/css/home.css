@@ -1,0 +1,95 @@
+/* Start statistics */
+.statistics {
+    margin-top: 25px;
+}
+
+.statistics .box {
+    background-color: white;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+.statistics .box > i {
+    float: left;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 22px;
+    color: white;
+}
+
+.statistics .box .info {
+    float: left;
+    width: auto;
+    margin-left: 10px;
+}
+
+.statistics .box .info h3 {
+    margin: 5px 0 5px;
+    display: inline-block;
+}
+
+
+/* End statistics */
+/* Start charts */
+.charts {
+    margin-top: 25px;
+}
+
+.charts .chart-container {
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;;
+}
+
+.charts .chart-container h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.statis .box {
+    position: relative;
+    padding: 15px;
+    overflow: hidden;
+    border-radius: 3px;
+    margin-bottom: 25px;
+}
+
+.statis .box h3:after {
+    content: "";
+    height: 2px;
+    width: 70%;
+    margin: auto;
+    display: block;
+    margin-top: 10px;
+}
+
+.statis .box i {
+    position: absolute;
+    height: 70px;
+    width: 70px;
+    font-size: 22px;
+    padding: 15px;
+    top: -25px;
+    left: -25px;
+    line-height: 60px;
+    text-align: right;
+    border-radius: 50%;
+}
+
+.chrt3 .chart-container {
+    height: 350px;
+    padding: 15px;
+    margin-top: 25px;
+}
+
+.chrt3 .box {
+    padding: 15px;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}

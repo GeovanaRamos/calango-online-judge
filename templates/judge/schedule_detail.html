@@ -6,9 +6,9 @@
 
 {% block content %}
 
-  {# {% if user.professor %}#}
-{#      <a class="btn btn-primary float-right" style="width: 150px" href="#">Editar lista</a>#}
-  {# {% endif %}#}
+   {% if user.professor %}
+      <a class="btn btn-primary float-right" style="width: 150px" href="#">Editar lista</a>
+   {% endif %}
 
   <h2 class="mb-5">Detalhes da Lista</h2>
   <div class="container mt-5">

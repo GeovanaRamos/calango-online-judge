@@ -102,6 +102,7 @@ a:hover {
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);
+    border-radius: 30px;
 }
 
 .btn-primary:hover {

@@ -1,8 +1,9 @@
 {% extends "judge/base.html" %}
 {% load static %}
 
-
-{% block nav_sub %}<a href="#" class="list-group-item list-group-item-action active">Submissões</a>{% endblock %}
+{% block nav_sub %}
+  <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action active">Submissões</a>
+{% endblock %}
 
 {% block css %}
    <link rel="stylesheet" type="text/css" href="{% static 'judge/css/submission.css' %}">
