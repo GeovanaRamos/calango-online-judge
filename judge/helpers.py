@@ -18,11 +18,12 @@ def get_list_schedules_for_user(user):
     if hasattr(user, 'student'):
         # show list of one of the student's active class
         current_class = get_student_active_class(user.student)
-        return models.ListSchedule.objects.filter(course_class=current_class)
+        return models.ListSchedule.objects.filter(course_class=current_class).order_by('-start_date', '-due_date')
     elif hasattr(user, 'professor'):
         # show list of all of the professor's active classes
         classes = get_professor_classes(user.professor)
-        return models.ListSchedule.objects.filter(course_class__in=classes).distinct()
+        return models.ListSchedule.objects.filter(course_class__in=classes).distinct().order_by('-start_date',
+                                                                                                '-due_date')
     elif user.is_superuser:
         return models.ListSchedule.objects.all()
     else:
@@ -62,7 +63,6 @@ def get_questions_for_list_schedules(list_schedules):
 
 
 def get_submissions_results_for_user(user):
-
     if hasattr(user, 'student'):
         # show submissions of student in the lists of the active class
         submissions = models.Submission.objects.filter(student=user.student)
@@ -96,3 +96,22 @@ def get_question_status_for_user(user, question):
     else:
         # returns all submissions for question
         return models.Submission.objects.filter(question=question).count()
+
+
+def get_submissions_for_user(user):
+    if hasattr(user, 'student'):
+        # returns student's submission
+        course_class = get_student_active_class(user.student)
+        return models.Submission.objects.filter(
+            student=user.student,
+            student__classes=course_class,
+        ).distinct().order_by('-submitted_at')
+    elif hasattr(user, 'professor'):
+        # returns the count of submissions of the professor's classes
+        classes = get_professor_classes(user.professor)
+        return models.Submission.objects.filter(
+            student__classes__in=classes,
+        ).distinct().order_by('-submitted_at')
+    else:
+        # returns all submissions
+        return models.Submission.objects.none()

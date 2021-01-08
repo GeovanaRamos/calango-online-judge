@@ -105,7 +105,7 @@ class SubmissionListView(ListView):
     template_name = 'judge/submission_list.html'
 
     def get_queryset(self):
-        return models.Submission.objects.filter(student=self.request.user.student).order_by('-submitted_at')
+        return helpers.get_submissions_for_user(self.request.user)
 
 
 class SubmissionDetailView(DetailView):
