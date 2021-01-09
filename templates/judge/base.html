@@ -25,29 +25,38 @@
 
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
-    {#    <div class="sidebar-heading">Start Bootstrap</div>#}
+
     <span class="sidebar-heading logo m-3">
           <img src="{% static 'core/images/calango.png' %}" width="50px" class="float-left">
           COJ <span style="color: #FF7C5D">.</span>
     </span>
+
     <div class="list-group list-group-flush sticky-top position-fixed">
+
       {% block nav_home %}
         <a href="{% url 'home' %}" class="list-group-item list-group-item-action">Início</a>
       {% endblock %}
+
       {% block nav_list %}
         <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
       {% endblock %}
+
       {% if user.professor %}
+
         {% block nav_quest %}
-          <a href="#" class="list-group-item list-group-item-action">Questões</a>
+          <a href="{% url 'question_list' %}" class="list-group-item list-group-item-action">Questões</a>
         {% endblock %}
+
         {% block nav_class %}
-          <a href="#" class="list-group-item list-group-item-action">Turmas</a>
+          <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action">Turmas</a>
         {% endblock %}
+
       {% endif %}
+
       {% block nav_sub %}
         <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
       {% endblock %}
+
       <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
     </div>
   </div>

@@ -100,18 +100,29 @@ def get_question_status_for_user(user, question):
 
 def get_submissions_for_user(user):
     if hasattr(user, 'student'):
-        # returns student's submission
+        # returns student's submissions
         course_class = get_student_active_class(user.student)
         return models.Submission.objects.filter(
             student=user.student,
             student__classes=course_class,
         ).distinct().order_by('-submitted_at')
     elif hasattr(user, 'professor'):
-        # returns the count of submissions of the professor's classes
+        # returns the submissions of the professor's classes
         classes = get_professor_classes(user.professor)
         return models.Submission.objects.filter(
             student__classes__in=classes,
         ).distinct().order_by('-submitted_at')
+    else:
+        # returns first 20 submissions
+        return models.Submission.objects.all()[:20]
+
+
+def get_questions_for_user(user):
+    if hasattr(user, 'professor'):
+        classes = get_professor_classes(user.professor)
+        return models.Question.objects.filter(
+            lists__schedules__course_class__in=classes,
+        ).distinct()
     else:
         # returns all submissions
         return models.Submission.objects.none()

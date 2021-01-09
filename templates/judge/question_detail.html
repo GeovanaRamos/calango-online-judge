@@ -6,10 +6,6 @@
 
 {% block content %}
 
-   {% if user.professor %}
-     <a class="btn btn-primary float-right mb-5" style="width: 150px" href="#">Editar Questão</a>
-   {% endif %}
-
   <div class="container mt-5">
 
     <div class="card bg-light text-center" style="width: 100%;">
@@ -38,7 +34,12 @@
       </div>
 
       <div class="card-footer">
-        <a class="btn btn-primary" style="width: 150px" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+        {% if user.student %}
+          <a class="btn btn-primary mr-3" style="width: 180px" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+          <a class="btn btn-primary" style="width: 180px" href="#">Ver submissões</a>
+        {% else %}
+          <a class="btn btn-primary" style="width: 180px" href="#">Editar Questão</a>
+        {% endif %}
       </div>
 
 

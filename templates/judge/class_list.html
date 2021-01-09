@@ -1,0 +1,56 @@
+{% extends "judge/base.html" %}
+
+{% block nav_class %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block css %}
+  <style>
+      .box {
+          background-color: white;
+          padding: 15px;
+          overflow: hidden;
+          box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+          max-width: 450px;
+          min-width: 300px;
+
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+  {% if user.professor %}
+    <a class="btn btn-primary float-right" style="width: 150px" href="#">Criar turma</a>
+  {% endif %}
+
+  <h2 class="mb-5">Turmas</h2>
+
+  <div class="row">
+    {% for object in object_list %}
+      <div class="col d-flex justify-content-center mb-3">
+      <div class="box text-center">
+        <h5>{{ object }}</h5>
+        <p>{{  object.students.all|length }} alunos </p>
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a title="Ver alunos" href="">
+              <i class="fa fa-graduation-cap fa-lg mr-2"></i>
+            </a>
+            <a href="#" title="Adicionar alunos">
+              <i class="fa fa-user-plus fa-lg mr-2"></i>
+            </a>
+            <a href="#" title="Remover alunos">
+              <i class="fa fa-user-times fa-lg mr-2"></i>
+            </a>
+            <a href="#" title="Desativar turma">
+              <i class="fa fa-trash fa-lg mr-2"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      </div>
+    {% endfor %}
+
+  </div>
+
+{% endblock content %}

@@ -27,7 +27,6 @@ class HomeView(TemplateView):
         data['count_pending'] = data['count_lists'] - data['count_concluded'] # TODO professor
 
         submissions_results = helpers.get_submissions_results_for_user(user)
-        print(submissions_results)
         data['result_labels'] = []
         data['result_values'] = []
         data['count_submissions'] = 0
@@ -64,13 +63,12 @@ class ScheduleDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        user = self.request.user
         questions = data['object'].question_list.questions.all()
         #TODO add concluded and course_class
 
         question_conclusions = []
         for question in questions:
-            question.result = helpers.get_question_status_for_user(user, question)
+            question.result = helpers.get_question_status_for_user( self.request.user, question)
             question_conclusions.append(question)
 
         data['questions'] = question_conclusions
@@ -111,3 +109,16 @@ class SubmissionListView(ListView):
 class SubmissionDetailView(DetailView):
     model = models.Submission
     template_name = 'judge/submission_detail.html'
+
+
+class ClassListView(ListView):
+    model = models.CourseClass
+    template_name = 'judge/class_list.html'
+
+
+class QuestionListView(ListView):
+    model = models.Question
+    template_name = 'judge/question_list.html'
+
+    def get_queryset(self):
+        return helpers.get_questions_for_user(self.request.user)

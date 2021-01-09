@@ -1,0 +1,33 @@
+{% extends "judge/base.html" %}
+
+{% block nav_quest %}
+ <a href="{% url 'question_list' %}" class="list-group-item list-group-item-action active">Questões</a>
+{% endblock %}
+
+{% block content %}
+
+  <h2 class="mb-5">Questões</h2>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Nome da questão</th>
+        <th>Assunto da questão</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for question in object_list %}
+        <tr>
+          <td><a href="{% url 'question_detail' question.pk %}">{{ question.name }}</a></td>
+          <td>{{ question.get_subject_display }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+{% endblock content %}
