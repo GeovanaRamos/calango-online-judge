@@ -12,7 +12,7 @@ urlpatterns = [
     path('classes/', views.ClassListView.as_view(), name='class_list'),
     path('questions/', views.QuestionListView.as_view(), name='question_list'),
     path('lists/create/', views.ListCreateView.as_view(), name='list_create'),
-    path('schedules/create/', views.ScheduleCreateView.as_view(), name='schedule_create'),
+    path('schedules/create', views.ScheduleCreateView.as_view(), name='schedule_create'),
     path('schedules/update/<pk>/', views.ScheduleUpdateView.as_view(), name='schedule_update'),
     path('schedules/delete/<pk>/', views.ScheduleDeleteView.as_view(), name='schedule_delete'),
 ]
