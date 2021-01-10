@@ -62,6 +62,9 @@ class QuestionList(models.Model):
         verbose_name = 'Lista de Exercícios'
         verbose_name_plural = 'Listas de Exercicíos'
 
+    def __str__(self):
+        return self.name
+
 
 class ListSchedule(models.Model):
     name = models.CharField(verbose_name='Nome', max_length=40)
