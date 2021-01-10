@@ -7,9 +7,9 @@
 {% block content %}
 
   {% if user.professor %}
-    <a class="ml-3 btn btn-danger float-right" style="width: 200px" href="{% url 'schedule_delete' object.pk %}">
+    <a class="ml-3 btn btn-danger float-right" href="{% url 'schedule_delete' object.pk %}">
       Deletar agendamento</a>
-    <a class="mr-3 btn btn-primary float-right" style="width: 200px" href="{% url 'schedule_update' object.pk %}">
+    <a class="mr-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
       Editar agendamento</a>
   {% endif %}
 

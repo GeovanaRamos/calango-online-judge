@@ -7,9 +7,9 @@
 {% block content %}
 
    {% if user.professor %}
-      <a class="ml-3 btn btn-primary float-right" style="width: 150px" href="{% url 'list_create' %}">
+      <a class="ml-3 btn btn-primary float-right" href="{% url 'list_create' %}">
         Criar lista</a>
-      <a class="mr-3 btn btn-primary float-right" style="width: 150px" href="{% url 'schedule_create' %}">
+      <a class="mr-3 btn btn-primary float-right" href="{% url 'schedule_create' %}">
         Agendar lista</a>
    {% endif %}
 

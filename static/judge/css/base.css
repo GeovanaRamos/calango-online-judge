@@ -99,10 +99,14 @@ a:hover {
     color: #b5563f;
 }
 
+.btn {
+    border-radius: 30px;
+    min-width: 180px;
+}
+
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);
-    border-radius: 30px;
 }
 
 .btn-primary:hover {

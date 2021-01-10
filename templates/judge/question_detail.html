@@ -8,7 +8,7 @@
 
   <div class="container mt-5">
 
-    <div class="card bg-light text-center" style="width: 100%;">
+    <div class="card bg-light text-center w-100">
       <div class="card-body">
         <h5 class="card-title">{{ object.name }}</h5>
         <p class="card-text">{{ object.description }}</p>
@@ -35,10 +35,10 @@
 
       <div class="card-footer">
         {% if user.student %}
-          <a class="btn btn-primary mr-3" style="width: 180px" href="{% url 'submission_create' object.pk %}">Submeter código</a>
-          <a class="btn btn-primary" style="width: 180px" href="#">Ver submissões</a>
+          <a class="btn btn-primary mr-3" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+          <a class="btn btn-primary" href="#">Ver submissões</a>
         {% else %}
-          <a class="btn btn-primary" style="width: 180px" href="#">Editar Questão</a>
+          <a class="btn btn-primary" href="#">Editar Questão</a>
         {% endif %}
       </div>
 
