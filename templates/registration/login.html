@@ -30,7 +30,9 @@
         </span>
 
         {% if form.errors %}
-          {{ form.errors }}
+          <p class="text-center text-danger mb-2">
+            Não foi possível validar suas credenciais. Tente novamente.
+          </p>
         {% endif %}
         <div class="wrap-input100 validate-input m-b-23" data-validate="O email é obrigatório">
           <span class="label-input100">Email</span>
