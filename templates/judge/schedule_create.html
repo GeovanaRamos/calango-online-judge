@@ -1,0 +1,32 @@
+{% extends "judge/base.html" %}
+
+{% block nav_list %}
+  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <form method="post" >
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary" style="width: 150px">Salvar</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block js %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+  <script>
+  $(function () {
+    $("#id_start_date").datetimepicker({
+      format: 'd/m/Y H:i',
+    });
+    $("#id_due_date").datetimepicker({
+      format: 'd/m/Y H:i',
+    });
+  });
+</script>
+{% endblock %}

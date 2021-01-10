@@ -9,3 +9,16 @@ class SubmissionForm(forms.ModelForm):
         widgets = {
             'code': forms.Textarea(attrs={'rows': 20}),
         }
+
+
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model = models.ListSchedule
+        fields = '__all__'
+
+
+class ListForm(forms.ModelForm):
+    class Meta:
+        model = models.QuestionList
+        fields = '__all__'
+

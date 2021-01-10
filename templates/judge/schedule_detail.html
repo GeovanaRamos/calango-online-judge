@@ -6,9 +6,12 @@
 
 {% block content %}
 
-   {% if user.professor %}
-      <a class="btn btn-primary float-right" style="width: 150px" href="#">Editar lista</a>
-   {% endif %}
+  {% if user.professor %}
+    <a class="ml-3 btn btn-danger float-right" style="width: 200px" href="{% url 'schedule_delete' object.pk %}">
+      Deletar agendamento</a>
+    <a class="mr-3 btn btn-primary float-right" style="width: 200px" href="{% url 'schedule_update' object.pk %}">
+      Editar agendamento</a>
+  {% endif %}
 
   <h2 class="mb-5">Detalhes da Lista</h2>
   <div class="container mt-5">
@@ -24,9 +27,9 @@
         <th>Nome da questão</th>
         <th>Assunto da questão</th>
         {% if user.student %}
-        <th>Status</th>
+          <th>Status</th>
         {% else %}
-        <th>Conclusões</th>
+          <th>Conclusões</th>
         {% endif %}
       </tr>
       </thead>

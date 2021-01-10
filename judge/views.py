@@ -1,7 +1,6 @@
-from django.db.models import Count
 from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.generic.base import TemplateView
 from django_q.tasks import async_task
 
@@ -68,7 +67,7 @@ class ScheduleDetailView(DetailView):
 
         question_conclusions = []
         for question in questions:
-            question.result = helpers.get_question_status_for_user( self.request.user, question)
+            question.result = helpers.get_question_status_for_user(self.request.user, question)
             question_conclusions.append(question)
 
         data['questions'] = question_conclusions
@@ -85,6 +84,7 @@ class SubmissionCreateView(CreateView):
     model = models.Submission
     template_name = 'judge/submission_create.html'
     form_class = forms.SubmissionForm
+    success_url = reverse_lazy('submission_list')
 
     def form_valid(self, form):
         form.instance.question = models.Question.objects.get(pk=self.kwargs['question_pk'])
@@ -93,9 +93,6 @@ class SubmissionCreateView(CreateView):
         self.object = form.save()
         async_task(submit_to_judge_service, form.instance.code, self.kwargs['question_pk'], self.object)
         return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('question_detail', kwargs={'pk': self.kwargs['question_pk']})
 
 
 class SubmissionListView(ListView):
@@ -122,3 +119,32 @@ class QuestionListView(ListView):
 
     def get_queryset(self):
         return helpers.get_questions_for_user(self.request.user)
+
+
+class ListCreateView(CreateView):
+    model = models.QuestionList
+    form_class = forms.ListForm
+    template_name = 'judge/list_create.html'
+    success_url = reverse_lazy('schedule_list')
+
+
+class ScheduleCreateView(CreateView):
+    model = models.ListSchedule
+    form_class = forms.ScheduleForm
+    template_name = 'judge/schedule_create.html'
+    success_url = reverse_lazy('schedule_list')
+
+
+class ScheduleUpdateView(UpdateView):
+    model = models.ListSchedule
+    form_class = forms.ScheduleForm
+    template_name = 'judge/schedule_create.html'
+
+    def get_success_url(self):
+        return reverse('schedule_detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class ScheduleDeleteView(DeleteView):
+    model = models.ListSchedule
+    template_name = 'judge/schedule_delete.html'
+    success_url = reverse_lazy('schedule_list')

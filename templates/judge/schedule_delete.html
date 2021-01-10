@@ -1,0 +1,21 @@
+{% extends "judge/base.html" %}
+
+{% block nav_list %}
+  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
+
+{% block content %}
+  <h2>Deletar Agendamento de Lista</h2>
+
+  <p>Você tem certeza que deseja deletar esse agendamento de lista?</p>
+
+  <form action="" method="post">
+    {% csrf_token %}
+
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'schedule_detail' object.pk %}" class="mr-3 btn btn-primary" style="width: 150px">
+        Cancelar</a>
+      <button class="ml-3 btn btn-danger" type="submit" style="width: 150px">Deletar</button>
+    </div>
+  </form>
+{% endblock %}
