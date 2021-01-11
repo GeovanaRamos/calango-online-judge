@@ -1,0 +1,17 @@
+{% extends "judge/base.html" %}
+
+{% block nav_class %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <form method="post" >
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+  </form>
+{% endblock %}

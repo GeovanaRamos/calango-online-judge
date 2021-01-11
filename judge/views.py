@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.views.generic.base import TemplateView
 from django_q.tasks import async_task
 
@@ -157,3 +157,33 @@ class ClassCreateView(CreateView):
     template_name = 'judge/class_create.html'
     form_class = forms.ClassForm
     success_url = reverse_lazy('class_list')
+
+    def form_valid(self, form):
+        form.instance.professor = self.request.user.professor
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class StudentFormView(FormView):
+    form_class = forms.StudentForm
+    template_name = 'judge/student_form.html'
+    success_url = reverse_lazy('class_list')
+
+    def form_valid(self, form):
+        for s in form.cleaned_data['students']:
+            print(s)
+            user, was_created = models.User.objects.get_or_create(
+                email=s[0],
+                full_name=s[1],
+            )
+            user.set_password(str(s[2]) + s[1].split()[-1])
+            user.save()
+
+            student, was_created = models.Student.objects.get_or_create(
+                user=user,
+                registration_number=s[2],
+            )
+            student.classes.add(models.CourseClass.objects.get(pk=self.kwargs['class_pk']))
+            student.save()
+
+        return HttpResponseRedirect(self.get_success_url())
