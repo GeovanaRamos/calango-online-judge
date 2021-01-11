@@ -22,3 +22,8 @@ class ListForm(forms.ModelForm):
         model = models.QuestionList
         fields = '__all__'
 
+
+class ClassForm(forms.ModelForm):
+    class Meta:
+        model = models.CourseClass
+        exclude = ('professor', 'is_active',)

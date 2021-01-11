@@ -79,6 +79,9 @@ class ListSchedule(models.Model):
         verbose_name = 'Agendamento de Lista'
         verbose_name_plural = 'Agendamentos de Listas'
 
+    def __str__(self):
+        return self.name + ' - ' + self.course_class.name
+
 
 class Submission(models.Model):
     class Results(models.TextChoices):

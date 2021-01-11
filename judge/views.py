@@ -150,3 +150,10 @@ class ResultsDetailView(DetailView):
 
         data['students'] = students
         return data
+
+
+class ClassCreateView(CreateView):
+    model = models.CourseClass
+    template_name = 'judge/class_create.html'
+    form_class = forms.ClassForm
+    success_url = reverse_lazy('class_list')
