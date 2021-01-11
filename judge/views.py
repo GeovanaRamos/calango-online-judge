@@ -13,29 +13,8 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-
         user = self.request.user
-        lists = helpers.get_list_schedules_for_user(user)
-
-        # BOX
-        data['count_lists'] = lists.count()
-        data['count_questions'] = helpers.get_questions_for_list_schedules(lists)
-
-        # CHART
-        data['count_concluded'] = helpers.get_list_schedule_conclusions(lists, user)
-        data['count_pending'] = data['count_lists'] - data['count_concluded'] # TODO professor
-
-        submissions_results = helpers.get_submissions_results_for_user(user)
-        data['result_labels'] = []
-        data['result_values'] = []
-        data['count_submissions'] = 0
-        for counting_obj in submissions_results:
-            if counting_obj['result']:
-                data['result_labels'].append(models.Submission.Results(counting_obj['result']).label)
-                data['result_values'].append(counting_obj['count'])
-                data['count_submissions'] += counting_obj['count']
-
-        return data
+        return helpers.get_statistics(data, user)
 
 
 class ScheduleListView(ListView):
