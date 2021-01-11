@@ -33,7 +33,7 @@
         <p>{{  object.students.all|length }} alunos </p>
         <ul class="list-inline">
           <li class="list-inline-item">
-            <a title="Ver alunos" href="">
+            <a title="Ver alunos" href="{% url 'student_list' object.pk %}">
               <i class="fa fa-graduation-cap fa-lg mr-2"></i>
             </a>
             <a href="{% url 'student_form' object.pk %}" title="Adicionar alunos">

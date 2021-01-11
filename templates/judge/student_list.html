@@ -1,0 +1,35 @@
+{% extends "judge/base.html" %}
+
+{% block nav_class %}
+ <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block content %}
+
+  <h2 class="mb-5">Alunos da Turma</h2>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Matrícula</th>
+        <th>Último login</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for student in object_list %}
+        <tr>
+          <td>{{ student.registration_number }}</td>
+          <td>{{ student.user.full_name }}</td>
+          <td>{{ student.user.last_login|default_if_none:"Sem Login" }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+{% endblock content %}

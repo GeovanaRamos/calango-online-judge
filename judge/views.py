@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.base import TemplateView
 from django_q.tasks import async_task
 
+from accounts.models import Student
 from judge import models, forms, helpers
 from judge.tasks import submit_to_judge_service
 
@@ -187,3 +188,12 @@ class StudentFormView(FormView):
             student.save()
 
         return HttpResponseRedirect(self.get_success_url())
+
+
+class StudentListView(ListView):
+    model = Student
+    template_name = 'judge/student_list.html'
+
+    def get_queryset(self):
+        course_class = models.CourseClass.objects.get(pk=self.kwargs['class_pk'])
+        return course_class.students.all()
