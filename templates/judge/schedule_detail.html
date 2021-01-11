@@ -9,8 +9,10 @@
   {% if user.professor %}
     <a class="ml-3 btn btn-danger float-right" href="{% url 'schedule_delete' object.pk %}">
       Deletar agendamento</a>
-    <a class="mr-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
+    <a class="mr-3 ml-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
       Editar agendamento</a>
+    <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}">
+      Ver resultados</a>
   {% endif %}
 
   <h2 class="mb-5">Detalhes da Lista</h2>

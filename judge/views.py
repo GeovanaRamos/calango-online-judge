@@ -148,3 +148,26 @@ class ScheduleDeleteView(DeleteView):
     model = models.ListSchedule
     template_name = 'judge/schedule_delete.html'
     success_url = reverse_lazy('schedule_list')
+
+
+class ResultsDetailView(DetailView):
+    model = models.ListSchedule
+    template_name = 'judge/results_detail.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        students = []
+        for s in data['object'].course_class.students.all():
+            s.questions = data['object'].question_list.questions.all()
+            count, correct = 0, 0
+            for q in s.questions:
+                q.result = helpers.get_question_status_for_user(s.user, q)
+                if q.result == models.Submission.Results.ACCEPTED.label:
+                    correct += 1
+                count += 1
+            s.percentage = correct/count * 100
+            students.append(s)
+
+        data['students'] = students
+        return data

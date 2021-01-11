@@ -1,0 +1,108 @@
+{% extends "judge/base.html" %}
+
+{% block nav_list %}
+  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
+
+{% block css %}
+  <style>
+      .panel-group .panel {
+          border-radius: 0;
+          box-shadow: none;
+          border-color: #EEEEEE;
+      }
+
+      .panel-default > .panel-heading {
+          padding: 0;
+          border-radius: 0;
+          color: #212121;
+          background-color: #FAFAFA;
+          border-color: #EEEEEE;
+      }
+
+      .panel-title {
+          font-size: 14px;
+      }
+
+      .panel-title > a {
+          display: block;
+          padding: 15px;
+          text-decoration: none;
+      }
+
+      .more-less {
+          float: right;
+          color: #212121;
+      }
+
+      .panel-default > .panel-heading + .panel-collapse > .panel-body {
+          border-top-color: #EEEEEE;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <h2 class="mb-5">Resultados da Lista</h2>
+  <div class="container mt-5">
+    <p><strong>Nome:</strong> {{ object.name }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:m' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:m' }}</p>
+  </div>
+
+  <div class="container">
+    {% for student in students %}
+      <div class="wrapper center-block">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading active" role="tab" id="headingOne">
+              <h6 class="panel-title border">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ student.pk }}"
+                   aria-expanded="false" aria-controls="collapseOne" id="accordion-toggle">
+                  <div class="row">
+                    <div class="col">
+                      {{ student.registration_number }}
+                    </div>
+                    <div class="col-6">
+                      {{ student.user.full_name }}
+                    </div>
+                    <div class="col">
+                      {{ student.percentage }}%
+                    </div>
+                  </div>
+                </a>
+              </h6>
+            </div>
+            <div id="collapse-{{ student.pk }}" class="panel-collapse collapse in" role="tabpanel"
+                 aria-labelledby="headingOne">
+              <div class="row panel-body m-2">
+
+                <div class="table-responsive w-100">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th>Nome da questão</th>
+                      <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for question in student.questions %}
+                      <tr>
+                        <td>{{ question.name }}</td>
+                        <td>{{ question.result }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock content %}

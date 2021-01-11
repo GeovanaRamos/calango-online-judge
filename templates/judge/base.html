@@ -49,11 +49,13 @@
           <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action">Turmas</a>
         {% endblock %}
 
-      {% endif %}
+      {% else %}
 
-      {% block nav_sub %}
-        <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
-      {% endblock %}
+        {% block nav_sub %}
+          <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
+        {% endblock %}
+
+      {% endif %}
 
       <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
     </div>
