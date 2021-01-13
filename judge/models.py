@@ -75,7 +75,6 @@ class QuestionList(models.Model):
 
 
 class ListSchedule(models.Model):
-    name = models.CharField(verbose_name='Nome do Agendamento', max_length=40)
     start_date = models.DateTimeField(verbose_name="Data de Início", auto_now=False, auto_now_add=False)
     due_date = models.DateTimeField(verbose_name="Data de Término", auto_now=False, auto_now_add=False)
     course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=RESTRICT, related_name='schedules')

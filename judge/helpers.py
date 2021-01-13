@@ -5,9 +5,9 @@ from judge import models
 
 def get_list_schedules_for_user(user):
     if hasattr(user, 'student'):
-        # show list of one of the student's active class
+        # show list of the student's active class
         current_class = user.student.active_class
-        return models.ListSchedule.objects.filter(course_class=current_class).order_by('-start_date', '-due_date')
+        return models.ListSchedule.objects.filter(course_class=current_class).order_by('-start_date', 'due_date')
     elif hasattr(user, 'professor'):
         # show list of all of the professor's active classes
         classes = user.professor.classes.all()
