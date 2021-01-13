@@ -49,6 +49,21 @@ class Professor(models.Model):
         verbose_name = 'Professor'
         verbose_name_plural = 'Professores'
 
+    @property
+    def classes(self):
+        from judge.models import CourseClass
+        return CourseClass.objects.filter(
+            professor=self,
+        ).all().order_by('-year', '-semester')
+
+    @property
+    def active_classes(self):
+        from judge.models import CourseClass
+        return CourseClass.objects.filter(
+            professor=self,
+            is_active=True,
+        ).all().order_by('-year', '-semester')
+
     def __str__(self):
         return self.user.full_name
 
@@ -67,6 +82,10 @@ class Student(models.Model):
     class Meta:
         verbose_name = 'Aluno'
         verbose_name_plural = 'Alunos'
+
+    @property
+    def active_class(self):
+        return self.classes.all().filter(is_active=True).order_by('-year', '-semester').first()
 
     def __str__(self):
         return self.user.full_name

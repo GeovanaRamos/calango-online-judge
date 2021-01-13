@@ -35,10 +35,7 @@
 
       <div class="card-footer">
         {% if user.student %}
-          <a class="btn btn-primary mr-3" href="{% url 'submission_create' object.pk %}">Submeter código</a>
-          <a class="btn btn-primary" href="#">Ver submissões</a>
-        {% else %}
-          <a class="btn btn-primary" href="#">Editar Questão</a>
+          <a class="btn btn-primary" href="{% url 'submission_create' object.pk %}">Submeter código</a>
         {% endif %}
       </div>
 

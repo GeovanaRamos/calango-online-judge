@@ -15,9 +15,12 @@
       <h2>Calango Online Judge</h2>
       <p class="ml-1"> Olá, {{ user.full_name.split|first }}.
         {% if user.student %}
-          Veja seu desempenho e estatísticas de sua turma atual.
+          Veja seu desempenho e estatísticas de sua turma atual: {{ user.student.active_class }}.
         {% elif user.professor %}
-          Veja as estatísticas de todas as suas turmas ativas.
+          Veja as estatísticas de todas as suas turmas ativas:
+          {% for c in user.professor.active_classes.all %}
+            {{ c }};
+          {% endfor %}
         {% endif %}
       </p>
     </div>
