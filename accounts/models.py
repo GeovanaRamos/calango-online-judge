@@ -74,10 +74,7 @@ class Professor(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name='Usuário')
-    registration_number = models.IntegerField(verbose_name='Matrícula', unique=True,
-                                              help_text='Digite a matrícula somente com números. '
-                                                        'Ex 160123456')
-    classes = models.ManyToManyField('judge.CourseClass', verbose_name='Turmas', blank=True, related_name='students')
+    registration_number = models.IntegerField(verbose_name='Matrícula', unique=True)
 
     class Meta:
         verbose_name = 'Aluno'
