@@ -47,7 +47,7 @@ class ScheduleDetailView(DetailView):
 
         question_conclusions = []
         for question in questions:
-            question.result = helpers.get_question_status_for_user(self.request.user, question)
+            question.result = helpers.get_question_status_for_user(self.request.user, question, data['object'])
             question_conclusions.append(question)
 
         data['questions'] = question_conclusions
@@ -142,7 +142,7 @@ class ResultsDetailView(DetailView):
             s.questions = data['object'].question_list.questions.all()
             count, correct = 0, 0
             for q in s.questions:
-                q.result = helpers.get_question_status_for_user(s.user, q)
+                q.result = helpers.get_question_status_for_user(s.user, q, data['object'])
                 if q.result == models.Submission.Results.ACCEPTED.label:
                     correct += 1
                 count += 1
