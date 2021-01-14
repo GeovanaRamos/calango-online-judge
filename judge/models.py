@@ -86,7 +86,7 @@ class ListSchedule(models.Model):
         verbose_name_plural = 'Agendamentos de Listas'
 
     def __str__(self):
-        return self.name + ' - ' + self.course_class.name
+        return self.question_list.name + ' - ' + self.course_class.__str__()
 
     def clean(self):
         if self.due_date < self.start_date:
@@ -110,8 +110,8 @@ class Submission(models.Model):
     student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=RESTRICT, related_name='submissions')
     code = models.TextField(verbose_name="Código")
     submitted_at = models.DateTimeField(verbose_name='Submetido em', auto_now_add=True, editable=False)
-    judged_at = models.DateTimeField(verbose_name='Julgado em', blank=True, editable=False, null=True)
-    result = models.CharField(verbose_name='Resultado', max_length=30, blank=True, null=True, editable=False,
+    judged_at = models.DateTimeField(verbose_name='Julgado em', blank=True, null=True)
+    result = models.CharField(verbose_name='Resultado', max_length=30, blank=True, null=True,
                               choices=Results.choices)
     list_schedule = models.ForeignKey(ListSchedule, verbose_name='Agendamento', on_delete=RESTRICT,
                                       related_name='submissions')
@@ -125,6 +125,11 @@ class Submission(models.Model):
 
     def clean(self):
         if Submission.objects.filter(question=self.question, student=self.student,
-                                     question_list=self.list_schedule, result=self.Results.ACCEPTED
+                                     list_schedule=self.list_schedule, result=self.Results.ACCEPTED
                                      ).exists():
             raise ValidationError('Já existe uma submissão aceita.')
+        elif self.question not in self.list_schedule.question_list.questions.all():
+            raise ValidationError('Essa questão não pertence a essa lista.')
+        elif self.student.active_class != self.list_schedule.course_class:
+            raise ValidationError('Essa lista não é da turma do aluno escolhido.')
+
