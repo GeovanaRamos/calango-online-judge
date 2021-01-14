@@ -39,7 +39,7 @@
       <tbody>
       {% for question in questions %}
         <tr>
-          <td><a href="{% url 'question_detail' question.pk %}">{{ question.name }}</a></td>
+          <td><a href="{% url 'question_detail' object.pk question.pk %}">{{ question.name }}</a></td>
           <td>{{ question.get_subject_display }}</td>
           <td>{{ question.result }}</td>
         </tr>

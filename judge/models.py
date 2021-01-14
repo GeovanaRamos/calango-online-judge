@@ -91,7 +91,7 @@ class ListSchedule(models.Model):
     def clean(self):
         if self.due_date < self.start_date:
             raise ValidationError('A data de término deve ser posterior a de início.')
-        elif self.start_date < timezone.localtime():
+        elif self.start_date > timezone.localtime():
             raise ValidationError('A data de ínicio deve ser igual ou posterior a hora e dia atuais.')
 
 
@@ -132,4 +132,6 @@ class Submission(models.Model):
             raise ValidationError('Essa questão não pertence a essa lista.')
         elif self.student.active_class != self.list_schedule.course_class:
             raise ValidationError('Essa lista não é da turma do aluno escolhido.')
+        elif timezone.localtime() > self.list_schedule.due_date or timezone.localtime() < self.list_schedule.start_date:
+            raise ValidationError('Essa lista já foi finalizada e não pode ser respondida.')
 

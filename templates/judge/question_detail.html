@@ -35,7 +35,11 @@
 
       <div class="card-footer">
         {% if user.student %}
-          <a class="btn btn-primary" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+          {% if is_open %}
+            <a class="btn btn-primary" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+          {% else %}
+            <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
+          {% endif %}
         {% endif %}
       </div>
 

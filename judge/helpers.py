@@ -1,4 +1,5 @@
 from django.db.models import Count, Sum
+from django.utils import timezone
 
 from judge import models
 
@@ -110,17 +111,17 @@ def get_questions_for_user(user):
 
 
 def get_statistics(data, user):
-    lists = get_list_schedules_for_user(user) # TODO professor ativas
+    lists = get_list_schedules_for_user(user)  # TODO professor ativas
 
     # BOX
     data['count_lists'] = lists.count()
     data['count_questions'] = get_questions_for_list_schedules(lists)
 
     # CHART
-    data['count_concluded'] = get_list_schedule_conclusions(lists, user) # TODO professor ativas
+    data['count_concluded'] = get_list_schedule_conclusions(lists, user)  # TODO professor ativas
     data['count_pending'] = data['count_lists'] - data['count_concluded']  # TODO professor ativas
 
-    submissions_results = get_submissions_results_for_user(user) # TODO professor ativas
+    submissions_results = get_submissions_results_for_user(user)  # TODO professor ativas
 
     data['result_labels'] = []
     data['result_values'] = []
@@ -132,3 +133,14 @@ def get_statistics(data, user):
             data['count_submissions'] += counting_obj['count']
 
     return data
+
+
+def question_is_open_to_submit(question, list_schedule, student):
+    if models.Submission.objects.filter(question=question, student=student,
+                                        list_schedule=list_schedule, result=models.Submission.Results.ACCEPTED
+                                        ).exists():
+        return False
+    elif timezone.localtime() > list_schedule.due_date or timezone.localtime() < list_schedule.start_date:
+        return False
+
+    return True

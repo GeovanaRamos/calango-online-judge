@@ -36,6 +36,21 @@ class ScheduleListView(ListView):
         return data
 
 
+class QuestionDetailView(DetailView):
+    model = models.Question
+    template_name = 'judge/question_detail.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        if 'schedule_pk' in self.kwargs:
+            list_schedule = models.ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+            data['is_open'] = helpers.question_is_open_to_submit(data['object'], list_schedule,
+                                                                 self.request.user.student)
+
+        return data
+
+
 class ScheduleDetailView(DetailView):
     model = models.ListSchedule
     template_name = 'judge/schedule_detail.html'
@@ -43,7 +58,7 @@ class ScheduleDetailView(DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         questions = data['object'].question_list.questions.all()
-        #TODO add concluded and course_class
+        # TODO add concluded and course_class
 
         question_conclusions = []
         for question in questions:
@@ -53,11 +68,6 @@ class ScheduleDetailView(DetailView):
         data['questions'] = question_conclusions
 
         return data
-
-
-class QuestionDetailView(DetailView):
-    model = models.Question
-    template_name = 'judge/question_detail.html'
 
 
 class SubmissionCreateView(CreateView):
@@ -146,7 +156,7 @@ class ResultsDetailView(DetailView):
                 if q.result == models.Submission.Results.ACCEPTED.label:
                     correct += 1
                 count += 1
-            s.percentage = correct/count * 100
+            s.percentage = correct / count * 100
             students.append(s)
 
         data['students'] = students
