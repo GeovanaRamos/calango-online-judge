@@ -2,6 +2,7 @@ import random
 
 from django.core.management import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 from mixer.backend.django import mixer
 
 from accounts.models import User, Student, Professor
@@ -41,6 +42,15 @@ class Command(BaseCommand):
         for _ in range(30):
             mixer.blend(models.TestCase, question=mixer.SELECT)
 
-        for _ in range(30):
+        for _ in range(80):
+            # must have only one ACCEPTED, therefore we do it later
+            choice = random.choice(models.Submission.Results.choices)[0]
+            while models.Submission.Results.ACCEPTED.value in choice:
+                choice = random.choice(models.Submission.Results.choices)[0]
             mixer.blend(models.Submission, question=mixer.SELECT, student=mixer.SELECT,
-                        result=random.choice(models.Submission.Results.choices)[0])
+                        result=choice, list_schedule=mixer.SELECT, judged_at=timezone.localtime())
+
+        list_schedule = models.ListSchedule.objects.first()
+        for question in list_schedule.question_list.questions.all():
+            mixer.blend(models.Submission, question=question, student=mixer.SELECT, list_schedule=list_schedule,
+                        result=models.Submission.Results.ACCEPTED, judged_at=timezone.localtime())
