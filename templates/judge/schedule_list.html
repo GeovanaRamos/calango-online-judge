@@ -34,8 +34,8 @@
       {% for object in object_list %}
         <tr>
           <td><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a></td>
-          <td>{{ object.start_date|date:'d/m/Y H:m' }}</td>
-          <td>{{ object.due_date|date:'d/m/Y H:m' }}</td>
+          <td>{{ object.start_date|date:'d/m/Y H:i' }}</td>
+          <td>{{ object.due_date|date:'d/m/Y H:i' }}</td>
           {% if user.student %}
           <td class="text-center">
             {% if object.concluded %}<i class="fa fa-check" title="Concluída"></i>

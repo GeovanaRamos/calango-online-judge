@@ -18,8 +18,8 @@
   <h2 class="mb-5">Detalhes da Lista</h2>
   <div class="container mt-5">
     <p><strong>Nome:</strong> {{ object.question_list.name }}</p>
-    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:m' }}</p>
-    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:m' }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>
   </div>
   <div class="table-responsive">
     <table class="table table-hover">

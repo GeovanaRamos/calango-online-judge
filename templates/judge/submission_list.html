@@ -23,8 +23,8 @@
         <tr>
           <td><a href="{% url 'submission_detail' object.pk %}">{{ object }}</a></td>
           <td>{{ object.question.name }}</td>
-          <td>{{ object.submitted_at|date:'d/m/Y H:m' }}</td>
-          <td>{{ object.judged_at|date:'d/m/Y H:m' }}</td>
+          <td>{{ object.submitted_at|date:'d/m/Y H:i' }}</td>
+          <td>{{ object.judged_at|date:'d/m/Y H:i' }}</td>
           <td>{{ object.get_result_display}}</td>
         </tr>
       {% endfor %}

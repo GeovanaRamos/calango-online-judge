@@ -46,8 +46,8 @@
   <h2 class="mb-5">Resultados da Lista</h2>
   <div class="container mt-5">
     <p><strong>Nome da Lista:</strong> {{ object.question_list.name }}</p>
-    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:m' }}</p>
-    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:m' }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>
     <p><strong>Turma:</strong> {{ object.course_class }}</p>
   </div>
 
