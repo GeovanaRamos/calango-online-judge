@@ -198,6 +198,7 @@ class StudentFormView(FormView):
                 full_name=s[1],
             )
             user.set_password(str(s[2]) + s[1].split()[-1])
+            user.is_active = True
             user.save()
 
             student, was_created = models.Student.objects.get_or_create(
