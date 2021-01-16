@@ -8,8 +8,8 @@
 
   <div class="container mt-5">
 
-    <div class="card bg-light text-center w-100">
-      <div class="card-body">
+    <div class="card bg-light w-100">
+      <div class="card-body text-center">
         <h5 class="card-title">{{ object.name }}</h5>
         <p class="card-text">{{ object.description }}</p>
       </div>
@@ -25,20 +25,24 @@
           <tbody>
           {% for case in object.cases.all %}
             <tr>
-              <td>{{ case.inputs }}</td>
-              <td>{{ case.output|linebreaks }}</td>
+              <td class="pl-4 border border-dark border-bottom-0 border-left-0 border-top-0">{{ case.inputs|linebreaks }}</td>
+              <td class="pl-4">{{ case.output|linebreaks }}</td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
       </div>
 
-      <div class="card-footer">
+      <div class="card-footer text-center">
         {% if user.student %}
-          {% if is_open %}
-            <a class="btn btn-primary" href="{% url 'submission_create' object.pk %}">Submeter código</a>
+          {% if is_closed %}
+            {% if is_closed == "Concluída" %}
+              <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
+            {% else %}
+              <p class="border border-danger p-2 w-25 text-center m-auto text-danger">Fechada</p>
+            {% endif %}
           {% else %}
-            <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
+            <a class="btn btn-primary" href="{% url 'submission_create' schedule_pk object.pk %}">Submeter código</a>
           {% endif %}
         {% endif %}
       </div>

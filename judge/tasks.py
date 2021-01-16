@@ -11,7 +11,7 @@ def submit_to_judge_service(code, question_pk, submission):
     cases = []
     for case in test_cases:
         cases.append(
-            {"input": re.split('\s*,\s*', case.inputs), "output": case.output.replace('\\n', '\n')}
+            {"input": re.split('\s*\\n\s*', case.inputs), "output": case.output}
         )
 
     data = {

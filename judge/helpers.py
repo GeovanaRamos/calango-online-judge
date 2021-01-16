@@ -135,12 +135,12 @@ def get_statistics(data, user):
     return data
 
 
-def question_is_open_to_submit(question, list_schedule, student):
+def question_is_closed_to_submit(question, list_schedule, student):
     if models.Submission.objects.filter(question=question, student=student,
                                         list_schedule=list_schedule, result=models.Submission.Results.ACCEPTED
                                         ).exists():
-        return False
+        return "Concluída"
     elif timezone.localtime() > list_schedule.due_date or timezone.localtime() < list_schedule.start_date:
-        return False
+        return "Fechada"
 
-    return True
+    return False

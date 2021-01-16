@@ -43,10 +43,11 @@ class QuestionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
-        if 'schedule_pk' in self.kwargs:
+        if 'schedule_pk' in self.kwargs and hasattr(self.request.user, 'student'):
             list_schedule = models.ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
-            data['is_open'] = helpers.question_is_open_to_submit(data['object'], list_schedule,
-                                                                 self.request.user.student)
+            data['is_closed'] = helpers.question_is_closed_to_submit(data['object'], list_schedule,
+                                                                     self.request.user.student)
+            data['schedule_pk'] = self.kwargs['schedule_pk']
 
         return data
 
@@ -77,12 +78,21 @@ class SubmissionCreateView(CreateView):
     success_url = reverse_lazy('submission_list')
 
     def form_valid(self, form):
-        form.instance.question = models.Question.objects.get(pk=self.kwargs['question_pk'])
-        form.instance.student = self.request.user.student
-        form.instance.result = models.Submission.Results.WAITING
         self.object = form.save()
         async_task(submit_to_judge_service, form.instance.code, self.kwargs['question_pk'], self.object)
         return HttpResponseRedirect(self.get_success_url())
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        form.instance.student = self.request.user.student
+        form.instance.result = models.Submission.Results.WAITING
+        form.instance.question = models.Question.objects.get(pk=self.kwargs['question_pk'])
+        form.instance.list_schedule = models.ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class SubmissionListView(ListView):
