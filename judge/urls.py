@@ -1,4 +1,5 @@
 from django.urls import path
+
 from judge import views
 
 urlpatterns = [
