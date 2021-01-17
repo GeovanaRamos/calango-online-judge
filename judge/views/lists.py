@@ -1,7 +1,9 @@
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from judge import helpers
+from judge.decorators import professor_required
 from judge.forms import ListForm, ScheduleForm
 from judge.models import ListSchedule, QuestionList
 
@@ -43,6 +45,7 @@ class ScheduleDetailView(DetailView):
         return data
 
 
+@method_decorator([professor_required], name='dispatch')
 class ListCreateView(CreateView):
     model = QuestionList
     form_class = ListForm
@@ -50,6 +53,7 @@ class ListCreateView(CreateView):
     success_url = reverse_lazy('schedule_list')
 
 
+@method_decorator([professor_required], name='dispatch')
 class ScheduleCreateView(CreateView):
     model = ListSchedule
     form_class = ScheduleForm
@@ -57,6 +61,7 @@ class ScheduleCreateView(CreateView):
     success_url = reverse_lazy('schedule_list')
 
 
+@method_decorator([professor_required], name='dispatch')
 class ScheduleUpdateView(UpdateView):
     model = ListSchedule
     form_class = ScheduleForm
@@ -66,6 +71,7 @@ class ScheduleUpdateView(UpdateView):
         return reverse_lazy('schedule_detail', kwargs={'pk': self.kwargs['pk']})
 
 
+@method_decorator([professor_required], name='dispatch')
 class ScheduleDeleteView(DeleteView):
     model = ListSchedule
     template_name = 'judge/schedule_delete.html'

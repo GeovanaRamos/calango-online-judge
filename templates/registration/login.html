@@ -29,11 +29,22 @@
           <img src="{% static 'core/images/unb.png' %}" width="70px" class="float-right mt-2">
         </span>
 
-        {% if form.errors %}
-          <p class="text-center text-danger mb-2">
-            Não foi possível validar suas credenciais. Tente novamente.
+        {% if next %}
+          <p class="text-center text-danger mb-2 small">
+            {% if user.is_authenticated %}
+              Você não tem permissão para acessar essa página.
+            {% else %}
+              Faça login para acessar a página.
+            {% endif %}
           </p>
         {% endif %}
+
+        {% if form.non_field_errors %}
+          <p class="text-center text-danger mb-2 small">
+            Credenciais incorretas ou conta inativa.
+          </p>
+        {% endif %}
+
         <div class="wrap-input100 validate-input m-b-23" data-validate="O email é obrigatório">
           <span class="label-input100">Email</span>
           <input id="id_username" class="input100" type="text" name="username" placeholder="Digite seu email">

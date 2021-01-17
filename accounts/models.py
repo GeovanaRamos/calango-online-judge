@@ -82,7 +82,7 @@ class Student(models.Model):
 
     @property
     def active_class(self):
-        return self.classes.all().filter(is_active=True).order_by('-year', '-semester').first()
+        return self.classes.filter(is_active=True).order_by('-year', '-semester').first()
 
     def __str__(self):
         return self.user.full_name

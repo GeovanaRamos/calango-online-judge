@@ -1,18 +1,22 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, CreateView, FormView, ListView
 
 from accounts.models import User, Student
 from judge import helpers
+from judge.decorators import professor_required
 from judge.forms import ClassForm, StudentForm
 from judge.models import CourseClass, ListSchedule, Submission
 
 
+@method_decorator([professor_required], name='dispatch')
 class ClassListView(ListView):
     model = CourseClass
     template_name = 'judge/class_list.html'
 
 
+@method_decorator([professor_required], name='dispatch')
 class ResultsDetailView(DetailView):
     model = ListSchedule
     template_name = 'judge/results_detail.html'
@@ -36,6 +40,7 @@ class ResultsDetailView(DetailView):
         return data
 
 
+@method_decorator([professor_required], name='dispatch')
 class ClassCreateView(CreateView):
     model = CourseClass
     template_name = 'judge/class_create.html'
@@ -48,6 +53,7 @@ class ClassCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+@method_decorator([professor_required], name='dispatch')
 class StudentFormView(FormView):
     form_class = StudentForm
     template_name = 'judge/student_form.html'
@@ -74,6 +80,7 @@ class StudentFormView(FormView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+@method_decorator([professor_required], name='dispatch')
 class StudentListView(ListView):
     model = Student
     template_name = 'judge/student_list.html'
