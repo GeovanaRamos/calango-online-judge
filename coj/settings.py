@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'django_q',
+    'fontawesome-free',
 
     'accounts.apps.AccountsConfig',
     'judge.apps.JudgeConfig',

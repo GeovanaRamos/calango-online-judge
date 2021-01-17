@@ -38,8 +38,8 @@
           <td>{{ object.due_date|date:'d/m/Y H:i' }}</td>
           {% if user.student %}
           <td class="text-center">
-            {% if object.concluded %}<i class="fa fa-check" title="Concluída"></i>
-            {% else %}<i class="fa fa-window-minimize" title="Não concluída"></i>
+            {% if object.concluded %}<i class="fas fa-check" title="Concluída"></i>
+            {% else %}<i class="fas fa-window-minimize" title="Não concluída"></i>
             {% endif %}
           </td>
           {% else %}

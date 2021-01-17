@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-md-4">
           <div class="box mb-3">
-            <i class="fa fa-list-alt fa-fw bg-primary"></i>
+            <i class="fas fa-list-alt fa-fw bg-primary"></i>
             <div class="info">
               <h3>{{ count_lists }}</h3>
               <p>Listas de Exercícios</p>
@@ -41,7 +41,7 @@
         </div>
         <div class="col-md-4">
           <div class="box mb-3">
-            <i class="fa fa-question fa-fw fa-3x bg-primary"></i>
+            <i class="fas fa-question fa-fw fa-3x bg-primary"></i>
             <div class="info">
               <h3>{{ count_questions }}</h3>
               <p>Questões</p>
@@ -50,7 +50,7 @@
         </div>
         <div class="col-md-4">
           <div class="box mb-3">
-            <i class="fa fa-cloud-upload fa-fw bg-primary"></i>
+            <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
             <div class="info">
               <h3>{{ count_submissions }}</h3>
               <p>Submissões</p>
@@ -87,6 +87,6 @@
   {{ result_values|json_script:"values" }}
   {{ count_concluded|json_script:"concluded" }}
   {{ count_pending|json_script:"pending" }}
-  <script src="{% static 'core/vendor/chartjs/Chart.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <script src="{% static 'judge/js/home.js' %}">  </script>
 {% endblock %}
