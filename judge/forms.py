@@ -1,7 +1,10 @@
 import re
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import inlineformset_factory
 
 from judge import models
 
@@ -62,3 +65,20 @@ class StudentForm(forms.Form):
             cd['students'].append([email, full_name, registration_number])
 
         return cd
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = models.Question
+        exclude = ('author',)
+
+
+class TestCaseForm(forms.ModelForm):
+    class Meta:
+        model = models.TestCase
+        exclude = ('question',)
+
+
+TestCasesFormSet = inlineformset_factory(
+    models.Question, models.TestCase, form=TestCaseForm, extra=1, can_delete=False
+)

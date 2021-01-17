@@ -1,0 +1,42 @@
+{% extends "judge/base.html" %}
+{% load static %}
+
+{% block nav_quest %}
+  <a href="{% url 'question_list' %}" class="list-group-item list-group-item-action active">Questões</a>
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2 class="mb-5">Nova Questão</h2>
+
+  <form method="post" id="form-container">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <div class="my-4">
+      <h3 class="mb-0">Casos de Teste</h3>
+    </div>
+    <div id="formset-container">
+      {% with cases as formset %}
+        {{ formset|crispy }}
+      {% endwith %}
+    </div>
+
+    <button id="add-more" type="button" class="btn btn-primary">Adicionar caso</button>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </div>
+  </form>
+  <div id="empty_form" style="display:none">{{ cases.empty_form|crispy }}</div>
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+      $('#add-more').click(function () {
+          var form_idx = $('#id_cases-TOTAL_FORMS').val();
+          $('#formset-container').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+          $('#id_cases-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+      });
+  </script>
+{% endblock js %}
