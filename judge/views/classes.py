@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, CreateView, FormView, ListView
+from django.views.generic import DetailView, CreateView, FormView, ListView, DeleteView
 
 from accounts.models import User, Student
 from judge import helpers
@@ -86,5 +86,25 @@ class StudentListView(ListView):
     template_name = 'judge/student_list.html'
 
     def get_queryset(self):
+        self.course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+        return self.course_class.students.all()
+
+    def get_context_data(self, **kwargs):
+        data = super(StudentListView, self).get_context_data(**kwargs)
+        data['course_class'] = self.course_class
+        return data
+
+
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'judge/student_delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
         course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
-        return course_class.students.all()
+        # instead of deleting we just remove from class
+        course_class.students.remove(self.object)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('student_list', kwargs={'class_pk': self.kwargs['class_pk']})

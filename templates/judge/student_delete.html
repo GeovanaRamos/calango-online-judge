@@ -1,0 +1,22 @@
+{% extends "judge/base.html" %}
+
+{% block nav_list %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Remover Aluno</h2>
+
+  <p>Você tem certeza que deseja remover o aluno da turma? Suas submissões não estarão mais
+  visíveis nos resultados da turma.</p>
+
+  <form action="" method="post">
+    {% csrf_token %}
+
+    <div class="d-flex justify-content-center">
+      <a href="{% url 'class_list' %}" class="mr-3 btn btn-primary">
+        Cancelar</a>
+      <button class="ml-3 btn btn-danger" type="submit">Deletar</button>
+    </div>
+  </form>
+{% endblock %}

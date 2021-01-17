@@ -26,5 +26,6 @@ urlpatterns = [
     path('classes/', views.ClassListView.as_view(), name='class_list'),
     path('classes/create', views.ClassCreateView.as_view(), name='class_create'),
     path('classes/<class_pk>/students/create', views.StudentFormView.as_view(), name='student_form'),
-    path('classes/<class_pk>/students', views.StudentListView.as_view(), name='student_list')
+    path('classes/<class_pk>/students', views.StudentListView.as_view(), name='student_list'),
+    path('classes/<class_pk>/students/delete/<pk>', views.StudentDeleteView.as_view(), name='student_delete')
 ]
