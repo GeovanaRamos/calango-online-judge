@@ -14,7 +14,6 @@
   <link href="{% static 'fontawesome_free/css/all.min.css' %}" rel="stylesheet" type="text/css">
   <!--===============================================================================================-->
   <link rel="stylesheet" type="text/css" href="{% static 'core/css/base.css' %}">
-{#  <link rel="stylesheet" type="text/css" href="{% static 'registration/css/util.css' %}">#}
   <link rel="stylesheet" type="text/css" href="{% static 'registration/css/main.css' %}">
   <!--===============================================================================================-->
 </head>
@@ -22,10 +21,10 @@
 
 <div class="limiter">
   <div class="container-login100">
-    <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+    <div class="wrap-login100 p-5">
       <form method="post" action="{% url 'login' %}" class="login100-form validate-form">
         {% csrf_token %}
-        <span class="logo p-b-49">
+        <span class="logo pb-4">
           <img src="{% static 'core/images/calango.png' %}" width="55px" class="float-left">
           COJ <span style="color: #FF7C5D">.</span>
           <img src="{% static 'core/images/unb.png' %}" width="70px" class="float-right mt-2">
@@ -47,7 +46,7 @@
           </p>
         {% endif %}
 
-        <div class="wrap-input100 validate-input m-b-23" data-validate="O email é obrigatório">
+        <div class="wrap-input100 validate-input mb-3 mt-3" data-validate="O email é obrigatório">
           <span class="label-input100">Email</span>
           <input id="id_username" class="input100" type="text" name="username" placeholder="Digite seu email">
           <span class="focus-input100" data-symbol="&#xf406"></span>
@@ -59,10 +58,10 @@
           <span class="focus-input100" data-symbol="&#xf084"></span>
         </div>
 
-        <div class="text-right p-t-8 p-b-31">
-          {#          <a href="#">#}
-          {#            Forgot password?#}
-          {#          </a>#}
+        <div class="text-center pt-4 pb-4">
+          <a href="#">
+            Esqueceu a senha?
+          </a>
         </div>
 
         <div class="container-login100-form-btn">
