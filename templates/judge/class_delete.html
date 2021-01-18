@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <h2 class="mb-4">Remover Aluno</h2>
+  <h2 class="mb-4">Desativar Turma</h2>
 
-  <p>Você tem certeza que deseja remover o aluno da turma? Suas submissões não estarão mais
-  visíveis nos resultados da turma.</p>
+  <p>Você tem certeza que deseja desativar esta turma? Os alunos perderão acesso à plataforma até que sejam
+  adicionados em outra turma.</p>
 
   <form action="" method="post">
     {% csrf_token %}
@@ -16,7 +16,7 @@
     <div class="d-flex justify-content-center">
       <a href="{% url 'class_list' %}" class="mr-3 btn btn-primary">
         Cancelar</a>
-      <button class="ml-3 btn btn-danger" type="submit">Remover</button>
+      <button class="ml-3 btn btn-danger" type="submit">Desativar</button>
     </div>
   </form>
 {% endblock %}

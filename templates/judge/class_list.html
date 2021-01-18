@@ -39,7 +39,7 @@
             <a href="{% url 'student_form' object.pk %}" title="Adicionar alunos">
               <i class="fas fa-user-plus fa-lg m-2"></i>
             </a>
-            <a href="#" title="Desativar turma">
+            <a href="{% url 'class_delete' object.pk %}" title="Desativar turma">
               <i class="fas fa-trash fa-lg m-2"></i>
             </a>
           </li>

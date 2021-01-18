@@ -1,43 +1,19 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, CreateView, FormView, ListView, DeleteView
+from django.views.generic import CreateView, FormView, ListView, DeleteView
 
 from accounts.models import User, Student
 from judge import helpers
 from judge.decorators import professor_required
 from judge.forms import ClassForm, StudentForm
-from judge.models import CourseClass, ListSchedule, Submission
+from judge.models import CourseClass
 
 
 @method_decorator([professor_required], name='dispatch')
 class ClassListView(ListView):
     model = CourseClass
     template_name = 'judge/class_list.html'
-
-
-@method_decorator([professor_required], name='dispatch')
-class ResultsDetailView(DetailView):
-    model = ListSchedule
-    template_name = 'judge/results_detail.html'
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-
-        students = []
-        for s in data['object'].course_class.students.all():
-            s.questions = data['object'].question_list.questions.all()
-            count, correct = 0, 0
-            for q in s.questions:
-                q.result = helpers.get_question_status_for_user(s.user, q, data['object'])
-                if q.result == Submission.Results.ACCEPTED.label:
-                    correct += 1
-                count += 1
-            s.percentage = correct / count * 100
-            students.append(s)
-
-        data['students'] = students
-        return data
 
 
 @method_decorator([professor_required], name='dispatch')
@@ -108,3 +84,20 @@ class StudentDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('student_list', kwargs={'class_pk': self.kwargs['class_pk']})
+
+
+class ClassDeleteView(DeleteView):
+    model = CourseClass
+    template_name = 'judge/class_delete.html'
+    success_url = reverse_lazy('class_list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        # instead of deleting we just deactivate it
+        self.object.is_active = False
+        # remove student access to the platform
+        for student in self.object.students.all():
+            student.user.is_active = False
+            student.user.save()
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())

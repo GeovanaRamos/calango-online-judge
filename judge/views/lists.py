@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from judge import helpers
 from judge.decorators import professor_required
 from judge.forms import ListForm, ScheduleForm
-from judge.models import ListSchedule, QuestionList
+from judge.models import ListSchedule, QuestionList, Submission
 
 
 class ScheduleListView(ListView):
@@ -76,3 +76,27 @@ class ScheduleDeleteView(DeleteView):
     model = ListSchedule
     template_name = 'judge/schedule_delete.html'
     success_url = reverse_lazy('schedule_list')
+
+
+@method_decorator([professor_required], name='dispatch')
+class ResultsDetailView(DetailView):
+    model = ListSchedule
+    template_name = 'judge/results_detail.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        students = []
+        for s in data['object'].course_class.students.all():
+            s.questions = data['object'].question_list.questions.all()
+            count, correct = 0, 0
+            for q in s.questions:
+                q.result = helpers.get_question_status_for_user(s.user, q, data['object'])
+                if q.result == Submission.Results.ACCEPTED.label:
+                    correct += 1
+                count += 1
+            s.percentage = correct / count * 100
+            students.append(s)
+
+        data['students'] = students
+        return data
