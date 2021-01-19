@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'judge.middlewares.LoginRequiredMiddleware',
+    'coj.middlewares.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'coj.urls'
@@ -121,6 +121,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login'
+OPEN_URLS = ['/accounts/forgot_password']
 
 
 # Internationalization
@@ -154,3 +155,16 @@ Q_CLUSTER = {
     "name": "judge",
     "orm": "default",  # Use Django's ORM + database for broker
 }
+
+#########
+if DEBUG:
+    # python -m smtpd -n -c DebuggingServer localhost:1025
+    EMAIL_HOST = 'localhost'
+    EMAIL_PORT = 1025
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_USE_TLS = False
+    DEFAULT_FROM_EMAIL = 'testing@example.com'
+
+###########
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
