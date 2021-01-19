@@ -51,6 +51,7 @@ class StudentForm(forms.Form):
         return str(registration) + "@aluno.unb.br"
 
     def clean(self):
+
         cd = self.cleaned_data
 
         students_string = cd.get("students")

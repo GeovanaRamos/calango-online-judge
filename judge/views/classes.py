@@ -1,13 +1,21 @@
+from itertools import repeat
+from multiprocessing import Pool
+
+
 from django.http import HttpResponseRedirect
+
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, FormView, ListView, DeleteView
 
-from accounts.models import User, Student
-from judge import helpers
+from django.views.generic import CreateView, FormView, ListView, DeleteView
+from django_q.tasks import async_task
+
+from accounts.models import Student
+
 from judge.decorators import professor_required
 from judge.forms import ClassForm, StudentForm
 from judge.models import CourseClass
+from judge.tasks import create_or_update_student
 
 
 @method_decorator([professor_required], name='dispatch')
@@ -36,23 +44,8 @@ class StudentFormView(FormView):
     success_url = reverse_lazy('class_list')
 
     def form_valid(self, form):
-        for s in form.cleaned_data['students']:
-            print(s)
-            user, was_created = User.objects.get_or_create(
-                email=s[0],
-                full_name=s[1],
-            )
-            user.set_password(str(s[2]) + s[1].split()[-1])
-            user.is_active = True
-            user.save()
-
-            student, was_created = Student.objects.get_or_create(
-                user=user,
-                registration_number=s[2],
-            )
-            student.classes.add(CourseClass.objects.get(pk=self.kwargs['class_pk']))
-            student.save()
-
+        course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+        async_task(create_or_update_student, form.cleaned_data['students'], course_class)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -71,6 +64,7 @@ class StudentListView(ListView):
         return data
 
 
+@method_decorator([professor_required], name='dispatch')
 class StudentDeleteView(DeleteView):
     model = Student
     template_name = 'judge/student_delete.html'
@@ -86,6 +80,7 @@ class StudentDeleteView(DeleteView):
         return reverse_lazy('student_list', kwargs={'class_pk': self.kwargs['class_pk']})
 
 
+@method_decorator([professor_required], name='dispatch')
 class ClassDeleteView(DeleteView):
     model = CourseClass
     template_name = 'judge/class_delete.html'
