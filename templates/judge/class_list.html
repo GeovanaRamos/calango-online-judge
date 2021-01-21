@@ -29,7 +29,8 @@
     {% for object in object_list %}
       <div class="col d-flex justify-content-center mb-3">
       <div class="box text-center">
-        <h5>{{ object }}</h5>
+        <h5>{{ object.discipline }} - {{ object.year }}/{{ object.semester }}<br></h5>
+        <h6>Turma {{ object.identifier }}</h6>
         <p>{{  object.students.all|length }} alunos </p>
         <ul class="list-inline">
           <li class="list-inline-item">
