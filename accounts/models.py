@@ -38,6 +38,20 @@ class User(AbstractUser):
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
 
+    @property
+    def active_classes(self):
+        if hasattr(self, 'student'):
+            return self.student.active_class
+        elif hasattr(self, 'professor'):
+            return self.professor.active_classes
+
+    @property
+    def classes(self):
+        if hasattr(self, 'student'):
+            return self.student.classes.order_by('-year', '-semester')
+        elif hasattr(self, 'professor'):
+            return self.professor.classes.order_by('-year', '-semester')
+
     def __str__(self):
         return self.full_name
 
@@ -50,19 +64,8 @@ class Professor(models.Model):
         verbose_name_plural = 'Professores'
 
     @property
-    def classes(self):
-        from judge.models import CourseClass
-        return CourseClass.objects.filter(
-            professor=self,
-        ).all().order_by('-year', '-semester')
-
-    @property
     def active_classes(self):
-        from judge.models import CourseClass
-        return CourseClass.objects.filter(
-            professor=self,
-            is_active=True,
-        ).all().order_by('-year', '-semester')
+        return self.classes.filter(is_active=True).order_by('-year', '-semester')
 
     def __str__(self):
         return self.user.full_name

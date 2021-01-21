@@ -9,50 +9,49 @@
 
 {% block content %}
 
-  <div class="row">
-
-    <div class="content">
-      <h2>Calango Online Judge</h2>
-      <p class="ml-1"> Olá, {{ user.full_name.split|first }}.
-        {% if user.student %}
-          Veja seu desempenho e estatísticas de sua turma atual: {{ user.student.active_class }}.
-        {% elif user.professor %}
-          Veja as estatísticas de todas as suas turmas ativas:
-          {% for c in user.professor.active_classes.all %}
-            {{ c }};
+  {% if user.professor %}
+    <div class="float-right">
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+          {{ course_class }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {% for class in user.professor.classes.all %}
+            <a class="dropdown-item" href="{% url 'home' class.pk %}">{{ class }}</a>
           {% endfor %}
-        {% endif %}
-      </p>
+        </div>
+      </div>
     </div>
+  {% endif %}
 
-  </div>
+  <h2>Calango Online Judge</h2>
+  <p class="ml-1"> Olá, {{ user.full_name.split|first }}.
+    {% if user.student %}
+      Veja seu desempenho e estatísticas de sua turma atual {{ user.student.active_class }}.
+    {% elif user.professor %}
+      Veja as estatísticas da sua turma {{ course_class }}.
+    {% endif %}
+  </p>
+
 
   <section class="statistics">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col">
           <div class="box mb-3">
             <i class="fas fa-list-alt fa-fw bg-primary"></i>
             <div class="info">
-              <h3>{{ count_lists }}</h3>
+              <h3>{{ first_count }}</h3>
               <p>Listas de Exercícios</p>
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="box mb-3">
-            <i class="fas fa-question fa-fw fa-3x bg-primary"></i>
-            <div class="info">
-              <h3>{{ count_questions }}</h3>
-              <p>Questões</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
+        <div class="col">
           <div class="box mb-3">
             <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
             <div class="info">
-              <h3>{{ count_submissions }}</h3>
+              <h3>{{ second_count }}</h3>
               <p>Submissões</p>
             </div>
           </div>
@@ -63,16 +62,10 @@
   <section class="charts">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-6">
-          <div class="chart-container mb-3">
-            <h5 class="mb-4">Listas</h5>
-            <canvas id="resultsChart" height="180"></canvas>
-          </div>
-        </div>
-        <div class="col-md-6">
+        <div class="col">
           <div class="chart-container mb-3">
             <h5 class="mb-4">Resultados</h5>
-            <canvas id="listsChart" height="180"></canvas>
+            <canvas id="resultsChart" height="120"></canvas>
           </div>
         </div>
       </div>
@@ -85,8 +78,6 @@
 {% block js %}
   {{ result_labels|json_script:"labels" }}
   {{ result_values|json_script:"values" }}
-  {{ count_concluded|json_script:"concluded" }}
-  {{ count_pending|json_script:"pending" }}
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-  <script src="{% static 'judge/js/home.js' %}">  </script>
+  <script src="{% static 'judge/js/home.js' %}"></script>
 {% endblock %}

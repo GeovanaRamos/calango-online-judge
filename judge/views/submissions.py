@@ -41,7 +41,9 @@ class SubmissionListView(ListView):
     template_name = 'judge/submission_list.html'
 
     def get_queryset(self):
-        return helpers.get_submissions_for_user(self.request.user)
+        user = self.request.user
+        schedules = user.student.active_class.schedules
+        return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
 
 
 class SubmissionDetailView(DetailView):
