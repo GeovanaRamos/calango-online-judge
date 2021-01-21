@@ -1,8 +1,7 @@
 from django.db import transaction
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
 
 from judge import helpers
 from judge.decorators import professor_required
@@ -11,12 +10,18 @@ from judge.models import Question, ListSchedule
 
 
 @method_decorator([professor_required], name='dispatch')
+class SubjectsListView(TemplateView):
+    template_name = 'judge/subject_list.html'
+
+
+@method_decorator([professor_required], name='dispatch')
 class QuestionListView(ListView):
     model = Question
     template_name = 'judge/question_list.html'
 
     def get_queryset(self):
-        return helpers.get_questions_for_user(self.request.user)
+        subject = self.kwargs['subject']
+        return Question.objects.filter(subject=subject)
 
 
 class QuestionDetailView(DetailView):

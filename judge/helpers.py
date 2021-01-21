@@ -102,14 +102,6 @@ def get_submissions_for_user(user):
         return models.Submission.objects.all()[:20]
 
 
-def get_questions_for_user(user):
-    if hasattr(user, 'professor'):
-        return models.Question.objects.all()
-    else:
-        # returns all submissions
-        return models.Submission.objects.none()
-
-
 def get_statistics(data, user):
     lists = get_list_schedules_for_user(user)  # TODO professor ativas
 

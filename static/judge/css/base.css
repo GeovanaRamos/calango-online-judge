@@ -114,3 +114,8 @@ a:hover {
     border-color: #006D6D;
 }
 
+.bg-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+

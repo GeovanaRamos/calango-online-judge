@@ -10,7 +10,6 @@ from django.utils.html import strip_tags
 from accounts.models import User, Student
 from coj import settings
 from judge import models
-from judge.models import CourseClass
 
 
 def submit_to_judge_service(code, question_pk, submission):
