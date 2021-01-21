@@ -7,11 +7,22 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+  <h2 class="mb-3">Adicionar Alunos</h2>
+  <p>
+    A adição de alunos será realizada em segundo plano e cada aluno receberá um email com uma senha aleatória
+  para acessar o COJ. Uma vez que você desative ou remova o aluno da turma, ele perderá acesso ao sistema até que
+  seja adicionado novamente em outra turma. Veja no exemplo abaixo as possíveis formatações para cada entrada de aluno.
+  </p>
+  <div class="w-75 m-auto text-center bg-light text-secondary p-2">
+    160123451; João Pereira Silva <br>
+    160123452 ; Maria Pereira Silva <br>
+    16/0123453;Pedro Pereira Silva <br>
+  </div>
   <form method="post" >
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
-      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="submit" class="btn btn-primary">Adicionar</button>
     </div>
   </form>
 {% endblock %}

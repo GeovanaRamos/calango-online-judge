@@ -23,6 +23,13 @@ class ScheduleForm(forms.ModelForm):
         model = models.ListSchedule
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['course_class'].disabled = True
+            self.fields['question_list'].disabled = True
+
 
 class ListForm(forms.ModelForm):
     class Meta:

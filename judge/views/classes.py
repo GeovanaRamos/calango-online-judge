@@ -73,7 +73,11 @@ class StudentDeleteView(DeleteView):
         self.object = self.get_object()
         course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
         # instead of deleting we just remove from class
+        if course_class == self.object.active_class:
+            self.object.is_active = False
         course_class.students.remove(self.object)
+        course_class.save()
+        self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
