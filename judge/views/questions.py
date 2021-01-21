@@ -45,7 +45,7 @@ class QuestionCreateView(CreateView):
     model = Question
     form_class = QuestionForm
     template_name = 'judge/question_create.html'
-    success_url = reverse_lazy('question_list')
+    success_url = reverse_lazy('subject_list')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
