@@ -18,27 +18,27 @@ class CourseClass(models.Model):
     professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=RESTRICT, related_name='classes')
     is_active = models.BooleanField(verbose_name='Ativa?', default=True)
     students = models.ManyToManyField(Student, verbose_name='Alunos', blank=True, related_name='classes')
+    identifier = models.CharField(verbose_name='Identificador da Turma', max_length=5)
 
     class Meta:
         verbose_name = 'Turma'
         verbose_name_plural = 'Turmas'
-        unique_together = ('discipline', 'year', 'semester')
 
     def __str__(self):
-        return self.discipline + ' - ' + str(self.year) + '/' + str(self.semester)
+        return self.discipline + ' - ' + str(self.year) + '/' + str(self.semester) + ' - Turma ' + self.identifier
 
 
 class Question(models.Model):
     class Subjects(models.TextChoices):
-        SEQUENCE = 'Sequenciais', "Estruturas Sequenciais"
-        CONDITION = 'Condicionais', "Estruturas Condicionais"
-        MODULE = 'Modularização', "Modularização"
-        REPETITION = 'Repetição', "Estruturas de Repetição"
-        VECTOR = 'Vetores', "Vetores"
+        SEQUENCES = 'SEQUENCES', "Estruturas Sequenciais"
+        CONDITIONS = 'CONDITIONS', "Estruturas Condicionais"
+        REPETITIONS = 'REPETITIONS', "Estruturas de Repetição"
+        MODULARIZATION = 'MODULARIZATION', "Modularização"
+        VECTORS = 'VECTORS', "Vetores"
 
     name = models.CharField(verbose_name='Nome', max_length=35)
     description = models.TextField(verbose_name='Enunciado')
-    subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=40)
+    subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=15)
     author = models.ForeignKey(Professor, verbose_name='Autor', on_delete=RESTRICT, related_name='questions')
 
     class Meta:
@@ -59,12 +59,13 @@ class TestCase(models.Model):
         verbose_name_plural = 'Casos de Teste'
 
     def __str__(self):
-        return self.question.name + '-Saída:' + self.output
+        return self.question.name + ' - Caso: ' + self.pk
 
 
 class QuestionList(models.Model):
     name = models.CharField(verbose_name='Nome da Lista', max_length=50)
     questions = models.ManyToManyField(Question, verbose_name='Questões', related_name='lists')
+    author = models.ForeignKey(Professor, verbose_name='Autor', on_delete=RESTRICT, related_name='lists')
 
     class Meta:
         verbose_name = 'Lista de Exercícios'
@@ -91,8 +92,6 @@ class ListSchedule(models.Model):
     def clean(self):
         if self.due_date < self.start_date:
             raise ValidationError('A data de término deve ser posterior a de início.')
-        elif self.start_date > timezone.localtime():
-            raise ValidationError('A data de ínicio deve ser igual ou posterior a hora e dia atuais.')
 
 
 class Submission(models.Model):
@@ -127,11 +126,12 @@ class Submission(models.Model):
         if Submission.objects.filter(question=self.question, student=self.student,
                                      list_schedule=self.list_schedule, result=self.Results.ACCEPTED
                                      ).exists():
-            raise ValidationError('Já existe uma submissão aceita.')
-        elif self.question not in self.list_schedule.question_list.questions.all():
-            raise ValidationError('Essa questão não pertence a essa lista.')
-        elif self.student.active_class != self.list_schedule.course_class:
-            raise ValidationError('Essa lista não é da turma do aluno escolhido.')
-        elif timezone.localtime() > self.list_schedule.due_date or timezone.localtime() < self.list_schedule.start_date:
-            raise ValidationError('Essa lista já foi finalizada e não pode ser respondida.')
+            submission = Submission.objects.get(question=self.question, student=self.student,
+                                                list_schedule=self.list_schedule, result=self.Results.ACCEPTED)
+            if self != submission:
+                raise ValidationError('Já existe uma submissão aceita.')
 
+        if self.question not in self.list_schedule.question_list.questions.all():
+            raise ValidationError('Esta questão não pertence a esta lista.')
+        elif self.student.active_class != self.list_schedule.course_class:
+            raise ValidationError('Esta lista não é da turma do aluno escolhido.')

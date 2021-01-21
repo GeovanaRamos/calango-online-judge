@@ -1,14 +1,17 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DetailView
 from django_q.tasks import async_task
 
 from judge import helpers
+from judge.decorators import open_question_required
 from judge.forms import SubmissionForm
 from judge.models import Question, ListSchedule, Submission
 from judge.tasks import submit_to_judge_service
 
 
+@method_decorator([open_question_required], name='dispatch')
 class SubmissionCreateView(CreateView):
     model = Submission
     template_name = 'judge/submission_create.html'
