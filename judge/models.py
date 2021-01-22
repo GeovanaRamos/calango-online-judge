@@ -59,7 +59,7 @@ class TestCase(models.Model):
         verbose_name_plural = 'Casos de Teste'
 
     def __str__(self):
-        return self.question.name + ' - Caso: ' + self.pk
+        return self.question.name + ' - Caso: ' + str(self.pk)
 
 
 class QuestionList(models.Model):
