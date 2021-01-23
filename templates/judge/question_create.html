@@ -12,6 +12,7 @@
 
   <form method="post" id="form-container">
     {% csrf_token %}
+    {{ form.media }}
     {{ form|crispy }}
 
     <div class="my-4">

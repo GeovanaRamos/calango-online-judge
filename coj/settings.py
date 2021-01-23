@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_q',
     'fontawesome-free',
+    'ckeditor',
+    'ckeditor_uploader',
 
     'accounts.apps.AccountsConfig',
     'judge.apps.JudgeConfig',
@@ -154,6 +156,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 Q_CLUSTER = {
     "name": "judge",
     "orm": "default",  # Use Django's ORM + database for broker
+    "timeout": 55,
+    "max_attempts": 3,
 }
 
 #########
@@ -166,5 +170,24 @@ if DEBUG:
     EMAIL_USE_TLS = False
     DEFAULT_FROM_EMAIL = 'testing@example.com'
 
-###########
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+####################################
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_media/')
+STATIC_URL = '/static/'
+
+#####################################
+CKEDITOR_RESTRICT_BY_USER = True
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_FORCE_JPEG_COMPRESSION = True
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': None,
+    },
+}
+###################################
+

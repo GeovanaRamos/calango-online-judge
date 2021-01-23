@@ -1,5 +1,7 @@
 import re
 
+from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column
 from django import forms
@@ -34,7 +36,7 @@ class ScheduleForm(forms.ModelForm):
 class ListForm(forms.ModelForm):
     class Meta:
         model = models.QuestionList
-        fields = '__all__'
+        exclude = ('author', )
 
 
 class ClassForm(forms.ModelForm):
@@ -76,6 +78,8 @@ class StudentForm(forms.Form):
 
 
 class QuestionForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorUploadingWidget(), label='Descrição')
+
     class Meta:
         model = models.Question
         exclude = ('author',)

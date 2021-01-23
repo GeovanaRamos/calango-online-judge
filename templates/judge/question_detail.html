@@ -9,9 +9,9 @@
   <div class="container mt-5">
 
     <div class="card bg-light w-100">
-      <div class="card-body text-center">
-        <h5 class="card-title">{{ object.name }}</h5>
-        <p class="card-text">{{ object.description }}</p>
+      <div class="card-body">
+        <h5 class="card-title text-center">{{ object.name }}</h5>
+        <p class="card-text">{{ object.description|safe }}</p>
       </div>
 
       <div class="table-responsive">
