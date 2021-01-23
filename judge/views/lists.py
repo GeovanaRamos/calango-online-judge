@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -51,6 +52,11 @@ class ListCreateView(CreateView):
     form_class = ListForm
     template_name = 'judge/list_create.html'
     success_url = reverse_lazy('schedule_list')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user.professor
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 @method_decorator([professor_required], name='dispatch')
