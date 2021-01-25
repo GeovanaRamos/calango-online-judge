@@ -27,7 +27,7 @@ def submit_to_judge_service(code, question_pk, submission):
     }
 
     # TODO pass url to settings
-    r = requests.post("http://localhost:8080/judge", data=json.dumps(data),
+    r = requests.post(settings.COJ_SERVICE_URL, data=json.dumps(data),
                       headers={'content-type': 'application/json'})
     print(r.json())
     result_json = r.json()
