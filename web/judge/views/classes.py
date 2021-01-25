@@ -1,7 +1,3 @@
-from itertools import repeat
-from multiprocessing import Pool
-
-
 from django.http import HttpResponseRedirect
 
 from django.urls import reverse_lazy

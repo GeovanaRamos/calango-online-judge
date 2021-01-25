@@ -1,9 +1,6 @@
 import re
 
-from ckeditor.widgets import CKEditorWidget
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory

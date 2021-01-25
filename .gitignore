@@ -1,2 +1,5 @@
 /venv/
-db.sqlite3
+web/db.sqlite3
+/.env.prod
+web/mediafiles/
+web/staticfiles/
