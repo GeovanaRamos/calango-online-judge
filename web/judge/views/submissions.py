@@ -42,7 +42,7 @@ class SubmissionListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        schedules = user.student.active_class.schedules
+        schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
         return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
 
 

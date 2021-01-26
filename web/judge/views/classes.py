@@ -19,6 +19,9 @@ class ClassListView(ListView):
     model = CourseClass
     template_name = 'judge/class_list.html'
 
+    def get_queryset(self):
+        return self.request.user.professor.classes.all()
+
 
 @method_decorator([professor_required], name='dispatch')
 class ClassCreateView(CreateView):

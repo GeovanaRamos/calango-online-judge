@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 from judge import helpers
 from judge.helpers import *
-from judge.models import CourseClass
+from judge.models import CourseClass, ListSchedule
 
 
 class HomeView(TemplateView):
@@ -20,7 +20,7 @@ class HomeView(TemplateView):
         else:
             course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
 
-        schedules = course_class.schedules.all()
+        schedules = course_class.schedules.all() if course_class else ListSchedule.objects.none()
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
 
         data['first_count'] = schedules.count()
