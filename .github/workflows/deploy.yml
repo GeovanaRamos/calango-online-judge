@@ -18,8 +18,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          name: coj
-          tags: homolog
+          name: GeovanaRamos/calango-online-judge/coj
           workdir: web
           default_branch: master
           dockerfile: Dockerfile.prod
