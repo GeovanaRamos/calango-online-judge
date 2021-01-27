@@ -66,6 +66,12 @@ class ScheduleCreateView(CreateView):
     template_name = 'judge/schedule_create.html'
     success_url = reverse_lazy('schedule_list')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields['course_class'].queryset = form.fields['course_class'].queryset.filter(
+            professor=self.request.user.professor)
+        return form
+
 
 @method_decorator([professor_required], name='dispatch')
 class ScheduleUpdateView(UpdateView):

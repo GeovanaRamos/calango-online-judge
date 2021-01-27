@@ -39,7 +39,7 @@ class ListForm(forms.ModelForm):
 class ClassForm(forms.ModelForm):
     class Meta:
         model = models.CourseClass
-        exclude = ('professor', 'is_active',)
+        exclude = ('professor', 'is_active', 'students')
 
 
 class StudentForm(forms.Form):
