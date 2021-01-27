@@ -25,6 +25,13 @@ class CourseClass(models.Model):
     def __str__(self):
         return self.discipline + ' - ' + str(self.year) + '/' + str(self.semester) + ' - Turma ' + self.identifier
 
+    def save(self, *args, **kwargs):
+        if not self.is_active:
+            for student in self.students.all():
+                student.user.is_active = False
+                student.user.save()
+        super(CourseClass, self).save()
+
 
 class Question(models.Model):
     class Subjects(models.TextChoices):
