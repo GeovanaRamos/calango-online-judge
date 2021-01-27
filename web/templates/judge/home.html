@@ -9,7 +9,7 @@
 
 {% block content %}
 
-  {% if user.professor %}
+  {% if user.professor and course_class %}
     <div class="float-right">
       <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -29,7 +29,7 @@
   <p class="ml-1"> Olá, {{ user.full_name.split|first }}.
     {% if user.student and user.student.active_class %}
       Veja seu desempenho e estatísticas de sua turma atual {{ user.student.active_class }}.
-    {% elif user.professor %}
+    {% elif user.professor and course_class %}
       Veja as estatísticas da sua turma {{ course_class }}.
     {% endif %}
 

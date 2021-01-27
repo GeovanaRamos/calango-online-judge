@@ -13,18 +13,20 @@ class HomeView(TemplateView):
         data = super().get_context_data(**kwargs)
         user = self.request.user
 
-        if hasattr(user, 'student'):
-            course_class = user.student.active_class
-        elif 'class_pk' not in self.kwargs:
-            course_class = user.professor.active_classes.order_by('-year', '-semester').first()
-        else:
+        if hasattr(user, 'professor') and 'class_pk' in self.kwargs:
             course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+            schedules = course_class.schedules
+        elif hasattr(user, 'professor') and 'class_pk' not in self.kwargs and user.professor.active_classes:
+            course_class = user.professor.active_classes.first()
+            schedules = course_class.schedules
+        elif hasattr(user, 'student') and user.student.active_class:
+            course_class = user.student.active_class
+            schedules = course_class.schedules.filter(start_date__lte=timezone.localtime())
+        else:
+            course_class = None
+            schedules = ListSchedule.objects.none()
 
-        schedules = course_class.schedules.all() if course_class else ListSchedule.objects.none()
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
-
-        data['first_count'] = schedules.count()
-
         submissions_results = submissions.order_by().values('result').annotate(count=Count('pk', distinct=True))
         data['result_labels'] = []
         data['result_values'] = []
@@ -35,6 +37,7 @@ class HomeView(TemplateView):
                 data['result_values'].append(counting_obj['count'])
                 data['second_count'] += counting_obj['count']
 
+        data['first_count'] = schedules.count()
         data['course_class'] = course_class
 
         return data

@@ -6,12 +6,15 @@ def get_list_schedules_for_user(user):
     if hasattr(user, 'student'):
         # show list of the student's active class
         current_class = user.student.active_class
-        return models.ListSchedule.objects.filter(course_class=current_class).order_by('-start_date', 'due_date')
+        return models.ListSchedule.objects.filter(
+            course_class=current_class,
+            start_date__lte=timezone.localtime()
+        ).order_by('-start_date', 'due_date')
     elif hasattr(user, 'professor'):
         # show list of all of the professor's classes
         classes = user.professor.classes.all()
-        return models.ListSchedule.objects.filter(course_class__in=classes).distinct().order_by('-start_date',
-                                                                                                'due_date')
+        return models.ListSchedule.objects.filter(
+            course_class__in=classes).distinct().order_by('-start_date', 'due_date')
     elif user.is_superuser:
         return models.ListSchedule.objects.all()
     else:
