@@ -1,8 +1,23 @@
 {% extends "judge/base.html" %}
 
+
+
 {% block nav_list %}
-  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% if schedule_pk %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% else %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
+  {% endif %}
 {% endblock %}
+
+{% block nav_quest %}
+  {% if schedule_pk %}
+    <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action">Questões</a>
+  {% else %}
+    <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action active">Questões</a>
+  {% endif %}
+{% endblock %}
+
 
 {% block content %}
 

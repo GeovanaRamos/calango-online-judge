@@ -31,11 +31,12 @@ class QuestionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
-        if 'schedule_pk' in self.kwargs and hasattr(self.request.user, 'student'):
-            list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
-            data['is_closed'] = helpers.question_is_closed_to_submit(data['object'], list_schedule,
-                                                                     self.request.user.student)
+        if 'schedule_pk' in self.kwargs:
             data['schedule_pk'] = self.kwargs['schedule_pk']
+            if hasattr(self.request.user, 'student'):
+                list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+                data['is_closed'] = helpers.question_is_closed_to_submit(data['object'], list_schedule,
+                                                                         self.request.user.student)
 
         return data
 
