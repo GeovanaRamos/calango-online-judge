@@ -2,9 +2,7 @@ version: '3.7'
 
 services:
   web:
-    build:
-      context: web
-      dockerfile: Dockerfile.prod
+    image: docker.pkg.github.com/geovanaramos/calango-online-judge/coj:latest
     command: gunicorn coj.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
@@ -15,6 +13,12 @@ services:
       - media_volume:/home/app/web/mediafiles
     depends_on:
       - db
+      - judge
+
+  judge:
+    image: docker.pkg.github.com/geovanaramos/calango-judge-service/service:latest
+    expose:
+      - 8080
 
   db:
     image: postgres:13.0-alpine
@@ -28,7 +32,7 @@ services:
       context: ./nginx
       dockerfile: Dockerfile.prod
     ports:
-      - 1337:80
+      - 80:80
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
