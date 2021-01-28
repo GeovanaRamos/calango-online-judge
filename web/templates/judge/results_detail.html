@@ -75,7 +75,10 @@
             <div id="collapse-{{ student.pk }}" class="panel-collapse collapse in" role="tabpanel"
                  aria-labelledby="headingOne">
               <div class="row panel-body m-2">
-
+                <p class="small bg-light w-100 text-center text-secondary">
+                  <a href="{% url 'submission_list' object.pk student.pk %}">Clique aqui </a>
+                  para ver todas as submissões deste aluno para esta lista agendada ou veja o resumo abaixo.
+                </p>
                 <div class="table-responsive w-100">
                   <table class="table table-hover">
                     <thead>

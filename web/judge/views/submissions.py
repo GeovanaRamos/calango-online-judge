@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DetailView
 from django_q.tasks import async_task
 
+from accounts.models import Student
 from judge import helpers
 from judge.decorators import open_question_required
 from judge.forms import SubmissionForm
@@ -42,8 +43,13 @@ class SubmissionListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
-        return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
+        if 'schedule_pk' in self.kwargs and hasattr(user, 'professor'):
+            student = Student.objects.get(pk=self.kwargs['student_pk'])
+            schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+            return Submission.objects.filter(student=student, list_schedule=schedule)
+        else:
+            schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
+            return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
 
 
 class SubmissionDetailView(DetailView):
