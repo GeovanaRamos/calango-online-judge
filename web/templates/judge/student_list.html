@@ -25,7 +25,11 @@
         <tr>
           <td>{{ student.registration_number }}</td>
           <td>{{ student.user.full_name }}</td>
-          <td>{{ student.user.last_login|date:'d/m/Y H:i'|default_if_none:"Sem Login" }}</td>
+          {% if student.user.last_login %}
+           <td>{{ student.user.last_login|date:'d/m/Y H:i' }}</td>
+          {% else %}
+            <td>Sem login</td>
+          {% endif %}
           <td>
             <a href="{% url 'student_delete' course_class.pk student.pk  %}">Remover</a>
           </td>
