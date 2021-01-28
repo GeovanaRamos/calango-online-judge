@@ -1,4 +1,6 @@
-from django.http import HttpResponseRedirect
+import csv
+
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -115,3 +117,24 @@ class ResultsDetailView(DetailView):
 
         data['students'] = students
         return data
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+
+        if request.GET.get('format', False) == 'csv':
+            return export_csv_file(request, context['students'], self.object)
+        else:
+            return self.render_to_response(context)
+
+
+def export_csv_file(request, students, list_schedule):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=' + list_schedule.__str__() + '.csv'
+
+    writer = csv.writer(response)
+
+    for student in students:
+        writer.writerow([student.registration_number, student.user.full_name, student.percentage])
+
+    return response

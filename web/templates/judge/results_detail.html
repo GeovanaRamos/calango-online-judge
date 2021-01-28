@@ -38,6 +38,9 @@
 
 {% block content %}
 
+  <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
+      Download CSV</a>
+
   <h2 class="mb-5">Resultados da Lista</h2>
   <div class="container mt-5">
     <p><strong>Nome da Lista:</strong> {{ object.question_list.name }}</p>
