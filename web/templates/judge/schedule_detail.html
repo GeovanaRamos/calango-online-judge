@@ -20,6 +20,10 @@
     <p><strong>Nome:</strong> {{ object.question_list.name }}</p>
     <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
     <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>
+    <p><strong>Turma:</strong> {{ object.course_class }}</p>
+    {% if user.student %}
+      <p><strong>Resultado:</strong> {{ percentage|floatformat:2 }}%</p>
+    {% endif %}
   </div>
   <div class="table-responsive">
     <table class="table table-hover">

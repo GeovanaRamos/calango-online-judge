@@ -63,7 +63,7 @@
                       {{ student.user.full_name }}
                     </div>
                     <div class="col">
-                      {{ student.percentage }}%
+                      {{ student.percentage|floatformat:2 }}%
                     </div>
                   </div>
                 </a>

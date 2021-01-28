@@ -67,3 +67,14 @@ def question_is_closed_to_submit(question, list_schedule, student):
         return "Fechada"
 
     return False
+
+
+def get_student_acceptance_percentage(student, list_schedule):
+    count, correct = 0, 0
+    for question in list_schedule.question_list.questions.all():
+        question.result = get_question_status_for_user(student.user, question, list_schedule)
+        if question.result == models.Submission.Results.ACCEPTED.label:
+            correct += 1
+        count += 1
+
+    return correct / count * 100

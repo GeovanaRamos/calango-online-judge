@@ -33,15 +33,18 @@ class ScheduleDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        questions = data['object'].question_list.questions.all()
-        # TODO add concluded and course_class
+        user = self.request.user
+        questions = self.object.question_list.questions.order_by('pk').all()
 
         question_conclusions = []
         for question in questions:
-            question.result = helpers.get_question_status_for_user(self.request.user, question, data['object'])
+            question.result = helpers.get_question_status_for_user(user, question, data['object'])
             question_conclusions.append(question)
 
         data['questions'] = question_conclusions
+
+        if hasattr(user, 'student'):
+            data['percentage'] = helpers.get_student_acceptance_percentage(user.student, self.object)
 
         return data
 
