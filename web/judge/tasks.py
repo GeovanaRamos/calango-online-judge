@@ -18,7 +18,7 @@ def submit_to_judge_service(code, question_pk, submission):
     cases = []
     for case in test_cases:
         cases.append(
-            {"input": re.split('\s*\\n\s*', case.inputs), "output": case.output}
+            {"input": re.split('\s*\\n\s*', case.inputs), "output": case.output.replace("\r", "")}
         )
 
     data = {
@@ -26,10 +26,9 @@ def submit_to_judge_service(code, question_pk, submission):
         "cases": cases,
     }
 
-    # TODO pass url to settings
     r = requests.post(settings.COJ_SERVICE_URL, data=json.dumps(data),
                       headers={'content-type': 'application/json'})
-    print(r.json())
+
     result_json = r.json()
     submission.result = result_json['message']
     submission.judged_at = timezone.localtime()
