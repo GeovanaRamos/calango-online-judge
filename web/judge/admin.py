@@ -1,6 +1,6 @@
 from django.contrib import admin
 from judge import models
-
+from judge.forms import QuestionForm
 
 admin.site.register(models.CourseClass)
 admin.site.register(models.Submission)
@@ -16,4 +16,5 @@ class TestCaseInline(admin.StackedInline):
 @admin.register(models.Question)
 class QuestionAdmin(admin.ModelAdmin):
     model = models.Question
+    form = QuestionForm
     inlines = [TestCaseInline]
