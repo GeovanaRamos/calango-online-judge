@@ -44,12 +44,20 @@ class SubmissionListView(ListView):
     def get_queryset(self):
         user = self.request.user
         if 'schedule_pk' in self.kwargs and hasattr(user, 'professor'):
-            student = Student.objects.get(pk=self.kwargs['student_pk'])
-            schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
-            return Submission.objects.filter(student=student, list_schedule=schedule)
+            self.student = Student.objects.get(pk=self.kwargs['student_pk'])
+            self.schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+            return Submission.objects.filter(student=self.student, list_schedule=self.schedule).order_by(
+                '-submitted_at')
         else:
             schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
             return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
+
+    def get_context_data(self, **kwargs):
+        data = super(SubmissionListView, self).get_context_data(**kwargs)
+        if 'student_pk' in self.kwargs and hasattr(self.request.user, 'professor'):
+            data['student'] = self.student
+            data['schedule'] = self.schedule
+        return data
 
 
 class SubmissionDetailView(DetailView):

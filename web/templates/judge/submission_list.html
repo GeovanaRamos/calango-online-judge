@@ -5,6 +5,12 @@
 {% block content %}
 
   <h2 class="mb-5">Submissões</h2>
+  <div class="container mt-4 mb-4">
+    {% if user.professor %}
+      <p><strong>Aluno:</strong> {{ student.user.full_name }}</p>
+      <p><strong>Agendamento de Lista:</strong> <a href="{% url 'schedule_detail' schedule.pk %}">{{ schedule }}</a></p>
+    {% endif %}
+  </div>
   <div class="table-responsive">
     <table class="table table-hover">
 
