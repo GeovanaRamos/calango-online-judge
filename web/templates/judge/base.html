@@ -26,10 +26,17 @@
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
 
-    <span class="sidebar-heading logo m-3">
+    <span class="sidebar-heading logo">
           <img src="{% static 'core/images/calango.png' %}" width="50px" class="float-left">
           COJ <span style="color: #FF7C5D">.</span>
     </span>
+
+    <div class="mb-4">
+      <p class="text-center small text-secondary">
+        <i class="fas fa-user mr-1"></i>
+        {{ user.full_name.split|first }} {{ user.full_name.split|last }}<br>{{ user.student.active_class}}
+      </p>
+    </div>
 
     <div class="list-group list-group-flush sticky-top">
 
