@@ -51,7 +51,7 @@ class Question(models.Model):
         verbose_name_plural = 'Questões'
 
     def __str__(self):
-        return self.name
+        return self.name + " - " + self.get_subject_display()
 
 
 class TestCase(models.Model):
