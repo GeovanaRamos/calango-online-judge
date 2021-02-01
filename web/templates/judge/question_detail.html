@@ -40,8 +40,8 @@
           <tbody>
           {% for case in object.cases.all %}
             <tr>
-              <td class="pl-4 border-right">{{ case.inputs|linebreaks }}</td>
-              <td class="pl-4">{{ case.output|linebreaks }}</td>
+              <td class="pl-4 border-right">{{ case.inputs|linebreaksbr }}</td>
+              <td class="pl-4">{{ case.output|linebreaksbr }}</td>
             </tr>
           {% endfor %}
           </tbody>
