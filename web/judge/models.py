@@ -58,6 +58,7 @@ class TestCase(models.Model):
     inputs = models.TextField(verbose_name='Entradas')
     output = models.TextField(verbose_name='Saída')
     question = models.ForeignKey(Question, verbose_name='Questão', on_delete=CASCADE, related_name='cases')
+    is_hidden = models.BooleanField(verbose_name='Ocultar?', default=False)
 
     class Meta:
         verbose_name = 'Caso de Teste'

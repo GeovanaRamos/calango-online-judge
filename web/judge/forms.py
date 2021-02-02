@@ -83,7 +83,6 @@ class QuestionForm(forms.ModelForm):
 
 
 class TestCaseForm(forms.ModelForm):
-    inputs = forms.CharField(strip=False, label='Entradas', widget=forms.Textarea)
     output = forms.CharField(strip=False, label='Saída', widget=forms.Textarea)
 
     class Meta:

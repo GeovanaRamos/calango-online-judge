@@ -40,8 +40,14 @@
           <tbody>
           {% for case in object.cases.all %}
             <tr>
-              <td class="pl-4 border-right">{{ case.inputs|linebreaksbr }}</td>
-              <td class="pl-4">{{ case.output|linebreaksbr }}</td>
+              {% if case.is_hidden and user.student %}
+              {% elif case.is_hidden and user.professor %}
+                <td class="pl-4 border-right text-danger">{{ case.inputs|linebreaksbr }}</td>
+                <td class="pl-4 text-danger">{{ case.output|linebreaksbr }}</td>
+              {% else %}
+                <td class="pl-4 border-right">{{ case.inputs|linebreaksbr }}</td>
+                <td class="pl-4">{{ case.output|linebreaksbr }}</td>
+              {% endif %}
             </tr>
           {% endfor %}
           </tbody>
