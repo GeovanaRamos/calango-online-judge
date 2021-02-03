@@ -37,6 +37,8 @@ def submit_to_judge_service(code, question_pk, submission):
     submission.judged_at = timezone.localtime()
     submission.save()
 
+    return result_json['message'] + ': ' + result_json['errorMessage']
+
 
 def create_or_update_student(students, course_class):
     for student in students:

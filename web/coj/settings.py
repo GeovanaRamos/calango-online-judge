@@ -145,7 +145,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 Q_CLUSTER = {
     "name": "judge",
     "orm": "default",  # Use Django's ORM + database for broker
-    "timeout": 55,
+    "timeout": 200,
+    "retry": 210,
     "max_attempts": 3,
 }
 
