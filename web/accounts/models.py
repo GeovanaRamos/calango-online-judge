@@ -65,7 +65,7 @@ class Professor(models.Model):
 
     @property
     def active_classes(self):
-        return self.classes.filter(is_active=True).order_by('-year', '-semester')
+        return self.classes.filter(is_active=True).order_by('-year', '-semester', '-pk')
 
     def __str__(self):
         return self.user.full_name
