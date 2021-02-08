@@ -18,6 +18,7 @@ class ForgotPasswordView(FormView):
         user = User.objects.get(email=form.cleaned_data['email'])
         password = User.objects.make_random_password()
         user.set_password(password)
+        user.save()
 
         subject = 'COJ - Recuperação de senha'
         data = {'full_name': user.full_name, 'password': password}
