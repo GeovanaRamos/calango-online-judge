@@ -12,6 +12,10 @@ from judge import models
 class Command(BaseCommand):
     help = 'Populate database'
 
+    def create_submission(self, question, students, result, schedule):
+        mixer.blend(models.Submission, question=question, student=random.choice(students),
+                    result=result, list_schedule=schedule, judged_at=timezone.localtime())
+
     @transaction.atomic
     def handle(self, *args, **kwargs):
 
@@ -26,12 +30,8 @@ class Command(BaseCommand):
         course_class_2 = mixer.blend(models.CourseClass, professor=professor)
 
         for _ in range(5):
-            user = mixer.blend(models.User)
-            course_class_1.students.add(mixer.blend(Student, user=user))
-
-        for _ in range(5):
-            user = mixer.blend(models.User)
-            course_class_2.students.add(mixer.blend(Student, user=user))
+            course_class_1.students.add(mixer.blend(Student, user=mixer.blend(models.User)))
+            course_class_2.students.add(mixer.blend(Student, user=mixer.blend(models.User)))
 
         questions = [mixer.cycle(5).blend(models.Question) for _ in range(3)]
         question_lists = [mixer.blend(models.QuestionList, questions=questions[i]) for i in range(3)]
@@ -39,18 +39,17 @@ class Command(BaseCommand):
             mixer.blend(models.ListSchedule, question_list=question_lists[i],
                         course_class=random.choice([course_class_1, course_class_2]))
 
-        for _ in range(30):
-            mixer.blend(models.TestCase, question=mixer.SELECT)
+        for schedule in models.ListSchedule.objects.all():
+            students = Student.objects.all()
+            for question in schedule.question_list.questions.all():
 
-        for _ in range(80):
-            # must have only one ACCEPTED, therefore we do it later
-            choice = random.choice(models.Submission.Results.choices)[0]
-            while models.Submission.Results.ACCEPTED.value in choice:
-                choice = random.choice(models.Submission.Results.choices)[0]
-            mixer.blend(models.Submission, question=mixer.SELECT, student=mixer.SELECT,
-                        result=choice, list_schedule=mixer.SELECT, judged_at=timezone.localtime())
+                for _ in range(4):
+                    mixer.blend(models.TestCase, question=question)
 
-        list_schedule = models.ListSchedule.objects.first()
-        for question in list_schedule.question_list.questions.all():
-            mixer.blend(models.Submission, question=question, student=mixer.SELECT, list_schedule=list_schedule,
-                        result=models.Submission.Results.ACCEPTED, judged_at=timezone.localtime())
+                # accepted must be the last one
+                for _ in range(5):
+                    self.create_submission(question, students, models.Submission.Results.COMPILATION_ERROR, schedule)
+                    self.create_submission(question, students, models.Submission.Results.RUNTIME_ERROR, schedule)
+                    self.create_submission(question, students, models.Submission.Results.WRONG_ANSWER, schedule)
+                    self.create_submission(question, students, models.Submission.Results.PRESENTATION_ERROR, schedule)
+                self.create_submission(question, students, models.Submission.Results.ACCEPTED, schedule)
