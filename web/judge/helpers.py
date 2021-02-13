@@ -45,7 +45,7 @@ def get_question_status_for_user(user, question, list_schedule):
         submission = models.Submission.objects.filter(student=user.student, question=question,
                                                       list_schedule=list_schedule)
         if submission.exists():
-            return submission.latest('judged_at').get_result_display()
+            return submission.latest('submitted_at').get_result_display()
         else:
             return "Sem Submissão"
     else:
