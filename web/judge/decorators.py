@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
 from judge import helpers
-from judge.models import ListSchedule, Question
+from judge.models import ListSchedule, Question, Submission
 
 
 def professor_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME):
@@ -29,6 +29,22 @@ def open_question_required(view_func):
                 request.user.student.active_class != schedule.course_class:
             kwargs = {'schedule_pk': schedule_pk, 'pk': question_pk}
             return HttpResponseRedirect(reverse_lazy('question_detail', kwargs=kwargs))
+        else:
+            return view_func(request, *args, **kwargs)
+
+    return wrapped
+
+
+def submission_author_or_professor_required(view_func):
+    def wrapped(request, *args, **kwargs):
+
+        if hasattr(request.user, 'professor'):
+            return view_func(request, *args, **kwargs)
+
+        submission = Submission.objects.get(pk=kwargs.get('pk'))
+
+        if submission.student != request.user.student:
+            return HttpResponseRedirect(reverse_lazy('submission_list'))
         else:
             return view_func(request, *args, **kwargs)
 

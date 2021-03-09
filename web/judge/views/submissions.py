@@ -6,7 +6,7 @@ from django_q.tasks import async_task
 
 from accounts.models import Student
 from judge import helpers
-from judge.decorators import open_question_required
+from judge.decorators import open_question_required, submission_author_or_professor_required
 from judge.forms import SubmissionForm
 from judge.models import Question, ListSchedule, Submission
 from judge.tasks import submit_to_judge_service
@@ -60,6 +60,7 @@ class SubmissionListView(ListView):
         return data
 
 
+@method_decorator([submission_author_or_professor_required], name='dispatch')
 class SubmissionDetailView(DetailView):
     model = Submission
     template_name = 'judge/submission_detail.html'

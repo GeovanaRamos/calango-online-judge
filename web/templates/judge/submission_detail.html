@@ -20,6 +20,9 @@
     <p><strong>Submetido em:</strong> {{ object.submitted_at|date:'d/m/Y H:i' }}</p>
     <p><strong>Julgado em:</strong> {{ object.judged_at|date:'d/m/Y H:i' }}</p>
     <p><strong>Resultado:</strong> {{ object.get_result_display }}</p>
+    {% if user.professor %}
+      <p><strong>Aluno:</strong> {{ object.student.user.full_name }}</p>
+    {% endif %}
   </div>
 
   <div id="scaleable-wrapper" class="mt-5">
