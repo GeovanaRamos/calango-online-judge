@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 from judge import helpers
 from judge.helpers import *
-from judge.models import CourseClass, ListSchedule
+from judge.models import CourseClass, ListSchedule, Question
 
 
 class HomeView(TemplateView):
@@ -22,6 +22,13 @@ class HomeView(TemplateView):
         elif hasattr(user, 'student') and user.student.active_class:
             course_class = user.student.active_class
             schedules = course_class.schedules.filter(start_date__lte=timezone.localtime())
+            if schedules.count() > 0:
+                percentage_sum = 0
+                percentage_count = 0
+                for schedule in course_class.schedules.all():
+                    percentage_sum += helpers.get_student_acceptance_percentage(user.student, schedule)
+                    percentage_count += 1
+                data['total_percentage'] = percentage_sum/percentage_count
         else:
             course_class = None
             schedules = ListSchedule.objects.none()

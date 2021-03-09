@@ -57,6 +57,17 @@
             </div>
           </div>
         </div>
+        {% if total_percentage %}
+          <div class="col">
+            <div class="box mb-3">
+              <i class="fas fa-check fa-fw bg-primary"></i>
+              <div class="info">
+                <h3>{{ total_percentage|floatformat:2 }}%</h3>
+                <p>Questões Concluídas</p>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
   </section>
