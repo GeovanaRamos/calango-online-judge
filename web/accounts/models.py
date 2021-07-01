@@ -78,6 +78,7 @@ class Professor(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.RESTRICT, verbose_name='Usuário')
     registration_number = models.IntegerField(verbose_name='Matrícula', unique=True)
+    first_login = models.DateTimeField(verbose_name='Primeiro Login', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Aluno'

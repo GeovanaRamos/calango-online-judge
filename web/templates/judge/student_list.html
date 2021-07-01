@@ -15,6 +15,7 @@
       <tr>
         <th>Matrícula</th>
         <th>Nome</th>
+        <th>Primeiro login</th>
         <th>Último login</th>
         <th>Remover</th>
       </tr>
@@ -25,6 +26,11 @@
         <tr>
           <td>{{ student.registration_number }}</td>
           <td>{{ student.user.full_name }}</td>
+          {% if student.first_login %}
+           <td>{{ student.first_login|date:'d/m/Y H:i' }}</td>
+          {% else %}
+            <td>Sem login</td>
+          {% endif %}
           {% if student.user.last_login %}
            <td>{{ student.user.last_login|date:'d/m/Y H:i' }}</td>
           {% else %}
