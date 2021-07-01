@@ -5,6 +5,7 @@ from judge import views
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('dashborad/class/<int:class_pk>', views.HomeView.as_view(), name='home'),
+    path('help/', views.HelpView.as_view(), name='help'),
 
     path('schedules/', views.ScheduleListView.as_view(), name='schedule_list'),
     path('schedules/<int:pk>/', views.ScheduleDetailView.as_view(), name='schedule_detail'),

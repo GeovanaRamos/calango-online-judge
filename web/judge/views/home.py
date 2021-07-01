@@ -25,7 +25,7 @@ class HomeView(TemplateView):
             if schedules.count() > 0:
                 percentage_sum = 0
                 percentage_count = 0
-                for schedule in course_class.schedules.all():
+                for schedule in schedules:
                     percentage_sum += helpers.get_student_acceptance_percentage(user.student, schedule)
                     percentage_count += 1
                 data['total_percentage'] = percentage_sum/percentage_count
@@ -48,3 +48,7 @@ class HomeView(TemplateView):
         data['course_class'] = course_class
 
         return data
+
+
+class HelpView(TemplateView):
+    template_name = 'judge/help.html'

@@ -1,0 +1,76 @@
+{% extends "judge/base.html" %}
+{% load static %}
+
+{% block nav_faq %}<a href="#" class="list-group-item list-group-item-action active">Ajuda</a>{% endblock %}
+
+
+{% block content %}
+
+  <h2 class="mb-5">Ajuda</h2>
+
+  <div class="card mb-3">
+    <h5 class="card-header">O que é um "Erro de Apresentação"?</h5>
+    <div class="card-body">
+      <p class="card-text">Você recebe esse status quando seu algoritmo retorna valores corretos,
+        mas apresentados da maneira incorreta. Esse status pode aparecer por divergêngia do seu resultado
+        com o gabarito por causa de
+        <strong>espaços, quebras de linha ou letras maiúsculas/minúsculas.</strong>
+        Atente-se principalmente às quebras de linha, pois nem sempre elas são visualmente perceptíveis.
+        As questões irão sempre indicar onde será necessário acrescentar quebras de linha e espaços.
+        Por se tratar apenas de um erro visual, para resolvê-lo,
+        evite mexer na lógica de cálculo do seu algoritmo, pois ela está correta, e procure problemas nas
+        funções de escrita na tela.
+      </p>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <h5 class="card-header">O que é um "Erro de Compilação"?</h5>
+    <div class="card-body">
+      <p class="card-text">Um erro de compilação ocorre antes mesmo do online judge conseguir executar seu programa. Ou
+        seja, você infringiu alguma regra de sintaxe ou semântica que o compilador percebeu antes de transformar seu
+        algoritmo em código de máquina. Se seu código não executa no online judge,
+        <strong>ele também não está executando em sua máquina local</strong>
+        e pode indicar que você não está testando seu código antes de submetê-lo.
+        Execute seu algoritmo em sua máquina
+        e verifique o erro que o Calango irá mostrar para você. Preste atenção na linha e a descrição do erro.</p>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <h5 class="card-header">O que é um "Erro de Execução"?</h5>
+    <div class="card-body">
+      <p class="card-text">O erro de execução ocorre quando alguma operação inválida é realizada, mesmo que aparemente
+        seu código não tenha erros de sintaxe e semântica. Um erro de execução está relacionado aos
+        valores que seu programa recebe e processa, portanto
+        <strong>pode ser que, em determinados casos de teste, seu algoritmo funcione até o final,</strong>
+        mas em outros não. Por exemplo, uma divisão por zero irá lançar um erro de execução. Mesmo
+        que seu programa passe em todos
+        os casos de teste da questão, ainda não é uma garantia que seu programa será aceito.
+        Por isso, teste seu algoritmo com o maior número de exemplos possíveis além dos que são propostos na questão.
+      </p>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <h5 class="card-header">O que significa "Resposta Incorreta"?</h5>
+    <div class="card-body">
+      <p class="card-text">Caso seu algoritmo compile, execute até o final mas a resposta que você mostra (ou deixa de
+        mostrar) divirja <strong>totalmente ou parcialmente</strong> do gabarito, então você irá receber o status de
+        resposta incorreta.
+        Nesse caso, você precisa rever todo o seu código e corrigir a lógica de cálculo para que, assim, chegue no
+        resultado correto. Use a opção passo-a-passo do Calango para entender onde seu problema começa. Releia a
+        questão para garantir que está com o raciocício correto para solucioná-la.
+      </p>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <h5 class="card-header">O que acontece quando recebo um "Aceito"?</h5>
+    <div class="card-body">
+      <p class="card-text">Se sua submissão foi aceita, então você <strong>concluiu</strong> a questão e receberá a nota
+        equivalente
+        no curso. Além disso, o seu percentual de "Questões Concluídas" na página inicial irá aumentar. Esse percentual
+        se refere somente às listas que já foram disponibilizadas para você responder.
+        Por exemplo, se você já teve 5 listas abertas com 5 questões cada e desse total você só concluiu 7 questões,
+        então seu percentual apresentado será de 28,00%.</p>
+    </div>
+  </div>
+
+{% endblock %}

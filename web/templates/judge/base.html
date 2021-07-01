@@ -64,6 +64,10 @@
           <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
         {% endblock %}
 
+        {% block nav_faq %}
+          <a href="{% url 'help' %}" class="list-group-item list-group-item-action">Ajuda</a>
+        {% endblock %}
+
       {% endif %}
 
       <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sair</a>
