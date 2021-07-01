@@ -18,6 +18,23 @@
   {% endif %}
 {% endblock %}
 
+{% block css %}
+  <style>
+      .loader {
+          border: 5px solid #f3f3f3; /* Light grey */
+          border-top: 5px solid var(--tertiary); /* Green */
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: none;
+          animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+          0% {transform: rotate(0deg);}
+          100% {transform: rotate(360deg);}
+      }
+  </style>
+{% endblock %}
 
 {% block content %}
 
@@ -65,11 +82,113 @@
           {% else %}
             <a class="btn btn-primary" href="{% url 'submission_create' schedule_pk object.pk %}">Submeter código</a>
           {% endif %}
+        {% else %}
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submissionModal"
+                  data-backdrop="static" data-keyboard="false">
+            Testar
+          </button>
         {% endif %}
       </div>
-
 
     </div>
   </div>
 
+  {% if not user.student %}
+    <div class="modal fade" id="submissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Testar Questão</h5>
+            <button id="modal-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <p class="text-center">
+                  Cole o código que deseja submeter no campo abaixo e você verá o resultado do judge em
+                  alguns instantes, nesta mesma janela. O resultado não ficará salvo no banco.
+                </p>
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Código:</label>
+                <textarea id="code" class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+
+          <div id="loader" class="loader mx-auto mb-4"></div>
+          <p id="result-box" class="bg-light text-center mx-auto w-50" style="display: none"></p>
+
+          <div class="modal-footer justify-content-center">
+            <button id="btn-close" type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button id="btn-submit" type="button" class="btn btn-primary"
+                    data-href="{% url 'submission_test' %}" data-question-pk="{{ object.pk }}">
+              Submeter
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 {% endblock content %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+  <script type="text/javascript">
+
+      function init_processing() {
+          $("#modal-close").prop('disabled', true);
+          $("#btn-close").prop('disabled', true);
+          $("#result-box").hide();
+          $('#loader').show();
+
+      }
+
+      function finish_processing() {
+          $('#loader').hide();
+          $("#btn-close").prop('disabled', false);
+          $("#modal-close").prop('disabled', false);
+          $("#result-box").show();
+      }
+
+      $(document).ready(function () {
+          // professor submit
+          $('#btn-submit').click(function (e) {
+              e.preventDefault();
+
+              const code = $("#code").val();
+              if (!code) {
+                  alert("Campo de codigo vazio!");
+                  return;
+              }
+              const question_pk = $(this).attr("data-question-pk");
+
+              init_processing();
+
+              const token = Cookies.get('csrftoken');
+              const postData = {csrfmiddlewaretoken: token, code: code, question_pk: question_pk};
+
+              $.ajax({
+                  method: 'POST',
+                  url: $(this).attr("data-href"),
+                  data: postData,
+                  success: function (response) {
+                      $("#result-box").text(response.result + ": " + response.error_message);
+                      finish_processing();
+                  },
+                  error: function (response) {
+                      finish_processing();
+                      alert("Erro ao julgar submissão.");
+                  },
+              });
+          });
+      });
+  </script>
+{% endblock %}

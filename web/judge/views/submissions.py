@@ -1,14 +1,20 @@
-from django.http import HttpResponseRedirect
+import json
+
+import requests
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import CreateView, ListView, DetailView
 from django_q.tasks import async_task
 
 from accounts.models import Student
+from coj import settings
 from judge import helpers
-from judge.decorators import open_question_required, submission_author_or_professor_required
+from judge.decorators import open_question_required, submission_author_or_professor_required, professor_required
 from judge.forms import SubmissionForm
-from judge.models import Question, ListSchedule, Submission
+from judge.helpers import get_judge_post_data
+from judge.models import Question, ListSchedule, Submission, TestCase
 from judge.tasks import submit_to_judge_service
 
 
@@ -64,3 +70,22 @@ class SubmissionListView(ListView):
 class SubmissionDetailView(DetailView):
     model = Submission
     template_name = 'judge/submission_detail.html'
+
+
+@method_decorator([professor_required], name='dispatch')
+class SubmissionTest(View):
+
+    def post(self, request):
+        code = request.POST.get('code')
+        question_pk = request.POST.get('question_pk')
+
+        data = get_judge_post_data(code, question_pk)
+
+        r = requests.post(settings.COJ_SERVICE_URL, data=json.dumps(data),
+                          headers={'content-type': 'application/json'})
+        result_json = r.json()
+        result = result_json['message']
+        error_message = result_json['errorMessage']
+
+        return JsonResponse(data={"result": result, "error_message": error_message})
+

@@ -1,3 +1,5 @@
+import re
+
 from django.utils import timezone
 from judge import models
 
@@ -78,3 +80,16 @@ def get_student_acceptance_percentage(student, list_schedule):
         count += 1
 
     return correct / count * 100
+
+
+def get_judge_post_data(code, question_pk):
+    test_cases = models.TestCase.objects.filter(question__pk=question_pk)
+
+    cases = []
+    for case in test_cases:
+        cases.append({
+                "input": re.split('\s*\\n\s*', case.inputs.replace("\r", "")),
+                "output": case.output.replace("\r", "")
+        })
+
+    return {"code": code, "cases": cases}

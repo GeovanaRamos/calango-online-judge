@@ -1,6 +1,5 @@
 import json
 import requests
-import re
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -9,25 +8,11 @@ from django.utils.html import strip_tags
 
 from accounts.models import User, Student
 from coj import settings
-from judge import models
+from judge.helpers import get_judge_post_data
 
 
 def submit_to_judge_service(code, question_pk, submission):
-    test_cases = models.TestCase.objects.filter(question__pk=question_pk)
-
-    cases = []
-    for case in test_cases:
-        cases.append(
-            {
-                "input": re.split('\s*\\n\s*', case.inputs.replace("\r", "")),
-                "output": case.output.replace("\r", "")
-            }
-        )
-
-    data = {
-        "code": code,
-        "cases": cases,
-    }
+    data = get_judge_post_data(code, question_pk)
 
     r = requests.post(settings.COJ_SERVICE_URL, data=json.dumps(data),
                       headers={'content-type': 'application/json'})
