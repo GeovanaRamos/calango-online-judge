@@ -38,6 +38,14 @@
 
 {% block content %}
 
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Resultados</li>
+    </ol>
+  </nav>
+
   <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
       Download CSV</a>
 

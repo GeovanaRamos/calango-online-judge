@@ -1,7 +1,5 @@
 {% extends "judge/base.html" %}
 
-
-
 {% block nav_list %}
   {% if schedule_pk %}
     <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
@@ -29,14 +27,37 @@
           display: none;
           animation: spin 2s linear infinite;
       }
+
       @keyframes spin {
-          0% {transform: rotate(0deg);}
-          100% {transform: rotate(360deg);}
+          0% {
+              transform: rotate(0deg);
+          }
+          100% {
+              transform: rotate(360deg);
+          }
       }
   </style>
 {% endblock %}
 
 {% block content %}
+
+  {% if schedule_pk %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule_pk %}">{{ schedule_name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+      </ol>
+    </nav>
+  {% else %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Questões</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'question_list' object.subject %}">{{ object.get_subject_display }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+      </ol>
+    </nav>
+  {% endif %}
 
   <div class="container mt-5">
 

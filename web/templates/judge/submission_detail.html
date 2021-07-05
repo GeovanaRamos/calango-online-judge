@@ -10,6 +10,12 @@
 {% endblock %}
 
 {% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'submission_list' %}">Submissões</a></li>
+      <li class="breadcrumb-item active" aria-current="page">#{{ object.id }}</li>
+    </ol>
+  </nav>
 
   <h2 class="mb-5">Detalhes da Submissão</h2>
   <div class="container mt-5">

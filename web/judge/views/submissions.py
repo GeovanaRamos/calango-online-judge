@@ -24,6 +24,19 @@ class SubmissionCreateView(CreateView):
     template_name = 'judge/submission_create.html'
     form_class = SubmissionForm
     success_url = reverse_lazy('submission_list')
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.question = Question.objects.get(pk=kwargs['question_pk'])
+        self.list_schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
+        return super(SubmissionCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super(SubmissionCreateView, self).get_context_data(**kwargs)
+        data['schedule_pk'] = self.list_schedule.pk
+        data['schedule_name'] = self.list_schedule.question_list.name
+        data['question_name'] = self.question.name
+        data['question_pk'] = self.question.pk
+        return data
 
     def form_valid(self, form):
         self.object = form.save()
@@ -35,8 +48,8 @@ class SubmissionCreateView(CreateView):
         form = self.get_form()
         form.instance.student = self.request.user.student
         form.instance.result = Submission.Results.WAITING
-        form.instance.question = Question.objects.get(pk=self.kwargs['question_pk'])
-        form.instance.list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+        form.instance.question = self.question
+        form.instance.list_schedule = self.list_schedule
         if form.is_valid():
             return self.form_valid(form)
         else:

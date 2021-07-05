@@ -19,9 +19,13 @@ class QuestionListView(ListView):
     model = Question
     template_name = 'judge/question_list.html'
 
+    def get_context_data(self, **kwargs):
+        data = super(QuestionListView, self).get_context_data(**kwargs)
+        data['subject_label'] = Question.Subjects(self.kwargs['subject']).label
+        return data
+
     def get_queryset(self):
-        subject = self.kwargs['subject']
-        return Question.objects.filter(subject=subject)
+        return Question.objects.filter(subject=self.kwargs['subject'])
 
 
 class QuestionDetailView(DetailView):
@@ -33,8 +37,9 @@ class QuestionDetailView(DetailView):
 
         if 'schedule_pk' in self.kwargs:
             data['schedule_pk'] = self.kwargs['schedule_pk']
+            list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+            data['schedule_name'] = list_schedule.question_list.name
             if hasattr(self.request.user, 'student'):
-                list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
                 data['is_closed'] = helpers.question_is_closed_to_submit(data['object'], list_schedule,
                                                                          self.request.user.student)
 

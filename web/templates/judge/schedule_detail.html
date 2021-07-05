@@ -6,9 +6,16 @@
 
 {% block content %}
 
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ object.question_list.name }}</li>
+    </ol>
+  </nav>
+
   {% if user.professor %}
-{#    <a class="ml-3 btn btn-danger float-right" href="{% url 'schedule_delete' object.pk %}">#}
-{#      Deletar agendamento</a>#}
+    {#    <a class="ml-3 btn btn-danger float-right" href="{% url 'schedule_delete' object.pk %}">#}
+    {#      Deletar agendamento</a>#}
     <a class="mr-3 ml-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
       Editar agendamento</a>
     <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}">

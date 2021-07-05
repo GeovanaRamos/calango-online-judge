@@ -7,8 +7,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule_pk %}">{{ schedule_name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'question_detail' schedule_pk question_pk %}">{{ question_name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Nova Submissão</li>
+    </ol>
+  </nav>
+
   <h2 class="mb-5">Nova Submissão</h2>
-  <div class="container mt-3">
+  <div class="container mt-2">
     <p>Antes de fazer sua submissão, verifique se você:</p>
     <ol>
       <li>Atribuiu um nome para seu algoritmo;</li>
