@@ -2,9 +2,15 @@
 
 {% block nav_sub %}<a href="#" class="list-group-item list-group-item-action active">Submissões</a>{% endblock %}
 
-{% if user.professor %}
-{% block nav_list %}<a href="#" class="list-group-item list-group-item-action active">Listas</a>{% endblock %}
-{% endif %}
+
+{% block nav_list %}
+  {% if user.professor %}
+    <a href="#" class="list-group-item list-group-item-action active">Listas</a>
+  {% else %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
+  {% endif %}
+{% endblock %}
+
 
 {% block content %}
 
