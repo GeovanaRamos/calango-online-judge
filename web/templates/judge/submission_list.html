@@ -2,10 +2,25 @@
 
 {% block nav_sub %}<a href="#" class="list-group-item list-group-item-action active">Submissões</a>{% endblock %}
 
+{% if user.professor %}
+{% block nav_list %}<a href="#" class="list-group-item list-group-item-action active">Listas</a>{% endblock %}
+{% endif %}
+
 {% block content %}
 
+  {% if user.professor %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule.pk %}">{{ schedule.question_list.name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'results_detail' schedule.pk %}">Resultados</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Submissões</li>
+    </ol>
+  </nav>
+  {% endif %}
+
   <h2 class="mb-5">Submissões</h2>
-  <div class="container mt-4 mb-4">
+  <div class="container mb-4">
     {% if user.professor %}
       <p><strong>Aluno:</strong> {{ student.user.full_name }}</p>
       <p><strong>Agendamento de Lista:</strong> <a href="{% url 'schedule_detail' schedule.pk %}">{{ schedule }}</a></p>
