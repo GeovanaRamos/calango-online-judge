@@ -45,6 +45,7 @@ class Question(models.Model):
     description = models.TextField(verbose_name='Enunciado')
     subject = models.CharField(verbose_name='Assunto', choices=Subjects.choices, max_length=15)
     author = models.ForeignKey(Professor, verbose_name='Autor', on_delete=RESTRICT, related_name='questions')
+    is_evaluative = models.BooleanField(verbose_name='Avaliativa?', default=True)
 
     class Meta:
         verbose_name = 'Questão'
@@ -119,7 +120,9 @@ class Submission(models.Model):
     result = models.CharField(verbose_name='Resultado', max_length=30, blank=True, null=True,
                               choices=Results.choices)
     list_schedule = models.ForeignKey(ListSchedule, verbose_name='Agendamento', on_delete=RESTRICT,
-                                      related_name='submissions')
+                                      related_name='submissions', blank=True, null=True)
+    course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=RESTRICT, related_name='submissions',
+                                     blank=True, null=True)
 
     class Meta:
         verbose_name = 'Submissão'
@@ -129,15 +132,50 @@ class Submission(models.Model):
         return '#' + str(self.pk)
 
     def clean(self):
-        if Submission.objects.filter(question=self.question, student=self.student,
-                                     list_schedule=self.list_schedule, result=self.Results.ACCEPTED
-                                     ).exists():
-            submission = Submission.objects.get(question=self.question, student=self.student,
-                                                list_schedule=self.list_schedule, result=self.Results.ACCEPTED)
-            if self != submission:
-                raise ValidationError('Já existe uma submissão aceita.')
+        """
+            If the question is_evaluative, it will be linked to a list_schedule, otherwise it will be linked
+            to a course_class. This way, students can conclude the same questions if they fail the course
+            and retake it in another semester/class. Restrictions:
 
-        if self.question not in self.list_schedule.question_list.questions.all():
-            raise ValidationError('Esta questão não pertence a esta lista.')
-        elif self.student.active_class != self.list_schedule.course_class:
-            raise ValidationError('Esta lista não é da turma do aluno escolhido.')
+            1. Can't have course_class + list_schedule
+            2. If it is NOT evaluative, check if student is in course_class
+            3. If it is NOT evaluative, check if there is an accepted submission for course_class
+            4. If it is evaluative, check if question is in list_schedule's question_list
+            5. If it is evaluative, check if student is in list_schedule's course_class
+            6. If it is evaluative, check if there is an accepted submission for list_schedule
+        """
+
+        if self.list_schedule and self.course_class:
+            raise ValidationError('A submissão deve ser avulsa ou avaliativa. Escolha uma lista OU uma turma.')
+
+        elif self.list_schedule:  # is evaluative
+
+            if not self.question.is_evaluative:
+                raise ValidationError('Esta questão não é avaliativa e não pode ser vinculada a uma lista.')
+            elif self.question not in self.list_schedule.question_list.questions.all():
+                raise ValidationError('Esta questão não pertence a esta lista.')
+            elif not self.list_schedule.course_class.students.filter(
+                    registration_number=self.student.registration_number).exists():
+                raise ValidationError('Esta lista não é da turma do aluno escolhido.')
+            elif Submission.objects.filter(question=self.question, student=self.student,
+                                           list_schedule=self.list_schedule, result=self.Results.ACCEPTED).exists():
+                submission = Submission.objects.get(question=self.question, student=self.student,
+                                                    list_schedule=self.list_schedule, result=self.Results.ACCEPTED)
+                if self != submission:  # because queryset contains self object
+                    raise ValidationError('Já existe uma submissão aceita.')
+
+        elif self.course_class:  # is detached/single question
+
+            if self.question.is_evaluative:
+                raise ValidationError('Esta questão é avaliativa e deve ser vinculada a uma lista.')
+            elif not self.course_class.students.filter(registration_number=self.student.registration_number).exists():
+                raise ValidationError('Esta turma não é a do aluno escolhido.')
+            elif Submission.objects.filter(question=self.question, student=self.student,
+                                           course_class=self.course_class, result=self.Results.ACCEPTED).exists():
+                submission = Submission.objects.get(question=self.question, student=self.student,
+                                                    course_class=self.course_class, result=self.Results.ACCEPTED)
+                if self != submission:  # because queryset contains self object
+                    raise ValidationError('Já existe uma submissão aceita.')
+
+        else:  # is neither evaluative or detached
+            raise ValidationError('A submissão deve ser avulsa ou avaliativa. Escolha uma lista OU uma turma.')
