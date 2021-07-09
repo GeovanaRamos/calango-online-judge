@@ -37,7 +37,6 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'django_q',
-    'fontawesome-free',
     'ckeditor',
     'ckeditor_uploader',
 
