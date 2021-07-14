@@ -12,14 +12,14 @@
     <h5 class="card-header">O que é um "Erro de Apresentação"?</h5>
     <div class="card-body">
       <p class="card-text">Você recebe esse status quando seu algoritmo retorna valores corretos,
-        mas apresentados da maneira incorreta. Esse status pode aparecer por divergêngia do seu resultado
-        com o gabarito por causa de
-        <strong>espaços, quebras de linha ou letras maiúsculas/minúsculas.</strong>
-        Atente-se principalmente às quebras de linha, pois nem sempre elas são visualmente perceptíveis.
-        As questões irão sempre indicar onde será necessário acrescentar quebras de linha e espaços.
+        mas apresentados da maneira incorreta, pois o judge espera respostas exatamente iguais ao gabarito.
+        Esse status pode aparecer por divergência do seu resultado com o gabarito por causa de
+        <strong>espaços, quebras de linha, letras maiúsculas ou minúsculas</strong>, conforme solicitado no enunciado.
         Por se tratar apenas de um erro visual, para resolvê-lo,
         evite mexer na lógica de cálculo do seu algoritmo, pois ela está correta, e procure por problemas nas
-        funções de escrita na tela.
+        funções de escrita na tela. Lembre-se que
+        seu programa <strong>não</strong> deverá escrever nada na tela durante sua execução e apresentar somente
+        o resultado final, assim como nos exemplos da questão.
       </p>
     </div>
   </div>
@@ -28,9 +28,9 @@
     <div class="card-body">
       <p class="card-text">Um erro de compilação ocorre antes mesmo do online judge conseguir executar seu programa. Ou
         seja, você infringiu alguma regra de sintaxe ou semântica que o compilador percebeu antes de transformar seu
-        algoritmo em código de máquina. Se seu código não executa no online judge,
+        algoritmo em código de máquina. Se seu algoritmo não executa no online judge,
         <strong>ele também não está executando em sua máquina local</strong>
-        e pode indicar que você não está testando seu código antes de submetê-lo.
+        e pode indicar que você não está testando seu algoritmo antes de submetê-lo.
         Execute seu algoritmo em sua máquina
         e verifique o erro que o Calango irá mostrar para você. Preste atenção na linha e na descrição do erro.</p>
     </div>
@@ -39,13 +39,14 @@
     <h5 class="card-header">O que é um "Erro de Execução"?</h5>
     <div class="card-body">
       <p class="card-text">O erro de execução ocorre quando alguma operação inválida é realizada, mesmo que aparemente
-        seu código não tenha erros de sintaxe e semântica. Um erro de execução está relacionado aos
-        valores que seu programa recebe e processa, portanto,
+        seu algoritmo não tenha erros de sintaxe ou semântica. Um erro de execução está relacionado aos
+        valores que seu programa recebe e processa. Portanto,
         <strong>pode ser que, em determinados casos de teste, seu algoritmo funcione até o final,</strong>
         mas em outros não. Por exemplo, uma divisão por zero irá lançar um erro de execução. Mesmo
         que seu programa passe em todos
         os casos de teste da questão, ainda não é uma garantia que seu programa será aceito.
-        Por isso, teste seu algoritmo com o maior número de exemplos possíveis além dos que são propostos na questão.
+        Por isso, teste seu algoritmo com o maior número de exemplos possíveis além dos que são propostos
+        como exemplo na questão.
       </p>
     </div>
   </div>
@@ -55,7 +56,7 @@
       <p class="card-text">Caso seu algoritmo compile, execute até o final mas a resposta que você mostra (ou deixa de
         mostrar) divirja <strong>totalmente ou parcialmente</strong> do gabarito, então você irá receber o status de
         resposta incorreta.
-        Nesse caso, você precisa rever todo o seu código e corrigir a lógica de cálculo para que, assim, chegue no
+        Nesse caso, você precisa rever todo o seu algoritmo e corrigir a lógica de cálculo para que, assim, chegue no
         resultado correto. Use a opção passo-a-passo do Calango para entender onde seu problema começa. Releia a
         questão para garantir que está com o raciocínio correto para solucioná-la.
       </p>
