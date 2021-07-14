@@ -46,11 +46,11 @@
     </ol>
   </nav>
 
-  <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
+  <a class="mt-2 mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
       Download CSV</a>
 
-  <h2 class="mb-5">Resultados da Lista</h2>
-  <div class="container mt-5">
+  <h2 class="my-4">Resultados da Lista</h2>
+  <div class="container">
     <p><strong>Nome da Lista:</strong> {{ object.question_list.name }}</p>
     <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
     <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>

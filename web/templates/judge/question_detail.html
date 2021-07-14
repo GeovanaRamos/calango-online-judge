@@ -52,9 +52,10 @@
   {% else %}
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Questões</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'question_list' object.subject %}">{{ object.get_subject_display }}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+        <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Questões</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'question_list' object.subject %}">{{ object.get_subject_display }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
       </ol>
     </nav>
   {% endif %}
@@ -62,9 +63,29 @@
   <div class="container mt-5">
 
     <div class="card bg-light w-100">
+
       <div class="card-body">
         <h5 class="card-title text-center">{{ object.name }}</h5>
         <p class="card-text">{{ object.description|safe }}</p>
+      </div>
+
+      <div class="card-body text-center border">
+        {% if user.student %}
+          {% if is_closed %}
+            {% if is_closed == "Concluída" %}
+              <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
+            {% else %}
+              <p class="border border-danger p-2 w-25 text-center m-auto text-danger">Fechada</p>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-primary" href="{% url 'submission_create' schedule_pk object.pk %}">Submeter código</a>
+          {% endif %}
+        {% else %}
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submissionModal"
+                  data-backdrop="static" data-keyboard="false">
+            Testar
+          </button>
+        {% endif %}
       </div>
 
       <div class="table-responsive">
@@ -90,25 +111,6 @@
           {% endfor %}
           </tbody>
         </table>
-      </div>
-
-      <div class="card-footer text-center">
-        {% if user.student %}
-          {% if is_closed %}
-            {% if is_closed == "Concluída" %}
-              <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
-            {% else %}
-              <p class="border border-danger p-2 w-25 text-center m-auto text-danger">Fechada</p>
-            {% endif %}
-          {% else %}
-            <a class="btn btn-primary" href="{% url 'submission_create' schedule_pk object.pk %}">Submeter código</a>
-          {% endif %}
-        {% else %}
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submissionModal"
-                  data-backdrop="static" data-keyboard="false">
-            Testar
-          </button>
-        {% endif %}
       </div>
 
     </div>
