@@ -23,7 +23,7 @@
         <th>Início</th>
         <th>Término</th>
         {% if user.student %}
-          <th class="text-center">Status</th>
+          <th>Status</th>
         {% else %}
           <th>Turma</th>
         {% endif %}
@@ -37,9 +37,9 @@
           <td>{{ object.start_date|date:'d/m/Y H:i' }}</td>
           <td>{{ object.due_date|date:'d/m/Y H:i' }}</td>
           {% if user.student %}
-          <td class="text-center">
-            {% if object.concluded %}<i class="fas fa-check" title="Concluída"></i>
-            {% else %}<i class="fas fa-window-minimize" title="Não concluída"></i>
+          <td class="
+            {% if object.is_closed %} text-danger">Fechada
+            {% else %}text-info">Aberta
             {% endif %}
           </td>
           {% else %}

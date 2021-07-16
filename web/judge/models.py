@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import RESTRICT, CASCADE
+from django.utils import timezone
 
 from accounts.models import User, Professor, Student
 
@@ -92,6 +93,10 @@ class ListSchedule(models.Model):
     class Meta:
         verbose_name = 'Agendamento de Lista'
         verbose_name_plural = 'Agendamentos de Listas'
+
+    @property
+    def is_closed(self):
+        return self.due_date < timezone.now() or timezone.localtime() < self.start_date
 
     def __str__(self):
         return self.question_list.name + ' - ' + self.course_class.__str__()
