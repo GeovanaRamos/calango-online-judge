@@ -12,5 +12,7 @@ class EmailForm(forms.Form):
 
         if not User.objects.filter(email=cd.get('email')).exists():
             raise ValidationError('Este email não está cadastrado na plataforma.')
+        elif not User.objects.get(email=cd.get('email')).is_active:
+            raise ValidationError('Esta conta está inativa.')
 
         return cd
