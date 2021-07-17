@@ -1,7 +1,7 @@
 {% extends "judge/base.html" %}
 
 {% block nav_quest %}
- <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action active">Questões</a>
+  <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action active">Questões</a>
 {% endblock %}
 
 {% block content %}
@@ -12,9 +12,9 @@
       <li class="breadcrumb-item active" aria-current="page">{{ subject_label }}</li>
     </ol>
   </nav>
-
-  <a class="mt-2 ml-3 btn btn-primary float-right" href="{% url 'question_create' %}">Criar questão</a>
-
+  {% if user.professor %}
+    <a class="mt-2 ml-3 btn btn-primary float-right" href="{% url 'question_create' %}">Criar questão</a>
+  {% endif %}
   <h2 class="my-4">Questões</h2>
 
   <div class="table-responsive">

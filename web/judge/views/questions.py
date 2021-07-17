@@ -9,12 +9,10 @@ from judge.forms import QuestionForm, TestCasesFormSet
 from judge.models import Question, ListSchedule
 
 
-@method_decorator([professor_required], name='dispatch')
 class SubjectsListView(TemplateView):
     template_name = 'judge/subject_list.html'
 
 
-@method_decorator([professor_required], name='dispatch')
 class QuestionListView(ListView):
     model = Question
     template_name = 'judge/question_list.html'
@@ -25,7 +23,10 @@ class QuestionListView(ListView):
         return data
 
     def get_queryset(self):
-        return Question.objects.filter(subject=self.kwargs['subject'])
+        if hasattr(self.request.user, 'student'):
+            return Question.objects.filter(subject=self.kwargs['subject'], is_evaluative=False)
+        else:
+            return Question.objects.filter(subject=self.kwargs['subject'])
 
 
 class QuestionDetailView(DetailView):
@@ -34,14 +35,15 @@ class QuestionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        user = self.request.user
+        list_schedule = None
 
         if 'schedule_pk' in self.kwargs:
-            data['schedule_pk'] = self.kwargs['schedule_pk']
             list_schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
-            data['schedule_name'] = list_schedule.question_list.name
-            if hasattr(self.request.user, 'student'):
-                data['is_closed'] = helpers.question_is_closed_to_submit(data['object'], list_schedule,
-                                                                         self.request.user.student)
+            data['schedule'] = list_schedule
+
+        if hasattr(user, 'student'):
+            data['is_concluded'] = helpers.question_is_concluded(data['object'], list_schedule, user.student)
 
         return data
 

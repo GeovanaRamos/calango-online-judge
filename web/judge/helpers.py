@@ -60,13 +60,15 @@ def get_question_status_for_user(user, question, list_schedule):
         return submissions.count()
 
 
-def question_is_closed_to_submit(question, list_schedule, student):
-    if models.Submission.objects.filter(question=question, student=student,
-                                        list_schedule=list_schedule, result=models.Submission.Results.ACCEPTED
-                                        ).exists():
-        return "Concluída"
-    elif timezone.localtime() > list_schedule.due_date or timezone.localtime() < list_schedule.start_date:
-        return "Fechada"
+def question_is_concluded(question, list_schedule, student):
+
+    if list_schedule:
+        if models.Submission.objects.filter(question=question, student=student, list_schedule=list_schedule,
+                                            result=models.Submission.Results.ACCEPTED).exists():
+            return True
+    elif models.Submission.objects.filter(question=question, student=student, course_class=student.active_class,
+                                          result=models.Submission.Results.ACCEPTED).exists():
+            return True
 
     return False
 

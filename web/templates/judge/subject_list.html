@@ -36,7 +36,9 @@
 
 {% block content %}
 
-  <a class="ml-3 btn btn-primary float-right" href="{% url 'question_create' %}">Criar questão</a>
+  {% if user.professor %}
+    <a class="ml-3 btn btn-primary float-right" href="{% url 'question_create' %}">Criar questão</a>
+  {% endif %}
   <h2 class="mb-5">Questões</h2>
 
   <div class="row">

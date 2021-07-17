@@ -1,7 +1,8 @@
 {% extends "judge/base.html" %}
+{% load static %}
 
 {% block nav_list %}
-  {% if schedule_pk %}
+  {% if schedule.pk %}
     <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
   {% else %}
     <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
@@ -9,7 +10,7 @@
 {% endblock %}
 
 {% block nav_quest %}
-  {% if schedule_pk %}
+  {% if schedule.pk %}
     <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action">Questões</a>
   {% else %}
     <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action active">Questões</a>
@@ -29,23 +30,20 @@
       }
 
       @keyframes spin {
-          0% {
-              transform: rotate(0deg);
-          }
-          100% {
-              transform: rotate(360deg);
-          }
+          0% {transform: rotate(0deg);}
+          100% {transform: rotate(360deg);}
       }
   </style>
 {% endblock %}
 
 {% block content %}
 
-  {% if schedule_pk %}
+  {% if schedule.pk %}
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule_pk %}">{{ schedule_name }}</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'schedule_detail' schedule.pk %}">{{ schedule.question_list.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
       </ol>
     </nav>
@@ -71,19 +69,22 @@
 
       <div class="card-body text-center border">
         {% if user.student %}
-          {% if is_closed %}
-            {% if is_closed == "Concluída" %}
-              <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
-            {% else %}
-              <p class="border border-danger p-2 w-25 text-center m-auto text-danger">Fechada</p>
-            {% endif %}
+
+          {% if is_concluded %}
+            <p class="border border-success p-2 w-25 text-center m-auto text-success">Concluída</p>
+          {% elif schedule.is_closed %}
+            <p class="border border-danger p-2 w-25 text-center m-auto text-danger">Fechada</p>
           {% else %}
-            <a class="btn btn-primary" href="{% url 'submission_create' schedule_pk object.pk %}">Submeter código</a>
+            <a class="btn btn-primary"
+               {% if schedule.pk %}href="{% url 'submission_create_schedule' schedule.pk object.pk %}">
+               {% else %}href="{% url 'submission_create' object.pk %}">
+               {% endif %}
+            Submeter código</a>
           {% endif %}
+
         {% else %}
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#submissionModal"
-                  data-backdrop="static" data-keyboard="false">
-            Testar
+                  data-backdrop="static" data-keyboard="false"> Testar
           </button>
         {% endif %}
       </div>
@@ -163,55 +164,5 @@
 
 {% block js %}
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-
-  <script type="text/javascript">
-
-      function init_processing() {
-          $("#modal-close").prop('disabled', true);
-          $("#btn-close").prop('disabled', true);
-          $("#result-box").hide();
-          $('#loader').show();
-
-      }
-
-      function finish_processing() {
-          $('#loader').hide();
-          $("#btn-close").prop('disabled', false);
-          $("#modal-close").prop('disabled', false);
-          $("#result-box").show();
-      }
-
-      $(document).ready(function () {
-          // professor submit
-          $('#btn-submit').click(function (e) {
-              e.preventDefault();
-
-              const code = $("#code").val();
-              if (!code) {
-                  alert("Campo de codigo vazio!");
-                  return;
-              }
-              const question_pk = $(this).attr("data-question-pk");
-
-              init_processing();
-
-              const token = Cookies.get('csrftoken');
-              const postData = {csrfmiddlewaretoken: token, code: code, question_pk: question_pk};
-
-              $.ajax({
-                  method: 'POST',
-                  url: $(this).attr("data-href"),
-                  data: postData,
-                  success: function (response) {
-                      $("#result-box").text(response.result + ": " + response.error_message);
-                      finish_processing();
-                  },
-                  error: function (response) {
-                      finish_processing();
-                      alert("Erro ao julgar submissão.");
-                  },
-              });
-          });
-      });
-  </script>
+  <script src="{% static 'judge/js/question_detail.js' %}"></script>
 {% endblock %}

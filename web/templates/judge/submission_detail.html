@@ -21,7 +21,11 @@
   <div class="container mt-5">
     <p>
       <strong>Nome da questão:</strong>
-      <a href="{% url 'question_detail' object.list_schedule.pk object.question.pk %}">{{ object.question.name }}</a>
+      {% if object.list_schedule %}
+        <a href="{% url 'question_detail_schedule' object.list_schedule.pk object.question.pk %}">{{ object.question.name }}</a>
+      {% else %}
+        <a href="{% url 'question_detail' object.question.pk %}">{{ object.question.name }}</a>
+      {% endif %}
     </p>
     <p><strong>Submetido em:</strong> {{ object.submitted_at|date:'d/m/Y H:i' }}</p>
     <p><strong>Julgado em:</strong> {{ object.judged_at|date:'d/m/Y H:i' }}</p>

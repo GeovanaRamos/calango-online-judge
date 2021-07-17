@@ -50,11 +50,11 @@
         <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
       {% endblock %}
 
-      {% if user.professor %}
-
-        {% block nav_quest %}
+      {% block nav_quest %}
           <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action">Questões</a>
-        {% endblock %}
+      {% endblock %}
+
+      {% if user.professor %}
 
         {% block nav_class %}
           <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action">Turmas</a>
@@ -88,8 +88,8 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="{% url 'home' %}">Início</a>
           <a class="dropdown-item" href="{% url 'schedule_list' %}">Listas</a>
+          <a class="dropdown-item" href="{% url 'subject_list' %}">Questões</a>
           {% if user.professor %}
-            <a class="dropdown-item" href="{% url 'subject_list' %}">Questões</a>
             <a class="dropdown-item" href="{% url 'class_list' %}">Turmas</a>
           {% else %}
             <a class="dropdown-item" href="{% url 'submission_list' %}">Submissões</a>

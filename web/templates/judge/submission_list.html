@@ -18,7 +18,8 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule.pk %}">{{ schedule.question_list.name }}</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'schedule_detail' schedule.pk %}">{{ schedule.question_list.name }}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'results_detail' schedule.pk %}">Resultados</a></li>
         <li class="breadcrumb-item active" aria-current="page">Submissões</li>
       </ol>
@@ -51,9 +52,15 @@
         <tr>
           <td><a href="{% url 'submission_detail' object.pk %}">{{ object }}</a></td>
           <td>
-            <a href="{% url 'question_detail' object.list_schedule.pk object.question.pk %}">
-              {{ object.question.name }}
-            </a>
+            {% if object.list_schedule %}
+              <a href="{% url 'question_detail_schedule' object.list_schedule.pk object.question.pk %}">
+                {{ object.question.name }}
+              </a>
+            {% else %}
+              <a href="{% url 'question_detail' object.question.pk %}">
+                {{ object.question.name }}
+              </a>
+            {% endif %}
           </td>
           <td>{{ object.submitted_at|date:'d/m/Y H:i' }}</td>
           <td>{{ object.judged_at|date:'d/m/Y H:i' }}</td>

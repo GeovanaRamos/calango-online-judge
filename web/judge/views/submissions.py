@@ -27,15 +27,15 @@ class SubmissionCreateView(CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         self.question = Question.objects.get(pk=kwargs['question_pk'])
-        self.list_schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
+        if 'schedule_pk' in kwargs:
+            self.list_schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
         return super(SubmissionCreateView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         data = super(SubmissionCreateView, self).get_context_data(**kwargs)
-        data['schedule_pk'] = self.list_schedule.pk
-        data['schedule_name'] = self.list_schedule.question_list.name
-        data['question_name'] = self.question.name
-        data['question_pk'] = self.question.pk
+        if 'schedule_pk' in self.kwargs:
+            data['schedule'] = self.list_schedule
+        data['question'] = self.question
         return data
 
     def form_valid(self, form):
@@ -49,7 +49,12 @@ class SubmissionCreateView(CreateView):
         form.instance.student = self.request.user.student
         form.instance.result = Submission.Results.WAITING
         form.instance.question = self.question
-        form.instance.list_schedule = self.list_schedule
+
+        if hasattr(self, 'list_schedule'):
+            form.instance.list_schedule = self.list_schedule
+        else:
+            form.instance.course_class = self.request.user.student.active_class
+
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -69,7 +74,10 @@ class SubmissionListView(ListView):
                 '-submitted_at')
         else:
             schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
-            return helpers.get_submissions_for_user_and_schedules(user, schedules).order_by('-submitted_at')
+            evaluative = helpers.get_submissions_for_user_and_schedules(user, schedules)
+            non_evaluative = Submission.objects.filter(student=user.student, course_class=user.student.active_class)
+            submissions = evaluative.union(non_evaluative)
+            return submissions.order_by('-submitted_at')
 
     def get_context_data(self, **kwargs):
         data = super(SubmissionListView, self).get_context_data(**kwargs)

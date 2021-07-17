@@ -13,7 +13,8 @@ urlpatterns = [
     path('schedules/update/<int:pk>/', views.ScheduleUpdateView.as_view(), name='schedule_update'),
     path('schedules/delete/<int:pk>/', views.ScheduleDeleteView.as_view(), name='schedule_delete'),
     path('schedules/<int:pk>/results/', views.ResultsDetailView.as_view(), name='results_detail'),
-    path('schedules/<int:schedule_pk>/questions/<int:pk>/', views.QuestionDetailView.as_view(), name='question_detail'),
+    path('schedules/<int:schedule_pk>/questions/<int:pk>/', views.QuestionDetailView.as_view(),
+         name='question_detail_schedule'),
 
     path('lists/create/', views.ListCreateView.as_view(), name='list_create'),
 
@@ -22,10 +23,11 @@ urlpatterns = [
     path('questions/<int:pk>/', views.QuestionDetailView.as_view(), name='question_detail'),
     path('questions/<subject>/', views.QuestionListView.as_view(), name='question_list'),
 
-
     path('submissions/', views.SubmissionListView.as_view(), name='submission_list'),
     path('submissions/<int:pk>/', views.SubmissionDetailView.as_view(), name='submission_detail'),
     path('schedules/<schedule_pk>/questions/<question_pk>/submissions/create/', views.SubmissionCreateView.as_view(),
+         name='submission_create_schedule'),
+    path('questions/<question_pk>/submissions/create/', views.SubmissionCreateView.as_view(),
          name='submission_create'),
     path('submissions/schedule/<schedule_pk>/student/<student_pk>/', views.SubmissionListView.as_view(),
          name='submission_list'),

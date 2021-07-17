@@ -1,20 +1,47 @@
 {% extends "judge/base.html" %}
 
 {% block nav_list %}
-  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% if schedule.pk %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% else %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
+  {% endif %}
 {% endblock %}
+
+{% block nav_quest %}
+  {% if schedule.pk %}
+    <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action">Questões</a>
+  {% else %}
+    <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action active">Questões</a>
+  {% endif %}
+{% endblock %}
+
 
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule_pk %}">{{ schedule_name }}</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'question_detail' schedule_pk question_pk %}">{{ question_name }}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Nova Submissão</li>
-    </ol>
-  </nav>
+
+  {% if schedule.pk %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'schedule_detail' schedule.pk %}">{{ schedule.question_list.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'question_detail_schedule' schedule.pk question.pk %}">{{ question.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nova Submissão</li>
+      </ol>
+    </nav>
+  {% else %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Questões</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'question_list' question.subject %}">{{ question.get_subject_display }}</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'question_detail' question.pk %}">{{ question.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Nova Submissão</li>
+      </ol>
+    </nav>
+  {% endif %}
 
   <h2 class="my-4">Nova Submissão</h2>
   <div class="container mt-2">
