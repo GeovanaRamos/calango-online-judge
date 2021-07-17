@@ -20,12 +20,6 @@ class ScheduleListView(ListView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        user = self.request.user
-
-        if hasattr(user, 'student'):
-            for ls in data['object_list']:
-                ls.concluded = helpers.student_has_concluded_list_schedule(user.student, ls)
-
         return data
 
 
