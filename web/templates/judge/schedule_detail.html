@@ -1,8 +1,15 @@
 {% extends "judge/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'core/css/percircle.css' %}">
+{% endblock %}
 
 {% block nav_list %}
   <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
 {% endblock %}
+
 
 {% block content %}
 
@@ -16,22 +23,27 @@
   {% if user.professor %}
     {#    <a class="ml-3 btn btn-danger float-right" href="{% url 'schedule_delete' object.pk %}">#}
     {#      Deletar agendamento</a>#}
-    <a class="mr-3 ml-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
+    <a class="mt-2 mr-3 ml-3 btn btn-primary float-right" href="{% url 'schedule_update' object.pk %}">
       Editar agendamento</a>
-    <a class="mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}">
+    <a class="mt-2 mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}">
       Ver resultados</a>
   {% endif %}
 
-  <h2 class="mb-5">Detalhes da Lista</h2>
-  <div class="container mt-5">
+  <h2 class="my-4">Detalhes da Lista</h2>
+
+  <div class="container">
+    {% if percentage > 0 %}
+       {% language 'en'%}
+         <div id="circle" data-percent="{{ percentage|floatformat:1 }}" class="mt-3 mr-3 green"></div>
+       {% endlanguage %}
+    {% endif %}
     <p><strong>Nome:</strong> {{ object.question_list.name }}</p>
     <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
     <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>
     <p><strong>Turma:</strong> {{ object.course_class }}</p>
-    {% if user.student %}
-      <p><strong>Resultado:</strong> {{ percentage|floatformat:2 }}%</p>
-    {% endif %}
+
   </div>
+
   <div class="table-responsive">
     <table class="table table-hover">
 
@@ -40,7 +52,7 @@
         <th>Nome da questão</th>
         <th>Assunto da questão</th>
         {% if user.student %}
-          <th>Status</th>
+          <th>Último resultado</th>
         {% else %}
           <th>Conclusões</th>
         {% endif %}
@@ -50,7 +62,7 @@
       <tbody>
       {% for question in questions %}
         <tr>
-          <td><a href="{% url 'question_detail' object.pk question.pk %}">{{ question.name }}</a></td>
+          <td><a href="{% url 'question_detail_schedule' object.pk question.pk %}">{{ question.name }}</a></td>
           <td>{{ question.get_subject_display }}</td>
           <td>{{ question.result }}</td>
         </tr>
@@ -60,3 +72,13 @@
     </table>
   </div>
 {% endblock content %}
+
+{% block js %}
+  <script src="{% static 'core/js/percircle.js' %}"></script>
+  <script type="text/javascript">
+      $(function(){
+          $("#circle").percircle();
+      });
+  </script>
+
+{% endblock %}
