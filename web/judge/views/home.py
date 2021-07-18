@@ -12,6 +12,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         user = self.request.user
+        classes_count = 0
 
         if hasattr(user, 'professor') and user.professor.active_classes:
             schedules = helpers.get_list_schedules_for_user(user)
@@ -28,7 +29,7 @@ class HomeView(TemplateView):
                 data['total_percentage'] = percentage_sum/percentage_count
         else:
             schedules = ListSchedule.objects.none()
-            classes_count = 0
+
 
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
         submissions_results = submissions.order_by().values('result').annotate(count=Count('pk', distinct=True))
