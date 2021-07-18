@@ -20,7 +20,16 @@ class ClassListView(ListView):
     template_name = 'judge/class_list.html'
 
     def get_queryset(self):
-        return self.request.user.professor.classes.all()
+        return self.request.user.professor.classes.filter(is_active=True)
+
+
+@method_decorator([professor_required], name='dispatch')
+class ClassInactiveListView(ListView):
+    model = CourseClass
+    template_name = 'judge/class_inactive_list.html'
+
+    def get_queryset(self):
+        return self.request.user.professor.classes.filter(is_active=False)
 
 
 @method_decorator([professor_required], name='dispatch')
@@ -42,9 +51,17 @@ class StudentFormView(FormView):
     template_name = 'judge/student_form.html'
     success_url = reverse_lazy('class_list')
 
+    def dispatch(self, request, *args, **kwargs):
+        self.course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+        return super(StudentFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        data = super(StudentFormView, self).get_context_data(**kwargs)
+        data['course_class'] = self.course_class
+        return data
+
     def form_valid(self, form):
-        course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
-        async_task(create_or_update_student, form.cleaned_data['students'], course_class)
+        async_task(create_or_update_student, form.cleaned_data['students'], self.course_class)
         return HttpResponseRedirect(self.get_success_url())
 
 
