@@ -107,6 +107,8 @@ class ListSchedule(models.Model):
 
 
 class Submission(models.Model):
+    NO_SUBMISSION = "Sem Submissão"
+
     class Results(models.TextChoices):
         # Values must NOT be changed as they are equal to judge service responses
         ACCEPTED = 'ACCEPTED', "Aceito"

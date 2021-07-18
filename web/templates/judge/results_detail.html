@@ -41,13 +41,14 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a>
+      </li>
       <li class="breadcrumb-item active" aria-current="page">Resultados</li>
     </ol>
   </nav>
 
   <a class="mt-2 mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
-      Download CSV</a>
+    Download CSV</a>
 
   <h2 class="my-4">Resultados da Lista</h2>
   <div class="container">
@@ -57,62 +58,50 @@
     <p><strong>Turma:</strong> {{ object.course_class }}</p>
   </div>
 
-  <div class="container">
-    {% for student in students %}
-      <div class="wrapper center-block">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <div class="panel panel-default">
-            <div class="panel-heading active" role="tab" id="headingOne">
-              <h6 class="panel-title border">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ student.pk }}"
-                   aria-expanded="false" aria-controls="collapseOne" id="accordion-toggle">
-                  <div class="row">
-                    <div class="col">
-                      {{ student.registration_number }}
-                    </div>
-                    <div class="col-6">
-                      {{ student.user.full_name }}
-                    </div>
-                    <div class="col">
-                      {{ student.percentage|floatformat:2 }}%
-                    </div>
-                  </div>
-                </a>
-              </h6>
-            </div>
-            <div id="collapse-{{ student.pk }}" class="panel-collapse collapse in" role="tabpanel"
-                 aria-labelledby="headingOne">
-              <div class="row panel-body m-2">
-                <p class="small bg-light w-100 text-center text-secondary">
-                  <a href="{% url 'submission_list' object.pk student.pk %}">Clique aqui </a>
-                  para ver todas as submissões deste aluno para esta lista agendada ou veja o resumo abaixo.
-                </p>
-                <div class="table-responsive w-100">
-                  <table class="table table-hover">
-                    <thead>
-                    <tr>
-                      <th>Nome da questão</th>
-                      <th>Status</th>
-                    </tr>
-                    </thead>
+  <div class="table-responsive">
 
-                    <tbody>
-                    {% for question in student.questions %}
-                      <tr>
-                        <td>{{ question.name }}</td>
-                        <td>{{ question.result }}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">Matrícula</th>
+        <th scope="col">Aluno</th>
+        {% for question in object.question_list.questions.all|dictsort:"pk" %}
+          <th scope="col" data-toggle="tooltip" title="{{ question.name }}">#{{ question.pk }}</th>
+        {% endfor %}
+        <th scope="col">Resultado</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for student in students %}
+        <tr>
+          <td>{{ student.registration_number }}</td>
+          <td><a href="{% url 'submission_list' object.pk student.pk %}">{{ student.user.full_name }}</a></td>
+          {% for question in student.questions|dictsort:"pk" %}
+            <td>
+              {% if question.result == accepted_label %}
+                <i class="fas fa-check text-success" data-toggle="tooltip" title="{{ question.name }}"></i>
+              {% elif question.result == no_submission_label %}
+                <span data-toggle="tooltip" data-placement="bottom" title="{{ question.name }}">- </span>
+              {% else %}
+                <i class="fas fa-times text-danger" data-toggle="tooltip" title="{{ question.name }}"></i>
+              {% endif %}
+            </td>
+          {% endfor %}
+          <td>{{ student.percentage|floatformat:2 }}%</td>
+        </tr>
+      {% endfor %}
 
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
+      </tbody>
+    </table>
+
   </div>
 
 {% endblock content %}
+
+{% block js %}
+  <script>
+      $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+      })
+  </script>
+{% endblock js %}

@@ -49,7 +49,7 @@ def get_question_status_for_user(user, question, list_schedule):
         if submission.exists():
             return submission.latest('submitted_at').get_result_display()
         else:
-            return "Sem Submissão"
+            return models.Submission.NO_SUBMISSION
     else:
         # returns the count of accepted submissions of the class
         submissions = models.Submission.objects.filter(

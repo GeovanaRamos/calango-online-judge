@@ -110,6 +110,8 @@ class ResultsDetailView(DetailView):
             students.append(s)
 
         data['students'] = students
+        data['accepted_label'] = Submission.Results.ACCEPTED.label
+        data['no_submission_label'] = Submission.NO_SUBMISSION
         return data
 
     def get(self, request, *args, **kwargs):
