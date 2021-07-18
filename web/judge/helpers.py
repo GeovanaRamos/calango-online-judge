@@ -13,8 +13,8 @@ def get_list_schedules_for_user(user):
             start_date__lte=timezone.localtime()
         ).order_by('-start_date', 'due_date')
     elif hasattr(user, 'professor'):
-        # show list of all of the professor's classes
-        classes = user.professor.classes.all()
+        # show list of all of the professor's active classes
+        classes = user.professor.active_classes
         return models.ListSchedule.objects.filter(
             course_class__in=classes).distinct().order_by('-start_date', 'due_date')
     elif user.is_superuser:

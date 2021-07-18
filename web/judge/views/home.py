@@ -13,12 +13,9 @@ class HomeView(TemplateView):
         data = super().get_context_data(**kwargs)
         user = self.request.user
 
-        if hasattr(user, 'professor') and 'class_pk' in self.kwargs:
-            course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
-            schedules = course_class.schedules
-        elif hasattr(user, 'professor') and 'class_pk' not in self.kwargs and user.professor.active_classes:
-            course_class = user.professor.active_classes.first()
-            schedules = course_class.schedules
+        if hasattr(user, 'professor') and user.professor.active_classes:
+            schedules = helpers.get_list_schedules_for_user(user)
+            classes_count = user.professor.active_classes.count()
         elif hasattr(user, 'student') and user.student.active_class:
             course_class = user.student.active_class
             schedules = course_class.schedules.filter(start_date__lte=timezone.localtime())
@@ -30,8 +27,8 @@ class HomeView(TemplateView):
                     percentage_count += 1
                 data['total_percentage'] = percentage_sum/percentage_count
         else:
-            course_class = None
             schedules = ListSchedule.objects.none()
+            classes_count = 0
 
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
         submissions_results = submissions.order_by().values('result').annotate(count=Count('pk', distinct=True))
@@ -45,7 +42,7 @@ class HomeView(TemplateView):
                 data['second_count'] += counting_obj['count']
 
         data['first_count'] = schedules.count()
-        data['course_class'] = course_class
+        data['classes_count'] = classes_count
 
         return data
 

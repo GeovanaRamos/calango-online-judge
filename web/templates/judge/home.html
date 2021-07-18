@@ -9,28 +9,12 @@
 
 {% block content %}
 
-  {% if user.professor and course_class %}
-    <div class="float-right">
-      <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-          {{ course_class }}
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {% for class in user.professor.classes.all %}
-            <a class="dropdown-item" href="{% url 'home' class.pk %}">{{ class }}</a>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
   <h2>Calango Online Judge</h2>
   <p class="ml-1"> Olá, {{ user.full_name.split|first }}.
     {% if user.student and user.student.active_class %}
       Veja seu desempenho e estatísticas de sua turma atual {{ user.student.active_class }}.
-    {% elif user.professor and course_class %}
-      Veja as estatísticas da sua turma {{ course_class }}.
+    {% elif user.professor %}
+      Veja as estatísticas das suas turmas ativas.
     {% endif %}
 
   </p>
@@ -41,11 +25,19 @@
       <div class="row">
         <div class="col">
           <div class="box mb-3">
-            <i class="fas fa-list-alt fa-fw bg-primary"></i>
-            <div class="info">
-              <h3>{{ first_count }}</h3>
-              <p>Listas de Exercícios</p>
-            </div>
+            {% if user.student %}
+              <i class="fas fa-list-alt fa-fw bg-primary"></i>
+              <div class="info">
+                <h3>{{ first_count }}</h3>
+                <p>Listas de Exercícios</p>
+              </div>
+            {% else %}
+              <i class="fas fa-graduation-cap fa-fw bg-primary"></i>
+              <div class="info">
+                <h3>{{ classes_count }}</h3>
+                <p>Turmas Ativas</p>
+              </div>
+            {% endif %}
           </div>
         </div>
         <div class="col">
