@@ -7,7 +7,15 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2 class="mb-3">Adicionar Alunos</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item active" aria-current="page">Adicionar Alunos</li>
+    </ol>
+  </nav>
+
+  <h2 class="my-4">Adicionar Alunos</h2>
   <p>
     A adição de alunos será realizada em segundo plano e cada aluno receberá um email com uma senha aleatória
   para acessar o COJ. Uma vez que você desative ou remova o aluno da turma, ele perderá acesso ao sistema até que

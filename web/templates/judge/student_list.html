@@ -6,7 +6,15 @@
 
 {% block content %}
 
-  <h2 class="mb-5">Alunos da Turma {{ course_class }}</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item active" aria-current="page">Alunos</li>
+    </ol>
+  </nav>
+
+  <h2 class="my-4">Alunos da Turma {{ course_class }}</h2>
 
   <div class="table-responsive">
     <table class="table table-hover">

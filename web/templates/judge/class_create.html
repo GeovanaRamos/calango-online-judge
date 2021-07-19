@@ -7,7 +7,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2 class="mb-5">Nova Turma</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Nova Turma</li>
+    </ol>
+  </nav>
+
+  <h2 class="my-4">Nova Turma</h2>
 
   <form method="post" >
     {% csrf_token %}
