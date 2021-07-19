@@ -143,6 +143,10 @@ class ResultsDetailView(DetailView):
         data['students'] = students
         data['accepted_label'] = Submission.Results.ACCEPTED.label
         data['no_submission_label'] = Submission.NO_SUBMISSION
+
+        if 'class_pk' in self.kwargs:
+            data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+
         return data
 
     def get(self, request, *args, **kwargs):

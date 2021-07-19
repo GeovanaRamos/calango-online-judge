@@ -38,14 +38,26 @@
 
 {% block content %}
 
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">Resultados</li>
-    </ol>
-  </nav>
+  {% if 'classes' in request.path %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+        <li class="breadcrumb-item"><a href="{% url 'schedule_class_list' course_class.pk %}">Listas Agendadas</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'schedule_class_detail' course_class.pk object.pk %}">{{ object.question_list.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Resultados</li>
+      </ol>
+    </nav>
+  {% else %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'schedule_list' %}">Listas Agendadas</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'schedule_detail' object.pk %}">{{ object.question_list.name }}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Resultados</li>
+      </ol>
+    </nav>
+  {% endif %}
 
   <a class="mt-2 mr-3 btn btn-primary float-right" href="{% url 'results_detail' object.pk %}?format=csv">
     Download CSV</a>
@@ -75,7 +87,12 @@
       {% for student in students %}
         <tr>
           <td>{{ student.registration_number }}</td>
-          <td><a href="{% url 'submission_list' object.pk student.pk %}">{{ student.user.full_name }}</a></td>
+          {% if 'classes' in request.path %}
+            <td>{{ student.user.full_name }}</td>
+          {% else %}
+            <td><a href="{% url 'submission_list' object.pk student.pk %}">{{ student.user.full_name }}</a></td>
+          {% endif %}
+
           {% for question in student.questions|dictsort:"pk" %}
             <td>
               {% if question.result == accepted_label %}
