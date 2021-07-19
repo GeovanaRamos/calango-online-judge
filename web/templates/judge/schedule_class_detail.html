@@ -1,0 +1,58 @@
+{% extends "judge/base.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block nav_class %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block content %}
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item"><a href="{% url 'schedule_class_list' course_class.pk %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ object.question_list.name }}</li>
+    </ol>
+  </nav>
+
+  <a class="mt-2 btn btn-primary float-right" href="{% url 'results_class_detail' course_class.pk object.pk %}">
+    Ver resultados</a>
+
+
+  <h2 class="my-4">Detalhes da Lista</h2>
+
+  <div class="container">
+    <p><strong>Nome:</strong> {{ object.question_list.name }}</p>
+    <p><strong>Início:</strong> {{ object.start_date|date:'d/m/Y H:i' }}</p>
+    <p><strong>Término:</strong> {{ object.due_date|date:'d/m/Y H:i' }}</p>
+    <p><strong>Turma:</strong> {{ object.course_class }}</p>
+
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Nome da questão</th>
+        <th>Assunto da questão</th>
+        <th>Conclusões</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for question in questions %}
+        <tr>
+          <td>{{ question.name }}</td>
+          <td>{{ question.get_subject_display }}</td>
+          <td>{{ question.result }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+{% endblock content %}

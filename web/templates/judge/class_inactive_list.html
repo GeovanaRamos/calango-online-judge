@@ -1,0 +1,45 @@
+{% extends "judge/base.html" %}
+
+{% block nav_class %}
+  <a href="#" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Inativas</li>
+    </ol>
+  </nav>
+
+  <h2 class="my-4">Turmas Inativas</h2>
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Disciplina</th>
+        <th>Período</th>
+        <th>Turma</th>
+        <th>Matriculados</th>
+        <th> </th>
+        <th> </th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for object in object_list %}
+        <tr>
+          <td>{{ object.get_discipline_display }}</td>
+          <td>{{ object.year }}/{{ object.semester }}</td>
+          <td>{{ object.identifier }}</td>
+          <td>{{ object.students.all|length }}</td>
+          <td><a href="{% url 'student_list' object.pk %}">Ver alunos</a></td>
+          <td><a href="{% url 'schedule_class_list' object.pk %}">Ver listas</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+{% endblock content %}

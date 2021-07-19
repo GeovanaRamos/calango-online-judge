@@ -15,39 +15,44 @@
           min-width: 300px;
 
       }
+      .nounderline {
+          text-decoration: none !important
+      }
   </style>
 {% endblock %}
 
 {% block content %}
-  {% if user.professor %}
-    <a class="btn btn-primary float-right" href="{% url 'class_create' %}">Criar turma</a>
-  {% endif %}
+
+  <a class="ml-3 btn btn-primary float-right" href="{% url 'class_create' %}">Criar turma</a>
+  <a class="mr-3 btn btn-primary float-right" href="{% url 'class_inactive_list' %}">Turmas inativas</a>
+
 
   <h2 class="mb-5">Turmas</h2>
 
   <div class="row">
     {% for object in object_list %}
       <div class="col d-flex justify-content-center mb-3">
-      <div class="box text-center">
-        <h5>{{ object.discipline }} - {{ object.year }}/{{ object.semester }}<br></h5>
-        <h6>Turma {{ object.identifier }}</h6>
-        <p>{{  object.students.all|length }} alunos </p>
-        <ul class="list-inline">
-          <li class="list-inline-item">
-            <a title="Ver alunos" href="{% url 'student_list' object.pk %}">
-              <i class="fas fa-graduation-cap fa-lg m-2"></i>
-            </a>
-            <a href="{% url 'student_form' object.pk %}" title="Adicionar alunos">
-              <i class="fas fa-user-plus fa-lg m-2"></i>
-            </a>
-            {% if object.is_active %}
-              <a href="{% url 'class_delete' object.pk %}" title="Desativar turma">
-                <i class="fas fa-trash fa-lg m-2"></i>
+        <div class="box text-center">
+          <h5>{{ object.discipline }} - {{ object.year }}/{{ object.semester }}<br></h5>
+          <h6>Turma {{ object.identifier }}</h6>
+          <p>{{ object.students.all|length }} alunos </p>
+          <ul class="list-inline">
+            <li class="list-inline-item">
+              <a class="nounderline" title="Ver alunos" href="{% url 'student_list' object.pk %}">
+                <i class="fas fa-graduation-cap fa-lg m-2"></i>
               </a>
-            {% endif %}
-          </li>
-        </ul>
-      </div>
+              <a class="nounderline" href="{% url 'student_form' object.pk %}" title="Adicionar alunos">
+                <i class="fas fa-user-plus fa-lg m-2"></i>
+              </a>
+              <a class="nounderline" href="{% url 'schedule_class_list' object.pk %}" title="Listas">
+                <i class="fas fa-list-alt fa-lg m-2"></i>
+              </a>
+              <a class="nounderline" href="{% url 'class_delete' object.pk %}" title="Desativar turma">
+                <i class="fas fa-ban fa-lg m-2"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     {% endfor %}
 
