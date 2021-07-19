@@ -56,6 +56,27 @@ class ScheduleDetailView(DetailView):
 
 
 @method_decorator([professor_required], name='dispatch')
+class ScheduleClassDetailView(DetailView):
+    model = ListSchedule
+    template_name = 'judge/schedule_class_detail.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        questions = self.object.question_list.questions.order_by('pk').all()
+
+        question_conclusions = []
+        for question in questions:
+            question.result = Submission.objects.filter(result=Submission.Results.ACCEPTED, question=question,
+                                                        list_schedule=data['object']).count()
+            question_conclusions.append(question)
+
+        data['questions'] = question_conclusions
+        data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+
+        return data
+
+
+@method_decorator([professor_required], name='dispatch')
 class ListCreateView(CreateView):
     model = QuestionList
     form_class = ListForm

@@ -10,6 +10,8 @@ urlpatterns = [
     path('schedules/', views.ScheduleListView.as_view(), name='schedule_list'),
     path('classes/<int:class_pk>/schedules/', views.ScheduleClassListView.as_view(), name='schedule_class_list'),
     path('schedules/<int:pk>/', views.ScheduleDetailView.as_view(), name='schedule_detail'),
+    path('classes/<int:class_pk>/schedules/<int:pk>', views.ScheduleClassDetailView.as_view(),
+         name='schedule_class_detail'),
     path('schedules/create/', views.ScheduleCreateView.as_view(), name='schedule_create'),
     path('schedules/update/<int:pk>/', views.ScheduleUpdateView.as_view(), name='schedule_update'),
     path('schedules/delete/<int:pk>/', views.ScheduleDeleteView.as_view(), name='schedule_delete'),
