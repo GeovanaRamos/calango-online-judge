@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from judge import helpers
 from judge.decorators import professor_required
 from judge.forms import ListForm, ScheduleForm
-from judge.models import ListSchedule, QuestionList, Submission
+from judge.models import ListSchedule, QuestionList, Submission, CourseClass
 
 
 class ScheduleListView(ListView):
@@ -18,8 +18,18 @@ class ScheduleListView(ListView):
     def get_queryset(self):
         return helpers.get_list_schedules_for_user(self.request.user)
 
+
+@method_decorator([professor_required], name='dispatch')
+class ScheduleClassListView(ListView):
+    model = ListSchedule
+    template_name = 'judge/schedule_class_list.html'
+
+    def get_queryset(self):
+        return ListSchedule.objects.filter(course_class=self.kwargs['class_pk'])
+
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])
         return data
 
 
