@@ -1,5 +1,7 @@
+import csv
 import re
 
+from django.http import HttpResponse
 from django.utils import timezone
 from judge import models
 
@@ -61,14 +63,13 @@ def get_question_status_for_user(user, question, list_schedule):
 
 
 def question_is_concluded(question, list_schedule, student):
-
     if list_schedule:
         if models.Submission.objects.filter(question=question, student=student, list_schedule=list_schedule,
                                             result=models.Submission.Results.ACCEPTED).exists():
             return True
     elif models.Submission.objects.filter(question=question, student=student, course_class=student.active_class,
                                           result=models.Submission.Results.ACCEPTED).exists():
-            return True
+        return True
 
     return False
 
@@ -84,14 +85,59 @@ def get_student_acceptance_percentage(student, list_schedule):
     return correct / count * 100
 
 
+def get_schedule_question_info_for_user(list_schedule, user):
+    questions = list_schedule.question_list.questions.order_by('pk').all()
+    question_conclusions = []
+    for question in questions:
+        question.result = get_question_status_for_user(user, question, list_schedule)
+        question_conclusions.append(question)
+    return question_conclusions
+
+
+def get_students_and_results(list_schedule):
+    students = []
+    for s in list_schedule.course_class.students.all():
+        s.questions = list_schedule.question_list.questions.all()
+        count, correct = 0, 0
+        for q in s.questions:
+            q.sub_count = models.Submission.objects.filter(student=s, question=q, list_schedule=list_schedule).count()
+            q.result = get_question_status_for_user(s.user, q, list_schedule)
+            if q.result == models.Submission.Results.ACCEPTED.label:
+                correct += 1
+            count += 1
+        s.percentage = correct / count * 100
+        students.append(s)
+    return students
+
+
+def get_all_active_submissions_for_student(student):
+    schedules = student.active_class.schedules if student.active_class else models.ListSchedule.objects.none()
+    evaluative = get_submissions_for_user_and_schedules(student.user, schedules)
+    non_evaluative = models.Submission.objects.filter(student=student, course_class=student.active_class)
+    submissions = evaluative.union(non_evaluative)
+    return submissions.order_by('-submitted_at')
+
+
 def get_judge_post_data(code, question_pk):
     test_cases = models.TestCase.objects.filter(question__pk=question_pk)
 
     cases = []
     for case in test_cases:
         cases.append({
-                "input": re.split('\s*\\n\s*', case.inputs.replace("\r", "")),
-                "output": case.output.replace("\r", "")
+            "input": re.split('\s*\\n\s*', case.inputs.replace("\r", "")),
+            "output": case.output.replace("\r", "")
         })
 
     return {"code": code, "cases": cases}
+
+
+def export_csv_file(students, list_schedule):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=' + list_schedule.__str__() + '.csv'
+
+    writer = csv.writer(response)
+
+    for student in students:
+        writer.writerow([student.registration_number, student.user.full_name, student.percentage])
+
+    return response

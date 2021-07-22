@@ -65,19 +65,18 @@ class SubmissionListView(ListView):
     model = Submission
     template_name = 'judge/submission_list.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'student_pk' in kwargs and hasattr(self.request.user, 'professor'):
+            self.student = Student.objects.get(pk=kwargs['student_pk'])
+            self.schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
+        return super(SubmissionListView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
-        user = self.request.user
-        if 'schedule_pk' in self.kwargs and hasattr(user, 'professor'):
-            self.student = Student.objects.get(pk=self.kwargs['student_pk'])
-            self.schedule = ListSchedule.objects.get(pk=self.kwargs['schedule_pk'])
+        if 'schedule_pk' in self.kwargs and hasattr(self.request.user, 'professor'):
             return Submission.objects.filter(student=self.student, list_schedule=self.schedule).order_by(
                 '-submitted_at')
         else:
-            schedules = user.student.active_class.schedules if user.student.active_class else ListSchedule.objects.none()
-            evaluative = helpers.get_submissions_for_user_and_schedules(user, schedules)
-            non_evaluative = Submission.objects.filter(student=user.student, course_class=user.student.active_class)
-            submissions = evaluative.union(non_evaluative)
-            return submissions.order_by('-submitted_at')
+            return helpers.get_all_active_submissions_for_student(self.request.user.student)
 
     def get_context_data(self, **kwargs):
         data = super(SubmissionListView, self).get_context_data(**kwargs)
