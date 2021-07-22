@@ -49,6 +49,7 @@
 
       <thead>
       <tr>
+        <th>Identificador</th>
         <th>Nome da questão</th>
         <th>Assunto da questão</th>
         {% if user.student %}
@@ -62,6 +63,7 @@
       <tbody>
       {% for question in questions %}
         <tr>
+          <td><strong>#{{ question.pk }}</strong></td>
           <td><a href="{% url 'question_detail_schedule' object.pk question.pk %}">{{ question.name }}</a></td>
           <td>{{ question.get_subject_display }}</td>
           <td>{{ question.result }}</td>

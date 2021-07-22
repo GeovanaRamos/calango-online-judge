@@ -15,23 +15,31 @@
   {% if user.professor %}
     <a class="mt-2 ml-3 btn btn-primary float-right" href="{% url 'question_create' %}">Criar questão</a>
   {% endif %}
-  <h2 class="my-4">Questões</h2>
+  <h2 class="my-4">{{ subject_label }}</h2>
 
   <div class="table-responsive">
     <table class="table table-hover">
 
       <thead>
       <tr>
+        <th>Identificador</th>
         <th>Nome da questão</th>
-        <th>Assunto da questão</th>
+        {% if user.professor %}
+          <th>Tipo</th>
+        {% endif %}
       </tr>
       </thead>
 
       <tbody>
       {% for question in object_list %}
         <tr>
+          <th><strong>#{{ question.pk }}</strong></th>
           <td><a href="{% url 'question_detail' question.pk %}">{{ question.name }}</a></td>
-          <td>{{ question.get_subject_display }}</td>
+          {% if user.professor and question.is_evaluative %}
+            <td>Avaliativa</td>
+          {% elif user.professor %}
+            <td>Avulsa</td>
+          {% endif %}
         </tr>
       {% endfor %}
       </tbody>
