@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -18,7 +19,6 @@ class ForgotPasswordView(FormView):
         user = User.objects.get(email=form.cleaned_data['email'])
         password = User.objects.make_random_password()
         user.set_password(password)
-        user.save()
 
         subject = 'COJ - Recuperação de senha'
         data = {'full_name': user.full_name, 'password': password}
@@ -27,7 +27,13 @@ class ForgotPasswordView(FormView):
         from_email = settings.EMAIL_HOST_USER
         recipient_list = [user.email, ]
 
-        send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        try:
+            send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message)
+        except Exception:
+            messages.add_message(self.request, messages.ERROR, 'Erro ao enviar email. Contacte o administrador.')
+        else:
+            user.save()
+            messages.add_message(self.request, messages.SUCCESS, 'Email enviado com sucesso!')
 
         return super(ForgotPasswordView, self).form_valid(form)
 

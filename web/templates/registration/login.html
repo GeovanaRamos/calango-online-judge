@@ -32,18 +32,21 @@
           <img src="{% static 'core/images/unb.png' %}" width="70px" class="float-right mt-2">
         </span>
 
-        {% if next %}
-          <p class="text-center text-danger mb-2 small">
-            {% if user.is_authenticated %}
-              Você não tem permissão para acessar esta página.
-            {% endif %}
-          </p>
-        {% endif %}
+        <p class="text-center text-danger mb-2 small">
+          {% if next %}
+              {% if user.is_authenticated %}
+                Você não tem permissão para acessar esta página.
+              {% endif %}
+          {% endif %}
+          {% if form.non_field_errors %}
+              Credenciais incorretas ou conta inativa.
+          {% endif %}
+        </p>
 
-        {% if form.non_field_errors %}
-          <p class="text-center text-danger mb-2 small">
-            Credenciais incorretas ou conta inativa.
-          </p>
+        {% if messages %}
+          {% for message in messages %}
+            <p class="text-center text-{{ message.tags }} mb-2 small">{{ message }}</p>
+          {% endfor %}
         {% endif %}
 
         <div class="wrap-input100 validate-input mb-3 mt-3" data-validate="O email é obrigatório">
