@@ -1,7 +1,19 @@
 {% extends "judge/base.html" %}
 
 {% block nav_list %}
-  <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% if 'classes' in request.path %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action">Listas</a>
+  {% else %}
+    <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+  {% endif %}
+{% endblock %}
+
+{% block nav_class %}
+  {% if 'classes' in request.path %}
+    <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+  {% else %}
+    <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action">Turmas</a>
+  {% endif %}
 {% endblock %}
 
 {% block css %}
@@ -78,9 +90,9 @@
         <th scope="col">Matrícula</th>
         <th scope="col">Aluno</th>
         {% for question in object.question_list.questions.all|dictsort:"pk" %}
-          <th scope="col" data-toggle="tooltip" title="{{ question.name }}">#{{ question.pk }}</th>
+          <th scope="col" class="text-center" data-toggle="tooltip" title="{{ question.name }}">#{{ question.pk }}</th>
         {% endfor %}
-        <th scope="col">Resultado</th>
+        <th scope="col" class="text-center">Resultado</th>
       </tr>
       </thead>
       <tbody>
@@ -94,17 +106,17 @@
           {% endif %}
 
           {% for question in student.questions|dictsort:"pk" %}
-            <td>
+            <td class="text-center" >
               {% if question.result == accepted_label %}
-                <i class="fas fa-check text-success" data-toggle="tooltip" title="{{ question.name }}"></i>
+                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span> <i class="fas fa-check text-success"></i>
               {% elif question.result == no_submission_label %}
-                <span data-toggle="tooltip" data-placement="bottom" title="{{ question.name }}">- </span>
+                -
               {% else %}
-                <i class="fas fa-times text-danger" data-toggle="tooltip" title="{{ question.name }}"></i>
+                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span> <i class="fas fa-times text-danger"></i>
               {% endif %}
             </td>
           {% endfor %}
-          <td>{{ student.percentage|floatformat:2 }}%</td>
+          <td class="text-center">{{ student.percentage|floatformat:2 }}%</td>
         </tr>
       {% endfor %}
 

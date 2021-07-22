@@ -133,6 +133,7 @@ class ResultsDetailView(DetailView):
             s.questions = data['object'].question_list.questions.all()
             count, correct = 0, 0
             for q in s.questions:
+                q.sub_count = Submission.objects.filter(student=s, question=q, list_schedule=self.object).count()
                 q.result = helpers.get_question_status_for_user(s.user, q, data['object'])
                 if q.result == Submission.Results.ACCEPTED.label:
                     correct += 1
