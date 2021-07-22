@@ -30,6 +30,12 @@ class ScheduleClassListView(ListView):
         data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])
         return data
 
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('format', False) == 'csv':
+            return helpers.export_csv_file_for_all_class_lists(self.kwargs['class_pk'])
+        else:
+            return super(ScheduleClassListView, self).get(request, *args, **kwargs)
+
 
 class ScheduleDetailView(DetailView):
     model = ListSchedule

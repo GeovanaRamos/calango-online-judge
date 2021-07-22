@@ -136,8 +136,38 @@ def export_csv_file(students, list_schedule):
     response['Content-Disposition'] = 'attachment;filename=' + list_schedule.__str__() + '.csv'
 
     writer = csv.writer(response)
+    writer.writerow(['matricula', 'nome', 'percentual_na_lista'])
 
     for student in students:
         writer.writerow([student.registration_number, student.user.full_name, student.percentage])
+
+    return response
+
+
+def export_csv_file_for_all_class_lists(class_pk):
+    course_class = models.CourseClass.objects.get(pk=class_pk)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=' + course_class.__str__() + '.csv'
+
+    header = ['matricula', 'nome']
+    for schedule in course_class.schedules.order_by('pk'):
+        header.append(schedule.question_list.name)
+    header.append('percentual_medio')
+
+    writer = csv.writer(response)
+    writer.writerow(header)
+
+    for student in course_class.students.all():
+        row = [student.registration_number, student.user.full_name]
+        result_sum = 0
+        count = 0
+        for schedule in course_class.schedules.order_by('pk'):
+            result = get_student_acceptance_percentage(student, schedule)
+            result_sum += result
+            count += 1
+            row.append("{:.2f}".format(result))
+        row.append("{:.2f}".format(result_sum/count))
+        writer.writerow(row)
 
     return response

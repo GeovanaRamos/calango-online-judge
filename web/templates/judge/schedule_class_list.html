@@ -13,6 +13,9 @@
     </ol>
   </nav>
 
+  <a class="mt-2 btn btn-primary float-right" href="{% url 'schedule_class_list' course_class.pk %}?format=csv">
+      Download CSV</a>
+
   <h2 class="my-4">Listas Agendadas de {{ course_class }}</h2>
   <div class="table-responsive">
     <table class="table table-hover">
