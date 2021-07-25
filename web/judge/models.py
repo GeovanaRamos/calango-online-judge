@@ -16,8 +16,8 @@ class CourseClass(models.Model):
     semester = models.PositiveSmallIntegerField(verbose_name='Semestre', choices=[(1, 1), (2, 2)])
     professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=RESTRICT, related_name='classes')
     is_active = models.BooleanField(verbose_name='Ativa?', default=True)
-    students = models.ManyToManyField(Student, verbose_name='Alunos', blank=True, related_name='classes')
-    students2 = models.ManyToManyField(Student, through='Enrollment', verbose_name='Alunos', blank=True)
+    students = models.ManyToManyField(Student, through='Enrollment', verbose_name='Alunos', blank=True,
+                                      related_name='classes')
     identifier = models.CharField(verbose_name='Identificador da Turma', max_length=5)
 
     class Meta:
