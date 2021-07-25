@@ -10,7 +10,7 @@ from accounts.models import Student
 
 from judge.decorators import professor_required
 from judge.forms import ClassForm, StudentForm
-from judge.models import CourseClass
+from judge.models import CourseClass, Enrollment
 from judge.tasks import create_or_update_student
 
 
@@ -72,7 +72,13 @@ class StudentListView(ListView):
 
     def get_queryset(self):
         self.course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
-        return self.course_class.students.all()
+        students = self.course_class.students.all()
+        for student in students:
+            enrollment = Enrollment.objects.get(course_class=self.course_class, student=student)
+            student.first_login = enrollment.first_login
+            student.last_login = enrollment.last_login
+
+        return students
 
     def get_context_data(self, **kwargs):
         data = super(StudentListView, self).get_context_data(**kwargs)

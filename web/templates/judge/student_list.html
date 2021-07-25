@@ -39,8 +39,8 @@
           {% else %}
             <td>Sem login</td>
           {% endif %}
-          {% if student.user.last_login %}
-           <td>{{ student.user.last_login|date:'d/m/Y H:i' }}</td>
+          {% if student.last_login %}
+           <td>{{ student.last_login|date:'d/m/Y H:i' }}</td>
           {% else %}
             <td>Sem login</td>
           {% endif %}
