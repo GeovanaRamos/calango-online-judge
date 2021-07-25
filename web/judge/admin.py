@@ -7,6 +7,7 @@ admin.site.register(models.Submission)
 admin.site.register(models.QuestionList)
 admin.site.register(models.TestCase)
 admin.site.register(models.ListSchedule)
+admin.site.register(models.Enrollment)
 
 
 class TestCaseInline(admin.StackedInline):

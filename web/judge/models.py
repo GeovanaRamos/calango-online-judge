@@ -17,6 +17,7 @@ class CourseClass(models.Model):
     professor = models.ForeignKey(Professor, verbose_name='Professor', on_delete=RESTRICT, related_name='classes')
     is_active = models.BooleanField(verbose_name='Ativa?', default=True)
     students = models.ManyToManyField(Student, verbose_name='Alunos', blank=True, related_name='classes')
+    students2 = models.ManyToManyField(Student, through='Enrollment', verbose_name='Alunos', blank=True)
     identifier = models.CharField(verbose_name='Identificador da Turma', max_length=5)
 
     class Meta:
@@ -26,12 +27,17 @@ class CourseClass(models.Model):
     def __str__(self):
         return self.discipline + ' - ' + str(self.year) + '/' + str(self.semester) + ' - Turma ' + self.identifier
 
-    def save(self, *args, **kwargs):
-        if not self.is_active:
-            for student in self.students.all():
-                student.user.is_active = False
-                student.user.save()
-        super(CourseClass, self).save()
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student, verbose_name='Aluno', on_delete=RESTRICT)
+    course_class = models.ForeignKey(CourseClass, verbose_name='Turma', on_delete=RESTRICT)
+    first_login = models.DateTimeField(verbose_name='Primeiro Login', blank=True, null=True)
+    last_login = models.DateTimeField(verbose_name='Último Login', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Matrícula em Turma'
+        verbose_name_plural = 'Matrículas em Turma'
+        unique_together = ('student', 'course_class')
 
 
 class Question(models.Model):
