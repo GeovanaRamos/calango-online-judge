@@ -9,57 +9,105 @@
   <h2 class="mb-5">Ajuda</h2>
 
   <div class="card mb-3">
-    <h5 class="card-header">O que é um "Erro de Apresentação"?</h5>
-    <div class="card-body">
-      <p class="card-text">Você recebe esse status quando seu algoritmo retorna valores corretos,
-        mas apresentados da maneira incorreta, pois o judge espera respostas exatamente iguais ao gabarito.
-        Esse status pode aparecer por divergência do seu resultado com o gabarito por causa de
-        <strong>espaços, quebras de linha, letras maiúsculas ou minúsculas</strong>, conforme solicitado no enunciado.
-        Por se tratar apenas de um erro visual, para resolvê-lo,
-        evite mexer na lógica de cálculo do seu algoritmo, pois ela está correta, e procure por problemas nas
-        funções de escrita na tela. Lembre-se que
-        seu programa <strong>não</strong> deverá escrever nada na tela durante sua execução e apresentar somente
-        o resultado final, assim como nos exemplos da questão.
-      </p>
-    </div>
-  </div>
-  <div class="card mb-3">
     <h5 class="card-header">O que é um "Erro de Compilação"?</h5>
     <div class="card-body">
+      <h6>Quando acontece?</h6>
       <p class="card-text">Um erro de compilação ocorre antes mesmo do online judge conseguir executar seu programa. Ou
         seja, você infringiu alguma regra de sintaxe ou semântica que o compilador percebeu antes de transformar seu
         algoritmo em código de máquina. Se seu algoritmo não executa no online judge,
         <strong>ele também não está executando em sua máquina local</strong>
-        e pode indicar que você não está testando seu algoritmo antes de submetê-lo.
+        e pode indicar que você não está testando seu algoritmo antes de submetê-lo.</p>
+      <h6>Como corrigir?</h6>
+      <p class="card-text">
         Execute seu algoritmo em sua máquina
         e verifique o erro que o Calango irá mostrar para você. Preste atenção na linha e na descrição do erro.</p>
+      <h6>Quais são algumas das causas possíveis?</h6>
+      <ul class="card-text">
+        <li>Comando escrito ou estruturado da forma errada;</li>
+        <li>Esquecimento de um ";" (ponto e vírgula);</li>
+        <li>Símbolo desconhecido ou fora de contexto;</li>
+      </ul>
     </div>
   </div>
   <div class="card mb-3">
     <h5 class="card-header">O que é um "Erro de Execução"?</h5>
     <div class="card-body">
-      <p class="card-text">O erro de execução ocorre quando alguma operação inválida é realizada, mesmo que aparemente
-        seu algoritmo não tenha erros de sintaxe ou semântica. Um erro de execução está relacionado aos
-        valores que seu programa recebe e processa. Portanto,
+      <h6>Quando acontece?</h6>
+      <p class="card-text">O judge espera que seu programa execute, leias as entradas,
+        apresente um resultado e encerre corretamente.
+        O erro de execução ocorre quando seu programa executa mas não cumpre o que o judge
+        espera.
+        Um erro de execução pode estar relacionado aos valores que seu programa recebe e processa. Portanto,
         <strong>pode ser que, em determinados casos de teste, seu algoritmo funcione até o final,</strong>
-        mas em outros não. Por exemplo, uma divisão por zero irá lançar um erro de execução. Mesmo
-        que seu programa passe em todos
-        os casos de teste da questão, ainda não é uma garantia que seu programa será aceito.
-        Por isso, teste seu algoritmo com o maior número de exemplos possíveis além dos que são propostos
-        como exemplo na questão.
+        mas em outros não.
       </p>
+      <h6>Como corrigir?</h6>
+      <p class="card-text">Mesmo que seu programa passe em todos
+        os casos de teste da questão, ainda não é uma garantia que seu programa será aceito, pois ele pode falhar
+        em outros casos que não estão visíveis para você.
+        Por isso, teste seu algoritmo com o maior número de exemplos possíveis <strong>além</strong> dos que
+        são propostos como exemplo na questão e corrija os erros de cada caso.
+      </p>
+      <h6>Quais são algumas das causas possíveis?</h6>
+      <ul class="card-text">
+        <li>Leitura incorreta das entradas;</li>
+        <li>Programa encerra sem escrever um resultado;</li>
+        <li>Divisão por zero;</li>
+        <li>Função com parâmetro incompatível;</li>
+        <li>Acesso a uma posição inexistente de um vetor;</li>
+        <li>Variável não inicializada;</li>
+      </ul>
     </div>
   </div>
   <div class="card mb-3">
     <h5 class="card-header">O que significa "Resposta Incorreta"?</h5>
     <div class="card-body">
-      <p class="card-text">Caso seu algoritmo compile, execute até o final mas a resposta que você mostra (ou deixa de
-        mostrar) divirja <strong>totalmente ou parcialmente</strong> do gabarito, então você irá receber o status de
+      <h6>Quando acontece?</h6>
+      <p class="card-text">Caso seu algoritmo compile, execute até o final e apresente uma resposta,
+        mas a resposta que você mostra divirja
+        <strong>totalmente ou parcialmente</strong> do gabarito, então você irá receber o status de
         resposta incorreta.
-        Nesse caso, você precisa rever todo o seu algoritmo e corrigir a lógica de cálculo para que, assim, chegue no
-        resultado correto. Use a opção passo-a-passo do Calango para entender onde seu problema começa. Releia a
-        questão para garantir que está com o raciocínio correto para solucioná-la.
       </p>
+      <h6>Como corrigir?</h6>
+      <p class="card-text">
+        Você pode seguir os seguintes passo para identificar o erro: releia a questão para garantir que está com o
+        raciocínio correto para solucioná-la, depois use a opção passo-a-passo do Calango para entender onde seu
+        problema começa e, por fim, cole a saída do exemplo e a saída do seu console em um bloco de notas e veja
+        se as respostas são exatamente iguais. Lembre-se que
+        seu programa <strong>não deverá escrever nada na tela, exceto o resultado final,</strong>
+        exatamente como nos exemplos da questão.
+      </p>
+      <h6>Quais são algumas das causas possíveis?</h6>
+      <ul class="card-text">
+        <li>Cálculo incorreto e/ou má interpretação da questão;</li>
+        <li>Comandos <i>escreva</i> ou <i>escreval</i> excedentes que apresentam outra coisa que não seja a saída do
+          exemplo;
+        </li>
+        <li>Palavras da saída escritas com erro ortográfico;</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card mb-3">
+    <h5 class="card-header">O que é um "Erro de Apresentação"?</h5>
+    <div class="card-body">
+      <h6>Quando acontece?</h6>
+      <p class="card-text">Você recebe esse status quando seu algoritmo retorna valores corretos,
+        <strong>mas apresentados da maneira incorreta</strong>,
+        pois o judge espera respostas exatamente iguais ao gabarito
+        e às orientações de formatação da questão, como as quebras de linha.
+      </p>
+      <h6>Como corrigir?</h6>
+      <p class="card-text">
+        Por se tratar apenas de um erro visual, para resolvê-lo,
+        evite mexer na lógica de cálculo do seu algoritmo, pois ela está correta, e procure por problemas nas
+        funções de escrita na tela. Ou seja, seu resultado está correto mas formatado incorretamente.
+      </p>
+      <h6>Quais são todas as causas possíveis?</h6>
+      <ul class="card-text">
+        <li>Falta ou excesso de espaços na saída;</li>
+        <li>Falta ou excesso de quebras de linha na saída;</li>
+        <li>Letras minúsculas no lugar de maiúsculas ou vice-versa na saída;</li>
+      </ul>
     </div>
   </div>
   <div class="card mb-3">
@@ -68,7 +116,8 @@
       <p class="card-text">Se sua submissão foi aceita, então você <strong>concluiu</strong> a questão.
         Se ela for uma questão avaliativa e estiver em uma lista, você receberá a nota equivalente,
         e o seu percentual de "Conclusão das Listas" na página inicial irá aumentar. Esse percentual
-        se refere somente às listas que já foram disponibilizadas para você responder e não contabiliza questões avulsas.
+        se refere somente às listas que já foram disponibilizadas para você responder e não contabiliza questões
+        avulsas.
         Por exemplo, se você já teve 5 listas abertas com 5 questões cada e desse total você só concluiu 7 questões,
         então seu percentual apresentado será de 28,00%.</p>
     </div>
