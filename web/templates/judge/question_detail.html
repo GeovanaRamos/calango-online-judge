@@ -30,8 +30,12 @@
       }
 
       @keyframes spin {
-          0% {transform: rotate(0deg);}
-          100% {transform: rotate(360deg);}
+          0% {
+              transform: rotate(0deg);
+          }
+          100% {
+              transform: rotate(360deg);
+          }
       }
   </style>
 {% endblock %}
@@ -79,7 +83,7 @@
                {% if schedule.pk %}href="{% url 'submission_create_schedule' schedule.pk object.pk %}">
                {% else %}href="{% url 'submission_create' object.pk %}">
                {% endif %}
-            Submeter código</a>
+               Submeter código</a>
           {% endif %}
 
         {% else %}
@@ -99,16 +103,18 @@
           </thead>
           <tbody>
           {% for case in object.cases.all %}
-            <tr>
-              {% if case.is_hidden and user.student %}
-              {% elif case.is_hidden and user.professor %}
+            {% if case.is_hidden and user.student %}
+            {% elif case.is_hidden and user.professor %}
+              <tr>
                 <td class="pl-4 border-right text-danger">{{ case.inputs|linebreaksbr }}</td>
                 <td class="pl-4 text-danger">{{ case.output|linebreaksbr }}</td>
-              {% else %}
+              </tr>
+            {% else %}
+              <tr>
                 <td class="pl-4 border-right">{{ case.inputs|linebreaksbr }}</td>
                 <td class="pl-4">{{ case.output|linebreaksbr }}</td>
-              {% endif %}
-            </tr>
+              </tr>
+            {% endif %}
           {% endfor %}
           </tbody>
         </table>
