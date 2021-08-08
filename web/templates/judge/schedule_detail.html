@@ -32,7 +32,7 @@
   <h2 class="my-4">Detalhes da Lista</h2>
 
   <div class="container">
-    {% if percentage > 0 %}
+    {% if percentage >= 0 %}
        {% language 'en'%}
          <div id="circle" data-percent="{{ percentage|floatformat:1 }}" class="mt-3 mr-3 green"></div>
        {% endlanguage %}

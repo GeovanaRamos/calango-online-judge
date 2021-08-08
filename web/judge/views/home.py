@@ -27,9 +27,10 @@ class HomeView(TemplateView):
                     percentage_sum += helpers.get_student_acceptance_percentage(user.student, schedule)
                     percentage_count += 1
                 data['total_percentage'] = percentage_sum/percentage_count
+            else:
+                data['total_percentage'] = 0
         else:
             schedules = ListSchedule.objects.none()
-
 
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
         submissions_results = submissions.order_by().values('result').annotate(count=Count('pk', distinct=True))
