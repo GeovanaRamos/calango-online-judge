@@ -1,16 +1,18 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 
-from django.views.generic import CreateView, FormView, ListView, DeleteView
+from django.views.generic import CreateView, FormView, ListView, DeleteView, TemplateView
 from django_q.tasks import async_task
 
 from accounts.models import Student
+from judge import helpers
 
 from judge.decorators import professor_required
 from judge.forms import ClassForm, StudentForm
-from judge.models import CourseClass, Enrollment
+from judge.models import CourseClass, Enrollment, ListSchedule, Submission
 from judge.tasks import create_or_update_student
 
 
@@ -122,3 +124,43 @@ class ClassDeleteView(DeleteView):
             student.user.save()
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+@method_decorator([professor_required], name='dispatch')
+class ActivitiesView(TemplateView):
+    template_name = 'judge/class_activities.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])
+        data['schedules'] = ListSchedule.objects.filter(course_class=data['course_class'])
+        data['students'] = []
+        for student in data['course_class'].students.all():
+            submissions = Submission.objects.filter(course_class=data['course_class'], student=student)
+            student.attempts = submissions.count()
+            student.concluded = submissions.filter(result=Submission.Results.ACCEPTED).count()
+            data['students'].append(student)
+        return data
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('format', False) == 'csv':
+            return helpers.export_csv_file_for_all_class_lists(self.kwargs['class_pk'])
+        else:
+            return super(ActivitiesView, self).get(request, *args, **kwargs)
+
+
+@method_decorator([professor_required], name='dispatch')
+class StudentQuestionsResults(View):
+
+    def post(self, request):
+        student_pk = request.POST.get('student_pk')
+        class_pk = request.POST.get('class_pk')
+        print(student_pk, class_pk)
+        course_class = CourseClass.objects.get(pk=class_pk)
+        student = Student.objects.get(pk=student_pk)
+        questions = Submission.objects.filter(question__is_evaluative=False, student=student,
+                                                  course_class=course_class, result=Submission.Results.ACCEPTED).values(
+            'question', 'question__name').distinct()
+        print(questions)
+
+        return JsonResponse(data={"questions": list(questions)})

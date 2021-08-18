@@ -8,7 +8,6 @@ urlpatterns = [
     path('help/', views.HelpView.as_view(), name='help'),
 
     path('schedules/', views.ScheduleListView.as_view(), name='schedule_list'),
-    path('classes/<int:class_pk>/schedules/', views.ScheduleClassListView.as_view(), name='schedule_class_list'),
     path('schedules/<int:pk>/', views.ScheduleDetailView.as_view(), name='schedule_detail'),
     path('classes/<int:class_pk>/schedules/<int:pk>', views.ScheduleClassDetailView.as_view(),
          name='schedule_class_detail'),
@@ -45,4 +44,6 @@ urlpatterns = [
     path('classes/<int:class_pk>/students/create/', views.StudentFormView.as_view(), name='student_form'),
     path('classes/<int:class_pk>/students/', views.StudentListView.as_view(), name='student_list'),
     path('classes/<int:class_pk>/students/delete/<int:pk>/', views.StudentDeleteView.as_view(), name='student_delete'),
+    path('classes/<int:class_pk>/activities/', views.ActivitiesView.as_view(), name='class_activities'),
+    path('classes/activities/questions/', views.StudentQuestionsResults.as_view(), name='class_activities_questions'),
 ]

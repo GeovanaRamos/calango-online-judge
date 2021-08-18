@@ -13,7 +13,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
-      <li class="breadcrumb-item"><a href="{% url 'schedule_class_list' course_class.pk %}">Listas Agendadas</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'class_activities' course_class.pk %}">Listas Agendadas</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ object.question_list.name }}</li>
     </ol>
   </nav>

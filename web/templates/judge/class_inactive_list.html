@@ -35,7 +35,7 @@
           <td>{{ object.identifier }}</td>
           <td>{{ object.students.all|length }}</td>
           <td><a href="{% url 'student_list' object.pk %}">Ver alunos</a></td>
-          <td><a href="{% url 'schedule_class_list' object.pk %}">Ver listas</a></td>
+          <td><a href="{% url 'class_activities' object.pk %}">Ver atividades</a></td>
         </tr>
       {% endfor %}
       </tbody>

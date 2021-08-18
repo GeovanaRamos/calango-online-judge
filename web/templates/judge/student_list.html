@@ -14,6 +14,10 @@
     </ol>
   </nav>
 
+
+  <a class="mt-2 btn btn-primary float-right" href="{% url 'class_delete' course_class.pk %}">
+      Desativar turma</a>
+
   <h2 class="my-4">Alunos da Turma {{ course_class }}</h2>
 
   <div class="table-responsive">

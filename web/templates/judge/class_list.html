@@ -24,7 +24,7 @@
 {% block content %}
 
   <a class="ml-3 btn btn-primary float-right" href="{% url 'class_create' %}">Criar turma</a>
-  <a class="mr-3 btn btn-primary float-right" href="{% url 'class_inactive_list' %}">Turmas inativas</a>
+  <a class="mr-3 btn btn-primary float-right" href="{% url 'class_inactive_list' %}">Turmas desativadas</a>
 
 
   <h2 class="mb-5">Turmas</h2>
@@ -44,11 +44,11 @@
               <a class="nounderline" href="{% url 'student_form' object.pk %}" title="Adicionar alunos">
                 <i class="fas fa-user-plus fa-lg m-2"></i>
               </a>
-              <a class="nounderline" href="{% url 'schedule_class_list' object.pk %}" title="Listas">
+              <a class="nounderline" href="{% url 'class_activities' object.pk %}" title="Atividades">
                 <i class="fas fa-list-alt fa-lg m-2"></i>
               </a>
-              <a class="nounderline" href="{% url 'class_delete' object.pk %}" title="Desativar turma">
-                <i class="fas fa-ban fa-lg m-2"></i>
+              <a class="nounderline" href="#" title="Estatísticas">
+                <i class="fas fa-chart-line fa-lg m-2"></i>
               </a>
             </li>
           </ul>

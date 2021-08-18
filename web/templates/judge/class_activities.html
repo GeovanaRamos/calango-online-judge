@@ -1,0 +1,118 @@
+{% extends "judge/base.html" %}
+{% load static %}
+
+{% block nav_class %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item active" aria-current="page">Atividades</li>
+    </ol>
+  </nav>
+
+  <a class="mt-2 btn btn-primary float-right" href="{% url 'class_activities' course_class.pk %}?format=csv">
+    Download CSV</a><br>
+
+  <h3 class="my-5 text-center">Listas Agendadas</h3>
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Início</th>
+        <th>Término</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for object in schedules %}
+        <tr>
+          <td><a href="{% url 'schedule_class_detail' course_class.pk object.pk %}">{{ object.question_list.name }}</a>
+          </td>
+          <td>{{ object.start_date|date:'d/m/Y H:i' }}</td>
+          <td>{{ object.due_date|date:'d/m/Y H:i' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+  <h3 class="my-5 text-center">Questões Avulsas</h3>
+  <div class="table-responsive">
+    <table class="table table-hover">
+
+      <thead>
+      <tr>
+        <th>Matrícula</th>
+        <th>Aluno</th>
+        <th class="text-center">Tentativas</th>
+        <th class="text-center">Conclusões</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      {% for object in students %}
+        <tr>
+          <td>{{ object.registration_number }}</td>
+          <td>{{ object.user.full_name }}</td>
+          <td class="text-center">{{ object.attempts }}</td>
+          <td class="text-center">
+            {{ object.concluded }}
+            <button class="btn-primary border-0 px-2 ml-2" data-toggle="modal" data-target="#questionsModal" data-backdrop="static"
+                 data-keyboard="false" data-student-pk="{{ object.pk }}" data-class-pk="{{ course_class.pk }}"
+                 data-href="{% url 'class_activities_questions' %}" data-name="{{ object.user.full_name }}"
+              ><i class="fas fa-info"></i>
+            </button>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="modal fade" id="questionsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Questões Avulsas do Aluno</h5>
+
+          <button id="modal-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p id="student-name"></p>
+          <div id="loader" class="loader mx-auto mb-4"></div>
+          <div class="table-responsive">
+            <table class="table table-hover" id="questions-table">
+
+              <thead>
+              <tr>
+                <th>Nome</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+  <script src="{% static 'judge/js/class_activities.js' %}"></script>
+{% endblock %}
