@@ -1,7 +1,12 @@
 {% extends "judge/base.html" %}
+{% load static %}
 
 {% block nav_list %}
   <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'judge/css/autocomplete.css' %}">
 {% endblock %}
 
 {% load crispy_forms_tags %}
@@ -15,7 +20,7 @@
   </nav>
 
   <h2 class="my-4">Novo Agendamento de Lista</h2>
-  <form method="post" >
+  <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
@@ -24,17 +29,26 @@
   </form>
 {% endblock %}
 
+
 {% block js %}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+        integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+          integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
   <script>
-  $(function () {
-    $("#id_start_date").datetimepicker({
-      format: 'd/m/Y H:i',
-    });
-    $("#id_due_date").datetimepicker({
-      format: 'd/m/Y H:i',
-    });
-  });
-</script>
+      $(function () {
+          $("#id_start_date").datetimepicker({
+              format: 'd/m/Y H:i',
+          });
+          $("#id_due_date").datetimepicker({
+              format: 'd/m/Y H:i',
+          });
+      });
+  </script>
+
+  {#  FOR AUTOCOMPLETE #}
+  {{ form.media }}
+  <script src="{% static 'judge/js/autocomplete.js' %}"></script>
+
 {% endblock %}

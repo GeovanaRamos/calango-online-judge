@@ -46,4 +46,7 @@ urlpatterns = [
     path('classes/<int:class_pk>/students/delete/<int:pk>/', views.StudentDeleteView.as_view(), name='student_delete'),
     path('classes/<int:class_pk>/activities/', views.ActivitiesView.as_view(), name='class_activities'),
     path('classes/activities/questions/', views.StudentQuestionsResults.as_view(), name='class_activities_questions'),
+
+    path('autocomplete/questions/', views.QuestionAutocomplete.as_view(), name='autocomplete_question'),
+    path('autocomplete/lists/', views.ListAutocomplete.as_view(), name='autocomplete_list'),
 ]

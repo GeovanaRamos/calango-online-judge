@@ -1,6 +1,7 @@
 import re
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from dal_select2.widgets import ModelSelect2Multiple, ModelSelect2
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
@@ -21,6 +22,7 @@ class ScheduleCreateForm(forms.ModelForm):
     class Meta:
         model = models.ListSchedule
         fields = '__all__'
+        widgets = {'question_list': ModelSelect2(url='autocomplete_list')}
 
     def __init__(self, *args, **kwargs):
         self.professor = kwargs.pop('user')
@@ -46,6 +48,7 @@ class ListForm(forms.ModelForm):
     class Meta:
         model = models.QuestionList
         exclude = ('author',)
+        widgets = {'questions': ModelSelect2Multiple(url='autocomplete_question')}
 
 
 class ClassForm(forms.ModelForm):

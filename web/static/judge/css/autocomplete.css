@@ -1,0 +1,38 @@
+.select2-container .select2-selection--single {
+    height: calc(1.5em + .75rem + 2px) !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced4da !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.5 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: calc(1.5em + .75rem + 2px) !important;
+}
+
+/* dal bootstrap css fix */
+.select2-container {
+    width: 100% !important;
+    min-width: 10em !important;
+}
+
+/* django-addanother bootstrap css fix */
+.related-widget-wrapper {
+    padding-right: 16px;
+    position: relative;
+}
+
+.related-widget-wrapper-link {
+    position: absolute;
+    top: 3px;
+    right: 0px;
+}
+
+.select2-container .select2-selection--multiple {
+    height: auto !important;
+    border: 1px solid #ced4da !important;
+}

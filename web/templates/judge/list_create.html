@@ -1,7 +1,12 @@
 {% extends "judge/base.html" %}
+{% load static %}
 
 {% block nav_list %}
   <a href="{% url 'schedule_list' %}" class="list-group-item list-group-item-action active">Listas</a>
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'judge/css/autocomplete.css' %}">
 {% endblock %}
 
 {% load crispy_forms_tags %}
@@ -15,11 +20,17 @@
   </nav>
 
   <h2 class="my-4">Nova Lista de Exercícios</h2>
-  <form method="post" >
+  <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
       <button type="submit" class="btn btn-primary">Salvar</button>
     </div>
   </form>
+{% endblock %}
+
+
+{% block js %}
+  {{ form.media }}
+  <script src="{% static 'judge/js/autocomplete.js' %}"></script>
 {% endblock %}
