@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from judge import helpers
 from judge.decorators import professor_required
-from judge.forms import ListForm, ScheduleForm
+from judge.forms import ListForm, ScheduleCreateForm, ScheduleUpdateForm
 from judge.models import ListSchedule, QuestionList, Submission, CourseClass
 
 
@@ -62,9 +62,14 @@ class ListCreateView(CreateView):
 @method_decorator([professor_required], name='dispatch')
 class ScheduleCreateView(CreateView):
     model = ListSchedule
-    form_class = ScheduleForm
+    form_class = ScheduleCreateForm
     template_name = 'judge/schedule_create.html'
     success_url = reverse_lazy('schedule_list')
+
+    def get_form_kwargs(self):
+        kwargs = super(ScheduleCreateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user.professor})
+        return kwargs
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=None)
@@ -76,7 +81,7 @@ class ScheduleCreateView(CreateView):
 @method_decorator([professor_required], name='dispatch')
 class ScheduleUpdateView(UpdateView):
     model = ListSchedule
-    form_class = ScheduleForm
+    form_class = ScheduleUpdateForm
     template_name = 'judge/schedule_create.html'
 
     def get_success_url(self):

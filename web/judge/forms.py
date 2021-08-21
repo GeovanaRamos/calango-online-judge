@@ -17,23 +17,35 @@ class SubmissionForm(forms.ModelForm):
         }
 
 
-class ScheduleForm(forms.ModelForm):
+class ScheduleCreateForm(forms.ModelForm):
+    class Meta:
+        model = models.ListSchedule
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        self.professor = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['course_class'].queryset = models.CourseClass.objects.filter(
+            professor=self.professor, is_active=True)
+        self.fields['question_list'].queryset = models.QuestionList.objects.filter(
+            author=self.professor)
+
+
+class ScheduleUpdateForm(forms.ModelForm):
     class Meta:
         model = models.ListSchedule
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            self.fields['course_class'].disabled = True
-            self.fields['question_list'].disabled = True
+        self.fields['course_class'].disabled = True
+        self.fields['question_list'].disabled = True
 
 
 class ListForm(forms.ModelForm):
     class Meta:
         model = models.QuestionList
-        exclude = ('author', )
+        exclude = ('author',)
 
 
 class ClassForm(forms.ModelForm):
