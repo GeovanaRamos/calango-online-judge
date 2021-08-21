@@ -5,7 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, TemplateView
 
 from judge import helpers
 from judge.decorators import professor_required
-from judge.forms import QuestionForm, TestCasesFormSet
+from judge.forms import QuestionForm, TestCasesFormSet, TestCaseFormSetHelper
 from judge.models import Question, ListSchedule
 
 
@@ -61,6 +61,7 @@ class QuestionCreateView(CreateView):
             data['cases'] = TestCasesFormSet(self.request.POST)
         else:
             data['cases'] = TestCasesFormSet()
+            data['helper'] = TestCaseFormSetHelper()
         return data
 
     def form_valid(self, form):

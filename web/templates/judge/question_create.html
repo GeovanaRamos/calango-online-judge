@@ -27,7 +27,7 @@
     </div>
     <div id="formset-container">
       {% with cases as formset %}
-        {{ formset|crispy }}
+        {% crispy formset helper %}
       {% endwith %}
     </div>
 
@@ -36,7 +36,7 @@
       <button type="submit" class="btn btn-primary">Salvar</button>
     </div>
   </form>
-  <div id="empty_form" style="display:none">{{ cases.empty_form|crispy }}</div>
+  <div id="empty_form" style="display:none">{% crispy cases.empty_form helper %}</div>
 {% endblock %}
 
 {% block js %}

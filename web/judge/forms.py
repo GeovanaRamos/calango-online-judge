@@ -1,6 +1,8 @@
 import re
 
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div
 from dal_select2.widgets import ModelSelect2Multiple, ModelSelect2
 from django import forms
 from django.core.exceptions import ValidationError
@@ -103,6 +105,21 @@ class TestCaseForm(forms.ModelForm):
     class Meta:
         model = models.TestCase
         exclude = ('question',)
+
+
+class TestCaseFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_tag = False
+        self.form_method = 'post'
+        self.layout = Layout(
+            Div(
+                Div('inputs', css_class='col-md-6'),
+                Div('output', css_class='col-md-6'),
+                css_class='row',
+            ),
+            Div('is_hidden', css_class='text-center'),
+        )
 
 
 TestCasesFormSet = inlineformset_factory(
