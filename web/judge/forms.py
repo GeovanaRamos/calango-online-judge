@@ -19,6 +19,40 @@ class SubmissionForm(forms.ModelForm):
             'code': forms.Textarea(attrs={'rows': 20}),
         }
 
+    def clean(self):
+        cd = self.cleaned_data
+        entrada, objetivo, saida = False, False, False
+
+        for item in cd.get('code').split("\n"):
+
+            if "//" in item:  # avoid variables with same name
+                chars = [c for c in list(item) if c is not ' ']
+                chars_len = len(chars)
+
+                if "Objetivo" in item and chars_len > 16:
+                    objetivo = True
+                    print(chars)
+                elif "Entrada" in item and chars_len > 13:
+                    entrada = True
+                    print(chars)
+                elif "Saída" in item and chars_len > 11:
+                    saida = True
+                    print(chars)
+
+                if objetivo and entrada and saida:
+                    return cd
+
+        if not (objetivo or entrada or saida):
+            raise ValidationError('Preencha a síntese do algoritmo.')
+        elif not objetivo:
+            raise ValidationError('Preencha o objetivo do algoritmo.')
+        elif not entrada:
+            raise ValidationError('Preencha a entrada do algoritmo na síntese.')
+        elif not saida:
+            raise ValidationError('Preencha a saída do algoritmo na síntese.')
+
+        return cd
+
 
 class ScheduleCreateForm(forms.ModelForm):
     class Meta:
