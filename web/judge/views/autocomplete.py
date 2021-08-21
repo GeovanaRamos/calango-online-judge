@@ -1,14 +1,9 @@
 from dal_select2.views import Select2QuerySetView
 from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from judge import helpers
 from judge.decorators import professor_required
-from judge.forms import ListForm, ScheduleCreateForm, ScheduleUpdateForm
-from judge.models import ListSchedule, QuestionList, Submission, CourseClass, Question
+from judge.models import QuestionList, Question
 
 
 @method_decorator([professor_required], name='dispatch')

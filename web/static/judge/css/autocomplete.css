@@ -29,7 +29,7 @@
 .related-widget-wrapper-link {
     position: absolute;
     top: 3px;
-    right: 0px;
+    right: 0;
 }
 
 .select2-container .select2-selection--multiple {

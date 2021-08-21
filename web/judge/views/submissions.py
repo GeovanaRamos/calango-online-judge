@@ -14,7 +14,7 @@ from judge import helpers
 from judge.decorators import open_question_required, submission_author_or_professor_required, professor_required
 from judge.forms import SubmissionForm
 from judge.helpers import get_judge_post_data
-from judge.models import Question, ListSchedule, Submission, TestCase
+from judge.models import Question, ListSchedule, Submission
 from judge.tasks import submit_to_judge_service
 
 

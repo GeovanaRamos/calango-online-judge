@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 from judge import helpers
 from judge.helpers import *
-from judge.models import CourseClass, ListSchedule, Question
+from judge.models import ListSchedule
 
 
 class HomeView(TemplateView):
