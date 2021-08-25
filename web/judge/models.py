@@ -19,6 +19,7 @@ class CourseClass(models.Model):
     students = models.ManyToManyField(Student, through='Enrollment', verbose_name='Alunos', blank=True,
                                       related_name='classes')
     identifier = models.CharField(verbose_name='Identificador da Turma', max_length=5)
+    is_synthesis_required = models.BooleanField(verbose_name='Síntese do algoritmo obrigatória?', default=False)
 
     class Meta:
         verbose_name = 'Turma'

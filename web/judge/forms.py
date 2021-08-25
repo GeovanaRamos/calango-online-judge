@@ -43,13 +43,14 @@ class SubmissionForm(forms.ModelForm):
                     return cd
 
         if not (objetivo or entrada or saida):
-            raise ValidationError('Preencha a síntese do algoritmo.')
+            raise ValidationError('Você não preencheu a Síntese do seu algoritmo. Por favor, escreva o Objetivo,  '
+                                  'a Entrada e a Saída.')
         elif not objetivo:
-            raise ValidationError('Preencha o objetivo do algoritmo.')
+            raise ValidationError('Você não preencheu o Objetivo do seu algoritmo. Por favor, escreva o Objetivo.')
         elif not entrada:
-            raise ValidationError('Preencha a entrada do algoritmo na síntese.')
+            raise ValidationError('Você não preencheu a Entrada do seu algoritmo. Por favor, escreva a Entrada.')
         elif not saida:
-            raise ValidationError('Preencha a saída do algoritmo na síntese.')
+            raise ValidationError('Você não preencheu a Saída do seu algoritmo. Por favor, escreva a Saída.')
 
         return cd
 
