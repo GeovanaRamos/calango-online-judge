@@ -85,10 +85,9 @@
           <a class="dropdown-item" href="{% url 'home' %}">Início</a>
           <a class="dropdown-item" href="{% url 'schedule_list' %}">Listas</a>
           <a class="dropdown-item" href="{% url 'subject_list' %}">Questões</a>
+          <a class="dropdown-item" href="{% url 'submission_list' %}">Submissões</a>
           {% if user.professor %}
             <a class="dropdown-item" href="{% url 'class_list' %}">Turmas</a>
-          {% else %}
-            <a class="dropdown-item" href="{% url 'submission_list' %}">Submissões</a>
           {% endif %}
           <a href="{% url 'help' %}" class="dropdown-item">Ajuda</a>
           <a class="dropdown-item" href="{% url 'logout' %}">Sair</a>
