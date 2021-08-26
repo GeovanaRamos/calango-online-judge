@@ -32,6 +32,7 @@
     <p><strong>Resultado:</strong> {{ object.get_result_display }}</p>
     {% if user.professor %}
       <p><strong>Aluno:</strong> {{ object.student.user.full_name }}</p>
+      <p><strong>Matrícula:</strong> {{ object.student.registration_number }}</p>
     {% endif %}
   </div>
 

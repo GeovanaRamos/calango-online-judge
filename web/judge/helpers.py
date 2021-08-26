@@ -171,3 +171,22 @@ def export_csv_file_for_all_class_lists(class_pk):
         writer.writerow(row)
 
     return response
+
+
+def search_submissions(user, id, student_name, student_number, question_id, question_name):
+    if id or student_name or student_number or question_id or question_name:
+        schedules = get_list_schedules_for_user(user)
+        submissions = get_submissions_for_user_and_schedules(user, schedules)
+        if id:
+            submissions = submissions.filter(pk=int(id))
+        if student_name:
+            submissions = submissions.filter(student__user__full_name__icontains=student_name)
+        if student_number:
+            submissions = submissions.filter(student__registration_number=int(student_number))
+        if question_id:
+            submissions = submissions.filter(question__pk=int(question_id))
+        if question_name:
+            submissions = submissions.filter(question__name__icontains=question_name)
+        return submissions.order_by('-submitted_at')[:100]
+    else:
+        return models.Submission.objects.none()

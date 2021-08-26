@@ -24,7 +24,7 @@ class SubmissionCreateView(CreateView):
     template_name = 'judge/submission_create.html'
     form_class = SubmissionForm
     success_url = reverse_lazy('submission_list')
-    
+
     def dispatch(self, request, *args, **kwargs):
         self.question = Question.objects.get(pk=kwargs['question_pk'])
         if 'schedule_pk' in kwargs:
@@ -65,25 +65,18 @@ class SubmissionListView(ListView):
     model = Submission
     template_name = 'judge/submission_list.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        if 'student_pk' in kwargs and hasattr(self.request.user, 'professor'):
-            self.student = Student.objects.get(pk=kwargs['student_pk'])
-            self.schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
-        return super(SubmissionListView, self).dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
-        if 'schedule_pk' in self.kwargs and hasattr(self.request.user, 'professor'):
-            return Submission.objects.filter(student=self.student, list_schedule=self.schedule).order_by(
-                '-submitted_at')
+        if hasattr(self.request.user, 'professor'):
+            data = self.request.GET
+            id = data.get('id')
+            student_name = data.get('student_name')
+            student_number = data.get('student_number')
+            question_id = data.get('question_id')
+            question_name = data.get('question_name')
+            return helpers.search_submissions(self.request.user, id, student_name, student_number, question_id,
+                                              question_name)
         else:
             return helpers.get_all_active_submissions_for_student(self.request.user.student)
-
-    def get_context_data(self, **kwargs):
-        data = super(SubmissionListView, self).get_context_data(**kwargs)
-        if 'student_pk' in self.kwargs and hasattr(self.request.user, 'professor'):
-            data['student'] = self.student
-            data['schedule'] = self.schedule
-        return data
 
 
 @method_decorator([submission_author_or_professor_required], name='dispatch')
@@ -108,4 +101,3 @@ class SubmissionTest(View):
         error_message = result_json['errorMessage']
 
         return JsonResponse(data={"result": result, "error_message": error_message})
-

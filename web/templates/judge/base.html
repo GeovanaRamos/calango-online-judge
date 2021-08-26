@@ -54,18 +54,14 @@
           <a href="{% url 'subject_list' %}" class="list-group-item list-group-item-action">Questões</a>
       {% endblock %}
 
-      {% if user.professor %}
+      {% block nav_sub %}
+        <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
+      {% endblock %}
 
+      {% if user.professor %}
         {% block nav_class %}
           <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action">Turmas</a>
         {% endblock %}
-
-      {% else %}
-
-        {% block nav_sub %}
-          <a href="{% url 'submission_list' %}" class="list-group-item list-group-item-action">Submissões</a>
-        {% endblock %}
-
       {% endif %}
 
       {% block nav_faq %}

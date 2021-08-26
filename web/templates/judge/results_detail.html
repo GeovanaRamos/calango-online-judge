@@ -56,7 +56,8 @@
         <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
         <li class="breadcrumb-item"><a href="{% url 'class_activities' course_class.pk %}">Listas Agendadas</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'schedule_class_detail' course_class.pk object.pk %}">{{ object.question_list.name }}</a></li>
+        <li class="breadcrumb-item"><a
+            href="{% url 'schedule_class_detail' course_class.pk object.pk %}">{{ object.question_list.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">Resultados</li>
       </ol>
     </nav>
@@ -99,20 +100,18 @@
       {% for student in students %}
         <tr>
           <td>{{ student.registration_number }}</td>
-          {% if 'classes' in request.path %}
-            <td>{{ student.user.full_name }}</td>
-          {% else %}
-            <td><a href="{% url 'submission_list' object.pk student.pk %}">{{ student.user.full_name }}</a></td>
-          {% endif %}
+          <td>{{ student.user.full_name }}</td>
 
           {% for question in student.questions|dictsort:"pk" %}
-            <td class="text-center" >
+            <td class="text-center">
               {% if question.result == accepted_label %}
-                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span> <i class="fas fa-check text-success"></i>
+                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span>
+                <i class="fas fa-check text-success"></i>
               {% elif question.result == no_submission_label %}
                 -
               {% else %}
-                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span> <i class="fas fa-times text-danger"></i>
+                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span>
+                <i class="fas fa-times text-danger"></i>
               {% endif %}
             </td>
           {% endfor %}
