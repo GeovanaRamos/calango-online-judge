@@ -10,7 +10,7 @@ from judge.models import QuestionList, Question
 class QuestionAutocomplete(Select2QuerySetView):
     def get_queryset(self):
 
-        qs = Question.objects.all()
+        qs = Question.objects.filter(is_evaluative=True)
 
         if self.q:
             qs = qs.filter(Q(name__istartswith=self.q) | Q(subject__istartswith=self.q))
