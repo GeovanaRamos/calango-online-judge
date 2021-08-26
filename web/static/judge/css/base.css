@@ -120,6 +120,10 @@ a:hover {
     border-color: var(--primary) !important;
 }
 
+.nounderline {
+    text-decoration: none !important
+}
+
 /* -------------------- */
 
 .loader {

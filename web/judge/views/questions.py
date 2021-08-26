@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, DetailView, CreateView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView, TemplateView, UpdateView
 
 from judge import helpers
 from judge.decorators import professor_required
@@ -53,7 +53,6 @@ class QuestionCreateView(CreateView):
     model = Question
     form_class = QuestionForm
     template_name = 'judge/question_create.html'
-    success_url = reverse_lazy('subject_list')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -78,3 +77,39 @@ class QuestionCreateView(CreateView):
                 inlines.instance = self.object
                 inlines.save()
         return super(QuestionCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('question_detail', kwargs={'pk': self.object.pk})
+
+
+@method_decorator([professor_required], name='dispatch')
+class QuestionUpdateView(UpdateView):
+    model = Question
+    form_class = QuestionForm
+    template_name = 'judge/question_create.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['cases'] = TestCasesFormSet(self.request.POST, instance=self.object)
+        else:
+            data['cases'] = TestCasesFormSet(instance=self.object)
+            data['helper'] = TestCaseFormSetHelper()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        inlines = context['cases']
+
+        self.object = form.save(commit=False)
+        self.object.save()
+
+        with transaction.atomic():
+
+            if inlines.is_valid():
+                inlines.instance = self.object
+                inlines.save()
+        return super(QuestionUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('question_detail', kwargs={'pk': self.kwargs['pk']})
