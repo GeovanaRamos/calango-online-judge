@@ -37,14 +37,14 @@
               <a class="nounderline" title="Ver alunos" href="{% url 'student_list' object.pk %}">
                 <i class="fas fa-graduation-cap fa-lg m-2"></i>
               </a>
-              <a class="nounderline" href="{% url 'student_form' object.pk %}" title="Adicionar alunos">
-                <i class="fas fa-user-plus fa-lg m-2"></i>
-              </a>
               <a class="nounderline" href="{% url 'class_activities' object.pk %}" title="Atividades">
                 <i class="fas fa-list-alt fa-lg m-2"></i>
               </a>
               <a class="nounderline" href="#" title="Estatísticas">
                 <i class="fas fa-chart-line fa-lg m-2"></i>
+              </a>
+              <a class="nounderline" href="{% url 'class_update' object.pk %}" title="Editar Turma">
+                <i class="fas fa-pencil-alt fa-lg m-2"></i>
               </a>
             </li>
           </ul>

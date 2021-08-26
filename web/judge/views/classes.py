@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from django.views.generic import CreateView, FormView, ListView, DeleteView, TemplateView
+from django.views.generic import CreateView, FormView, ListView, DeleteView, TemplateView, UpdateView
 from django_q.tasks import async_task
 
 from accounts.models import Student
@@ -45,6 +45,14 @@ class ClassCreateView(CreateView):
         form.instance.professor = self.request.user.professor
         self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+@method_decorator([professor_required], name='dispatch')
+class ClassUpdateView(UpdateView):
+    model = CourseClass
+    template_name = 'judge/class_create.html'
+    form_class = ClassForm
+    success_url = reverse_lazy('class_list')
 
 
 @method_decorator([professor_required], name='dispatch')

@@ -11,6 +11,7 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item"><a href="{% url 'student_list' course_class.pk %}">Alunos</a></li>
       <li class="breadcrumb-item active" aria-current="page">Adicionar Alunos</li>
     </ol>
   </nav>
