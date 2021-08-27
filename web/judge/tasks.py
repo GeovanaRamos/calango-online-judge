@@ -26,6 +26,7 @@ def submit_to_judge_service(code, question_pk, submission):
 
 
 def create_or_update_student(students, course_class):
+    # 0 = email; 1 = full_name; 2 = registration
     for student in students:
         user, was_created = User.objects.get_or_create(email=student[0])
         user.full_name = student[1]

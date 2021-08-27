@@ -5,6 +5,8 @@ from django.db.models import Count, Q, Case, When, F, Value, FloatField, Integer
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
+
+from accounts.models import Student
 from judge import models
 
 
@@ -76,20 +78,6 @@ def question_is_concluded(question, list_schedule, student):
     return False
 
 
-def get_student_acceptance_percentage(student, list_schedule):
-
-
-
-    count, correct = 0, 0
-    for question in list_schedule.question_list.questions.all():
-        question.result = get_question_status_for_user(student.user, question, list_schedule)
-        if question.result == models.Submission.Results.ACCEPTED.label:
-            correct += 1
-        count += 1
-
-    return correct / count * 100
-
-
 def get_schedule_question_info_for_user(list_schedule, user):
     questions = list_schedule.question_list.questions.order_by('pk').all()
     question_conclusions = []
@@ -99,8 +87,7 @@ def get_schedule_question_info_for_user(list_schedule, user):
     return question_conclusions
 
 
-def get_students_and_results(list_schedule):
-    submissions = list_schedule.course_class.students
+def get_students_and_results(list_schedule, students):
     list_questions_count = list_schedule.question_list.questions.count()
 
     for question in list_schedule.question_list.questions.all().order_by('pk'):
@@ -125,17 +112,17 @@ def get_students_and_results(list_schedule):
         )
 
         # add results from question[i] to final query
-        submissions = submissions.annotate(**{label1: count_subs}).annotate(**{label2: accepted_subs}).annotate(
+        students = students.annotate(**{label1: count_subs}).annotate(**{label2: accepted_subs}).annotate(
             **{label3: Cast(status, IntegerField())})
 
     # get student percentage based on all questions from the schedule
     accepted_total = Count('submissions',
                            filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
                                submissions__list_schedule=list_schedule))
-    submissions = submissions.annotate(full_name=F('user__full_name')).annotate(
+    students = students.annotate(full_name=F('user__full_name')).annotate(
         percentage=Cast(accepted_total / float(list_questions_count) * 100, FloatField()))
 
-    return submissions.values()
+    return students.values()
 
 
 def get_all_active_submissions_for_student(student):
@@ -183,28 +170,31 @@ def export_csv_file(students, list_schedule):
 
 def export_csv_file_for_all_class_lists(class_pk):
     course_class = models.CourseClass.objects.get(pk=class_pk)
+    columns = []
+
+    registration_number = ['matricula']
+    names = ['nome']
+    for student in course_class.students.order_by('registration_number'):
+        registration_number.append(student.registration_number)
+        names.append(student.user.full_name)
+
+    columns.append(registration_number)
+    columns.append(names)
+
+    for schedule in course_class.schedules.order_by('pk'):
+        column = [schedule.question_list.name]
+        results = get_students_and_results(schedule, course_class.students.order_by('registration_number'))
+        for result in results:
+            column.append(result['percentage'])
+        columns.append(column)
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment;filename=' + course_class.__str__() + '.csv'
 
-    header = ['matricula', 'nome']
-    for schedule in course_class.schedules.order_by('pk'):
-        header.append(schedule.question_list.name)
-    header.append('percentual_medio')
+    final_result = zip(*columns)
 
     writer = csv.writer(response)
-    writer.writerow(header)
-
-    for student in course_class.students.all():
-        row = [student.registration_number, student.user.full_name]
-        result_sum = 0
-        count = 0
-        for schedule in course_class.schedules.order_by('pk'):
-            result = get_student_acceptance_percentage(student, schedule)
-            result_sum += result
-            count += 1
-            row.append("{:.2f}".format(result))
-        row.append("{:.2f}".format(result_sum / count))
+    for row in final_result:
         writer.writerow(row)
 
     return response

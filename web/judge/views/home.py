@@ -1,6 +1,7 @@
 from django.db.models import Count
 from django.views.generic import TemplateView
 
+from accounts.models import Student
 from judge import helpers
 from judge.helpers import *
 from judge.models import ListSchedule
@@ -24,7 +25,8 @@ class HomeView(TemplateView):
                 percentage_sum = 0
                 percentage_count = 0
                 for schedule in schedules:
-                    percentage_sum += helpers.get_student_acceptance_percentage(user.student, schedule)
+                    student_queryset = Student.objects.filter(pk=user.student.pk)
+                    percentage_sum += helpers.get_students_and_results(schedule, student_queryset)[0]['percentage']
                     percentage_count += 1
                 data['total_percentage'] = percentage_sum/percentage_count
             else:

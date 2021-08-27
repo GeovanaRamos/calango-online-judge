@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from accounts.models import Student
 from judge import helpers
 from judge.decorators import professor_required
 from judge.forms import ListForm, ScheduleCreateForm, ScheduleUpdateForm
@@ -27,7 +28,8 @@ class ScheduleDetailView(DetailView):
 
         data['questions'] = helpers.get_schedule_question_info_for_user(self.object, user)
         if hasattr(user, 'student'):
-            data['percentage'] = helpers.get_student_acceptance_percentage(user.student, self.object)
+            student_queryset = Student.objects.filter(pk=user.student.pk)
+            data['percentage'] = helpers.get_students_and_results(self.object, student_queryset)[0]['percentage']
 
         return data
 
@@ -103,7 +105,7 @@ class ResultsDetailView(DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
 
-        data['students'] = helpers.get_students_and_results(self.object)
+        data['students'] = helpers.get_students_and_results(self.object, self.object.course_class.students)
         data['accepted'] = Submission.ACCEPTED
         data['no_submission'] = Submission.NO_SUBMISSION
         data['unnacepted'] = Submission.UNACCEPTED
