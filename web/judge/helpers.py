@@ -1,6 +1,8 @@
 import csv
 import re
 
+from django.db.models import Count, Q, Sum, Case, When, F, Value, FloatField, IntegerField
+from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
 from judge import models
@@ -51,7 +53,7 @@ def get_question_status_for_user(user, question, list_schedule):
         if submission.exists():
             return submission.latest('submitted_at').get_result_display()
         else:
-            return models.Submission.NO_SUBMISSION
+            return models.Submission.NO_SUBMISSION_LABEL
     else:
         # returns the count of accepted submissions of the class
         submissions = models.Submission.objects.filter(
@@ -95,19 +97,42 @@ def get_schedule_question_info_for_user(list_schedule, user):
 
 
 def get_students_and_results(list_schedule):
-    students = []
-    for s in list_schedule.course_class.students.all():
-        s.questions = list_schedule.question_list.questions.all()
-        count, correct = 0, 0
-        for q in s.questions:
-            q.sub_count = models.Submission.objects.filter(student=s, question=q, list_schedule=list_schedule).count()
-            q.result = get_question_status_for_user(s.user, q, list_schedule)
-            if q.result == models.Submission.Results.ACCEPTED.label:
-                correct += 1
-            count += 1
-        s.percentage = correct / count * 100
-        students.append(s)
-    return students
+    submissions = list_schedule.course_class.students
+    list_questions_count = list_schedule.question_list.questions.count()
+
+    for question in list_schedule.question_list.questions.all().order_by('pk'):
+        # for each question from the schedule, gather student submission count and status
+        accepted_subs = Count('submissions',
+                              filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
+                                  submissions__question=question) & Q(submissions__list_schedule=list_schedule))
+        count_subs = Count('submissions',
+                           filter=Q(submissions__question=question) & Q(submissions__list_schedule=list_schedule))
+
+        # dynamic labels for the json parsed at the template
+        str_pk = str(question.pk)
+        label1 = '#' + str_pk
+        label2 = str_pk + '-A'
+        label3 = str_pk + '-S'
+
+        # get the submission status based on accepted and total count
+        status = Case(
+            When(**{'{0}__{1}'.format(label2, 'gte'): 1}, then=models.Submission.ACCEPTED),
+            When(**{'{0}__{1}'.format(label1, 'gte'): 1}, then=models.Submission.UNACCEPTED),
+            default=Value(models.Submission.NO_SUBMISSION)
+        )
+
+        # add results from question[i] to final query
+        submissions = submissions.annotate(**{label1: count_subs}).annotate(**{label2: accepted_subs}).annotate(
+            **{label3: Cast(status, IntegerField())})
+
+    # get student percentage based on all questions from the schedule
+    accepted_total = Count('submissions',
+                           filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
+                               submissions__list_schedule=list_schedule))
+    submissions = submissions.annotate(full_name=F('user__full_name')).annotate(
+        percentage=Cast(accepted_total / float(list_questions_count) * 100, FloatField()))
+
+    return submissions.values()
 
 
 def get_all_active_submissions_for_student(student):
@@ -136,10 +161,19 @@ def export_csv_file(students, list_schedule):
     response['Content-Disposition'] = 'attachment;filename=' + list_schedule.__str__() + '.csv'
 
     writer = csv.writer(response)
-    writer.writerow(['matricula', 'nome', 'percentual_na_lista'])
+    header = ['matricula', 'nome']
+    for question in list_schedule.question_list.questions.all().order_by('pk'):
+        header.append('#' + str(question.pk))
+    header.append('percentual_na_lista')
+    writer.writerow(header)
 
     for student in students:
-        writer.writerow([student.registration_number, student.user.full_name, student.percentage])
+        row = [student['registration_number'], student['full_name']]
+        for key, value in student.items():
+            if key[-1] == 'A':
+                row.append(value)
+        row.append(student['percentage'])
+        writer.writerow(row)
 
     return response
 
@@ -167,7 +201,7 @@ def export_csv_file_for_all_class_lists(class_pk):
             result_sum += result
             count += 1
             row.append("{:.2f}".format(result))
-        row.append("{:.2f}".format(result_sum/count))
+        row.append("{:.2f}".format(result_sum / count))
         writer.writerow(row)
 
     return response

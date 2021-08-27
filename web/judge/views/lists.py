@@ -104,8 +104,9 @@ class ResultsDetailView(DetailView):
         data = super().get_context_data(**kwargs)
 
         data['students'] = helpers.get_students_and_results(self.object)
-        data['accepted_label'] = Submission.Results.ACCEPTED.label
-        data['no_submission_label'] = Submission.NO_SUBMISSION
+        data['accepted'] = Submission.ACCEPTED
+        data['no_submission'] = Submission.NO_SUBMISSION
+        data['unnacepted'] = Submission.UNACCEPTED
 
         if 'class_pk' in self.kwargs:
             data['course_class'] = CourseClass.objects.get(pk=self.kwargs['class_pk'])

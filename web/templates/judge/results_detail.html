@@ -100,21 +100,29 @@
       {% for student in students %}
         <tr>
           <td>{{ student.registration_number }}</td>
-          <td>{{ student.user.full_name }}</td>
+          <td>{{ student.full_name }}</td>
 
-          {% for question in student.questions|dictsort:"pk" %}
-            <td class="text-center">
-              {% if question.result == accepted_label %}
-                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span>
-                <i class="fas fa-check text-success"></i>
-              {% elif question.result == no_submission_label %}
+          {% for key, value in student.items %}
+
+            {% if key|first in '#' %}
+                <td class="text-center">
+                  {% if value > 0 %}
+                    <span data-toggle="tooltip" title="Submissões">({{ value }})</span>
+                  {% endif %}
+            {% elif key|last in 'S' %}
+              {% if value == no_submission %}
                 -
-              {% else %}
-                <span data-toggle="tooltip" title="Submissões">({{ question.sub_count }})</span>
-                <i class="fas fa-times text-danger"></i>
+              {% elif value == unnacepted %}
+                  <i class="fas fa-times text-danger"></i>
+                </td>
+              {%  elif value == accepted %}
+                  <i class="fas fa-check text-success"></i>
+                </td>
               {% endif %}
-            </td>
+            {% endif %}
+
           {% endfor %}
+
           <td class="text-center">{{ student.percentage|floatformat:2 }}%</td>
         </tr>
       {% endfor %}
