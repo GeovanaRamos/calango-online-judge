@@ -27,9 +27,15 @@ class SubmissionCreateView(CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.question = Question.objects.get(pk=kwargs['question_pk'])
+        self.course_class = self.request.user.student.active_class
         if 'schedule_pk' in kwargs:
             self.list_schedule = ListSchedule.objects.get(pk=kwargs['schedule_pk'])
         return super(SubmissionCreateView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(SubmissionCreateView, self).get_form_kwargs()
+        kwargs.update({'course_class':  self.course_class})
+        return kwargs
 
     def get_context_data(self, **kwargs):
         data = super(SubmissionCreateView, self).get_context_data(**kwargs)
@@ -53,7 +59,7 @@ class SubmissionCreateView(CreateView):
         if hasattr(self, 'list_schedule'):
             form.instance.list_schedule = self.list_schedule
         else:
-            form.instance.course_class = self.request.user.student.active_class
+            form.instance.course_class = self.course_class
 
         if form.is_valid():
             return self.form_valid(form)

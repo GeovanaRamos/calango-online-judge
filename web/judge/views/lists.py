@@ -68,7 +68,7 @@ class ScheduleCreateView(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(ScheduleCreateView, self).get_form_kwargs()
-        kwargs.update({'user': self.request.user.professor})
+        kwargs.update({'professor': self.request.user.professor})
         return kwargs
 
     def get_form(self, form_class=None):

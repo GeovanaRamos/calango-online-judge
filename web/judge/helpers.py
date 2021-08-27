@@ -1,7 +1,7 @@
 import csv
 import re
 
-from django.db.models import Count, Q, Sum, Case, When, F, Value, FloatField, IntegerField
+from django.db.models import Count, Q, Case, When, F, Value, FloatField, IntegerField
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
@@ -77,6 +77,9 @@ def question_is_concluded(question, list_schedule, student):
 
 
 def get_student_acceptance_percentage(student, list_schedule):
+
+
+
     count, correct = 0, 0
     for question in list_schedule.question_list.questions.all():
         question.result = get_question_status_for_user(student.user, question, list_schedule)
