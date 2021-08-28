@@ -1,8 +1,8 @@
 import csv
 import re
 
-from django.db.models import Count, Q, Case, When, F, Value, FloatField, IntegerField, Avg
-from django.db.models.functions import Cast
+from django.db.models import Count, Q, Case, When, F, Value, FloatField, IntegerField, Avg, CharField
+from django.db.models.functions import Cast, ExtractWeekDay
 from django.http import HttpResponse
 from django.utils import timezone
 
@@ -101,6 +101,18 @@ def get_attempts_average_for_class(schedules, course_class, user):
     students = course_class.students.exclude(user=user).values('registration_number', 'submissions__question').annotate(
         submissions_count=submissions).exclude(submissions_count=0)
     return students.aggregate(Avg('submissions_count'))['submissions_count__avg']
+
+
+def get_submissions_distribution_by_result(submissions):
+    choices = dict(models.Submission._meta.get_field('result').flatchoices)
+    whens = [When(result=k, then=Value(v)) for k, v in choices.items()]
+    return list(submissions.annotate(result_display=Case(*whens, output_field=CharField())).values(
+        'result_display').annotate(count=Count('pk', distinct=True)).order_by())
+
+
+def get_submissions_distribution_by_day(submissions):
+    return list(submissions.annotate(weekday=ExtractWeekDay('submitted_at')).values('weekday').annotate(
+        count=Count('pk', distinct=True)).order_by())
 
 
 def get_students_and_results(list_schedule, students):

@@ -29,15 +29,8 @@ class HomeView(TemplateView):
 
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
 
-        choices = dict(Submission._meta.get_field('result').flatchoices)
-        whens = [When(result=k, then=Value(v)) for k, v in choices.items()]
-        data['results'] = list(submissions.annotate(result_display=Case(*whens, output_field=CharField())).values(
-            'result_display').annotate(count=Count('pk', distinct=True)).order_by())
-
-        data['weekday'] = list(submissions.annotate(result_display=Case(*whens, output_field=CharField())).annotate(
-            weekday=ExtractWeekDay('submitted_at')).values('weekday').annotate(
-            count=Count('pk', distinct=True)).order_by())
-
+        data['results'] = helpers.get_submissions_distribution_by_result(submissions)
+        data['weekday'] = helpers.get_submissions_distribution_by_day(submissions)
         data['second_count'] = submissions.count()
         data['first_count'] = schedules.count()
         data['classes_count'] = classes_count

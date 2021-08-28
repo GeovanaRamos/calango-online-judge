@@ -14,7 +14,7 @@ const myChart = new Chart(ctx, {
         datasets: [{
             data: values,
             backgroundColor: [
-                '#8fd57f', '#DAF7A6', '#e67e22', '#d98880',
+                '#8fd57f', '#a6e4f7', '#e67e22', '#d98880',
                 '#FFC300', '#FF5733', '#b03a2e',
             ],
         }],
@@ -46,7 +46,7 @@ const weekdayChart = new Chart(ctx2, {
         datasets: [{
             data: values2,
             backgroundColor: [
-                '#8fd57f', '#DAF7A6', '#e67e22', '#d98880',
+                '#8fd57f', '#a6e4f7', '#e67e22', '#d98880',
                 '#FFC300', '#FF5733', '#b03a2e',
             ],
         }],
