@@ -1,12 +1,11 @@
 import csv
 import re
 
-from django.db.models import Count, Q, Case, When, F, Value, FloatField, IntegerField
+from django.db.models import Count, Q, Case, When, F, Value, FloatField, IntegerField, Avg
 from django.db.models.functions import Cast
 from django.http import HttpResponse
 from django.utils import timezone
 
-from accounts.models import Student
 from judge import models
 
 
@@ -27,14 +26,6 @@ def get_list_schedules_for_user(user):
         return models.ListSchedule.objects.all()
     else:
         return models.ListSchedule.objects.none()
-
-
-def student_has_concluded_list_schedule(student, list_schedule):
-    questions = list_schedule.question_list.questions.all()
-    submissions = models.Submission.objects.filter(
-        student=student, question__in=questions, result=models.Submission.Results.ACCEPTED,
-        list_schedule=list_schedule).distinct()
-    return submissions.count() >= questions.count()
 
 
 def get_submissions_for_user_and_schedules(user, schedules):
@@ -85,6 +76,31 @@ def get_schedule_question_info_for_user(list_schedule, user):
         question.result = get_question_status_for_user(user, question, list_schedule)
         question_conclusions.append(question)
     return question_conclusions
+
+
+def get_final_percentage_for_student(schedules, student):
+    questions_count = models.Question.objects.filter(lists__schedules__in=schedules).count()
+    if questions_count == 0:
+        return 0
+    accepted_count = models.Submission.objects.filter(
+        student=student, result=models.Submission.Results.ACCEPTED,
+        list_schedule__in=schedules).count()
+    return accepted_count * 100 / questions_count
+
+
+def get_attempts_average_for_student(schedules, student):
+    submissions = Count('submissions', filter=Q(submissions__list_schedule__in=schedules.all()))
+    student = models.Student.objects.filter(
+        pk=student.pk).values('registration_number', 'submissions__question').annotate(
+        submissions_count=submissions).exclude(submissions_count=0)
+    return student.aggregate(Avg('submissions_count'))['submissions_count__avg']
+
+
+def get_attempts_average_for_class(schedules, course_class, user):
+    submissions = Count('submissions', filter=Q(submissions__list_schedule__in=schedules.all()))
+    students = course_class.students.exclude(user=user).values('registration_number', 'submissions__question').annotate(
+        submissions_count=submissions).exclude(submissions_count=0)
+    return students.aggregate(Avg('submissions_count'))['submissions_count__avg']
 
 
 def get_students_and_results(list_schedule, students):

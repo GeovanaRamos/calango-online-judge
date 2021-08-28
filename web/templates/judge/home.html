@@ -61,6 +61,28 @@
           </div>
         {% endif %}
       </div>
+      {% if user.student %}
+        <div class="row">
+          <div class="col">
+            <div class="box mb-3">
+              <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
+              <div class="info">
+                <h3>{% if attempts %}{{ attempts|floatformat:2 }}{% else %}0{% endif %}</h3>
+                <p>Sua média de tentativas</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="box mb-3">
+              <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
+              <div class="info">
+                <h3>{% if class_attempts %}{{ class_attempts|floatformat:2 }}{% else %}0{% endif %}</h3>
+                <p>Média de tentativas da turma</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </section>
   <section class="charts">
@@ -72,6 +94,12 @@
             <canvas id="resultsChart" height="120"></canvas>
           </div>
         </div>
+        <div class="col">
+          <div class="chart-container mb-3">
+            <h5 class="mb-4">Submissões por Dia da Semana</h5>
+            <canvas id="weekdayChart" height="120"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -80,8 +108,8 @@
 
 
 {% block js %}
-  {{ result_labels|json_script:"labels" }}
-  {{ result_values|json_script:"values" }}
+  {{ results|json_script:"results" }}
+  {{ weekday|json_script:"weekday" }}
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
   <script src="{% static 'judge/js/home.js' %}"></script>
 {% endblock %}

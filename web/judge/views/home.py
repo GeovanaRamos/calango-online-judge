@@ -1,10 +1,11 @@
-from django.db.models import Count
+from django.db.models import Count, CharField
+from django.db.models.functions import ExtractWeekDay
 from django.views.generic import TemplateView
 
 from accounts.models import Student
 from judge import helpers
 from judge.helpers import *
-from judge.models import ListSchedule
+from judge.models import ListSchedule, Submission
 
 
 class HomeView(TemplateView):
@@ -19,32 +20,25 @@ class HomeView(TemplateView):
             schedules = helpers.get_list_schedules_for_user(user)
             classes_count = user.professor.active_classes.count()
         elif hasattr(user, 'student') and user.student.active_class:
-            course_class = user.student.active_class
-            schedules = course_class.schedules.filter(start_date__lte=timezone.localtime())
-            if schedules.count() > 0:
-                percentage_sum = 0
-                percentage_count = 0
-                for schedule in schedules:
-                    student_queryset = Student.objects.filter(pk=user.student.pk)
-                    percentage_sum += helpers.get_students_and_results(schedule, student_queryset)[0]['percentage']
-                    percentage_count += 1
-                data['total_percentage'] = percentage_sum/percentage_count
-            else:
-                data['total_percentage'] = 0
+            schedules = user.student.active_class.schedules.filter(start_date__lte=timezone.localtime())
+            data['attempts'] = helpers.get_attempts_average_for_student(schedules, user.student)
+            data['class_attempts'] = helpers.get_attempts_average_for_class(schedules, user.student.active_class, user)
+            data['total_percentage'] = helpers.get_final_percentage_for_student(schedules, user.student)
         else:
             schedules = ListSchedule.objects.none()
 
         submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
-        submissions_results = submissions.order_by().values('result').annotate(count=Count('pk', distinct=True))
-        data['result_labels'] = []
-        data['result_values'] = []
-        data['second_count'] = 0
-        for counting_obj in submissions_results:
-            if counting_obj['result']:
-                data['result_labels'].append(models.Submission.Results(counting_obj['result']).label)
-                data['result_values'].append(counting_obj['count'])
-                data['second_count'] += counting_obj['count']
 
+        choices = dict(Submission._meta.get_field('result').flatchoices)
+        whens = [When(result=k, then=Value(v)) for k, v in choices.items()]
+        data['results'] = list(submissions.annotate(result_display=Case(*whens, output_field=CharField())).values(
+            'result_display').annotate(count=Count('pk', distinct=True)).order_by())
+
+        data['weekday'] = list(submissions.annotate(result_display=Case(*whens, output_field=CharField())).annotate(
+            weekday=ExtractWeekDay('submitted_at')).values('weekday').annotate(
+            count=Count('pk', distinct=True)).order_by())
+
+        data['second_count'] = submissions.count()
         data['first_count'] = schedules.count()
         data['classes_count'] = classes_count
 
