@@ -98,6 +98,47 @@ def get_submissions_distribution_by_day(submissions):
         count=Count('pk', distinct=True)).order_by())
 
 
+def get_students_that_concluded_all_questions(schedules, course_class):
+    accepted = Count('submissions', filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
+        submissions__list_schedule__in=schedules))
+    questions = models.Question.objects.filter(lists__schedules__in=schedules)
+    students = course_class.students
+    return students.annotate(accepted=accepted).filter(accepted__gte=questions.count()).count() * 100 / students.count()
+
+
+def get_students_that_did_not_give_up(schedules, course_class):
+    questions_tried = Count('submissions__question', filter=Q(submissions__list_schedule__in=schedules), distinct=True)
+    accepted = Count('submissions__question', filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
+        submissions__list_schedule__in=schedules), distinct=True)
+    students = course_class.students
+    return students.annotate(accepted=accepted).annotate(questions_tried=questions_tried).filter(
+        accepted__gte=questions_tried).count() * 100 / students.count()
+
+
+def get_students_that_concluded_less_than_75(schedules, course_class):
+    accepted = Count('submissions', filter=Q(submissions__result=models.Submission.Results.ACCEPTED) & Q(
+        submissions__list_schedule__in=schedules))
+    questions = models.Question.objects.filter(lists__schedules__in=schedules)
+    students = course_class.students
+    return students.annotate(accepted=accepted).filter(
+        accepted__lt=questions.count() * 0.75).count() * 100 / students.count()
+
+
+def get_students_that_tried_non_evaluative(course_class):
+    students = course_class.students
+    non_evaluative = Count('submissions', filter=Q(submissions__course_class=course_class))
+    return students.annotate(non_evaluative=non_evaluative).filter(
+        non_evaluative__gt=0).count() * 100 / students.count()
+
+
+def get_students_that_concluded_non_evaluative(course_class):
+    students = course_class.students
+    non_evaluative = Count('submissions', filter=Q(submissions__course_class=course_class) & Q(
+        submissions__result=models.Submission.Results.ACCEPTED))
+    return students.annotate(non_evaluative=non_evaluative).filter(
+        non_evaluative__gt=0).count() * 100 / students.count()
+
+
 def get_students_and_results(list_schedule, students):
     list_questions_count = list_schedule.question_list.questions.count()
 

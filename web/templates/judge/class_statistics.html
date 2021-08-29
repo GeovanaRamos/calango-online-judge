@@ -1,0 +1,112 @@
+{% extends "judge/base.html" %}
+{% load static %}
+
+{% block nav_class %}<a href="#" class="list-group-item list-group-item-action active">Turmas</a>{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static  'judge/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'class_list' %}">Turmas</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ course_class }}</li>
+      <li class="breadcrumb-item active" aria-current="page">Estatísticas</li>
+    </ol>
+  </nav>
+
+
+  <h2 class="my-4">Estatísticas da Turma {{ course_class.identifier }}</h2>
+
+  <section class="statistics">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <div class="box mb-3">
+            <i class="fas fa-list-alt fa-fw bg-primary"></i>
+            <div class="info">
+              <h3>{{ schedules_count }}</h3>
+              <p>Listas de Exercícios</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="box mb-3">
+            <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
+            <div class="info">
+              <h3>{{ submissions_count }}</h3>
+              <p>Submissões</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="box mb-3">
+            <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
+            <div class="info">
+              <h3>{{ attempts|floatformat:2 }}</h3>
+              <p>Média de Tentativas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="box">
+            <table class="table table-borderless">
+              <tbody>
+                <tr>
+                  <td style="width: 60%">Alunos que concluíram todas as questões de listas agendadas</td>
+                  <td class="text-center">{{ concluded_all|floatformat:2 }}%</td>
+                </tr>
+                <tr>
+                  <td style="width: 60%">Alunos que finalizaram todas as questões avaliativas iniciadas</td>
+                  <td class="text-center">{{ not_give_up|floatformat:2 }}%</td>
+                </tr>
+                <tr>
+                  <td style="width: 60%">Alunos que concluíram menos de 75% das listas agendadas</td>
+                  <td class="text-center">{{ less_than_75|floatformat:2 }}%</td>
+                </tr>
+                <tr>
+                  <td style="width: 60%">Alunos que tentaram concluir ao menos uma questão avulsa</td>
+                  <td class="text-center">{{ tried_non_evaluative|floatformat:2 }}%</td>
+                </tr>
+                <tr>
+                  <td style="width: 60%">Alunos que conluíram ao menos uma questão avulsa</td>
+                  <td class="text-center">{{ concluded_non_evaluative|floatformat:2 }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  </section>
+  <section class="charts">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <div class="chart-container mb-3">
+            <h5 class="mb-4">Resultados</h5>
+            <canvas id="resultsChart" height="120"></canvas>
+          </div>
+        </div>
+        <div class="col">
+          <div class="chart-container mb-3">
+            <h5 class="mb-4">Submissões por Dia da Semana</h5>
+            <canvas id="weekdayChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+
+
+{% block js %}
+  {{ results|json_script:"results" }}
+  {{ weekday|json_script:"weekday" }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="{% static 'judge/js/home.js' %}"></script>
+{% endblock %}
