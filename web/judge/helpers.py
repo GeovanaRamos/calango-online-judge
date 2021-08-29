@@ -216,13 +216,13 @@ def search_submissions(user, id, student_name, student_number, question_id, ques
         submissions = models.Submission.objects.filter(
             Q(list_schedule__in=schedules) | Q(course_class__in=user.professor.active_classes)).distinct()
         if id:
-            submissions = submissions.filter(pk=int(id))
+            submissions = submissions.filter(pk=int(id.replace("#", "")))
         if student_name:
             submissions = submissions.filter(student__user__full_name__icontains=student_name)
         if student_number:
             submissions = submissions.filter(student__registration_number=int(student_number))
         if question_id:
-            submissions = submissions.filter(question__pk=int(question_id))
+            submissions = submissions.filter(question__pk=int(question_id.replace("#", "")))
         if question_name:
             submissions = submissions.filter(question__name__icontains=question_name)
         return submissions.order_by('-pk')[:100]
