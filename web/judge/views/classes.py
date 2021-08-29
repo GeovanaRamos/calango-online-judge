@@ -82,7 +82,7 @@ class StudentListView(ListView):
 
     def get_queryset(self):
         self.course_class = CourseClass.objects.get(pk=self.kwargs['class_pk'])
-        students = self.course_class.students.all()
+        students = self.course_class.students.all().order_by('registration_number')
         for student in students:
             enrollment = Enrollment.objects.get(course_class=self.course_class, student=student)
             student.first_login = enrollment.first_login
