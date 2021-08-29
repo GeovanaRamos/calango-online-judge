@@ -24,6 +24,7 @@
         <th>Matriculados</th>
         <th> </th>
         <th> </th>
+        <th> </th>
       </tr>
       </thead>
 
@@ -34,8 +35,9 @@
           <td>{{ object.year }}/{{ object.semester }}</td>
           <td>{{ object.identifier }}</td>
           <td>{{ object.students.all|length }}</td>
-          <td><a href="{% url 'student_list' object.pk %}">Ver alunos</a></td>
-          <td><a href="{% url 'class_activities' object.pk %}">Ver atividades</a></td>
+          <td><a href="{% url 'student_list' object.pk %}">Alunos</a></td>
+          <td><a href="{% url 'class_activities' object.pk %}">Atividades</a></td>
+          <td><a href="{% url 'class_statistics' object.pk %}">Estatísticas</a></td>
         </tr>
       {% endfor %}
       </tbody>
