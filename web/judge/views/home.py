@@ -17,17 +17,17 @@ class HomeView(TemplateView):
         classes_count = 0
 
         if hasattr(user, 'professor') and user.professor.active_classes:
-            schedules = helpers.get_list_schedules_for_user(user)
+            schedules = helpers.get_list_schedules_for_professor(user.professor)
             classes_count = user.professor.active_classes.count()
+            submissions = Submission.objects.filter(list_schedule__in=schedules.all()).distinct()
         elif hasattr(user, 'student') and user.student.active_class:
-            schedules = user.student.active_class.schedules.filter(start_date__lte=timezone.localtime())
+            schedules = helpers.get_list_schedules_for_student(user.student)
             data['attempts'] = helpers.get_attempts_average_for_student(schedules, user.student)
             data['class_attempts'] = helpers.get_attempts_average_for_class(schedules, user.student.active_class, user)
             data['total_percentage'] = helpers.get_final_percentage_for_student(schedules, user.student)
+            submissions = Submission.objects.filter(student=user.student, list_schedule__in=schedules.all()).distinct()
         else:
-            schedules = ListSchedule.objects.none()
-
-        submissions = helpers.get_submissions_for_user_and_schedules(user, schedules)
+            submissions = Submission.objects.none()
 
         data['results'] = helpers.get_submissions_distribution_by_result(submissions)
         data['weekday'] = helpers.get_submissions_distribution_by_day(submissions)

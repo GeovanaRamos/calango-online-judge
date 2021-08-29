@@ -15,7 +15,13 @@ class ScheduleListView(ListView):
     template_name = 'judge/schedule_list.html'
 
     def get_queryset(self):
-        return helpers.get_list_schedules_for_user(self.request.user)
+        user = self.request.user
+        if hasattr(user, 'student'):
+            return helpers.get_list_schedules_for_student(user.student)
+        elif hasattr(user, 'professor'):
+            return helpers.get_list_schedules_for_professor(user.professor)
+        else:
+            return ListSchedule.objects.none()
 
 
 class ScheduleDetailView(DetailView):

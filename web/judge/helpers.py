@@ -9,33 +9,16 @@ from django.utils import timezone
 from judge import models
 
 
-def get_list_schedules_for_user(user):
-    if hasattr(user, 'student'):
-        # show list of the student's active class
-        current_class = user.student.active_class
-        return models.ListSchedule.objects.filter(
-            course_class=current_class,
-            start_date__lte=timezone.localtime()
-        ).order_by('-start_date', 'due_date')
-    elif hasattr(user, 'professor'):
-        # show list of all of the professor's active classes
-        classes = user.professor.active_classes
-        return models.ListSchedule.objects.filter(
-            course_class__in=classes).distinct().order_by('-start_date', 'due_date')
-    elif user.is_superuser:
-        return models.ListSchedule.objects.all()
-    else:
-        return models.ListSchedule.objects.none()
+def get_list_schedules_for_student(student):
+    return models.ListSchedule.objects.filter(
+        course_class=student.active_class, start_date__lte=timezone.localtime()
+    ).order_by('-start_date', 'due_date')
 
 
-def get_submissions_for_user_and_schedules(user, schedules):
-    if hasattr(user, 'student'):
-        student = user.student
-        return models.Submission.objects.filter(
-            student=student, list_schedule__in=schedules.all()).distinct()
-    else:
-        return models.Submission.objects.filter(
-            list_schedule__in=schedules.all()).distinct()
+def get_list_schedules_for_professor(professor):
+    classes = professor.active_classes
+    return models.ListSchedule.objects.filter(
+        course_class__in=classes).distinct().order_by('-start_date', 'due_date')
 
 
 def get_question_status_for_user(user, question, list_schedule):
@@ -84,7 +67,7 @@ def get_final_percentage_for_student(schedules, student):
         return 0
     accepted_count = models.Submission.objects.filter(
         student=student, result=models.Submission.Results.ACCEPTED,
-        list_schedule__in=schedules).count()
+        list_schedule__in=schedules).distinct().count()
     return accepted_count * 100 / questions_count
 
 
@@ -154,11 +137,10 @@ def get_students_and_results(list_schedule, students):
 
 
 def get_all_active_submissions_for_student(student):
-    schedules = student.active_class.schedules if student.active_class else models.ListSchedule.objects.none()
-    evaluative = get_submissions_for_user_and_schedules(student.user, schedules)
-    non_evaluative = models.Submission.objects.filter(student=student, course_class=student.active_class)
-    submissions = evaluative.union(non_evaluative)
-    return submissions.order_by('-submitted_at')
+    schedules = student.active_class.schedules.all() if student.active_class else models.ListSchedule.objects.none()
+    submissions = models.Submission.objects.filter(
+        Q(student=student) & (Q(list_schedule__in=schedules) | (Q(course_class=student.active_class)))).distinct()
+    return submissions.order_by('-pk')
 
 
 def get_judge_post_data(code, question_pk):
@@ -230,8 +212,9 @@ def export_csv_file_for_all_class_lists(class_pk):
 
 def search_submissions(user, id, student_name, student_number, question_id, question_name):
     if id or student_name or student_number or question_id or question_name:
-        schedules = get_list_schedules_for_user(user)
-        submissions = get_submissions_for_user_and_schedules(user, schedules)
+        schedules = get_list_schedules_for_professor(user.professor)
+        submissions = models.Submission.objects.filter(
+            Q(list_schedule__in=schedules) | Q(course_class__in=user.professor.active_classes)).distinct()
         if id:
             submissions = submissions.filter(pk=int(id))
         if student_name:
@@ -242,6 +225,6 @@ def search_submissions(user, id, student_name, student_number, question_id, ques
             submissions = submissions.filter(question__pk=int(question_id))
         if question_name:
             submissions = submissions.filter(question__name__icontains=question_name)
-        return submissions.order_by('-submitted_at')[:100]
+        return submissions.order_by('-pk')[:100]
     else:
         return models.Submission.objects.none()
