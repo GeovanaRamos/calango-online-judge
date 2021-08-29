@@ -17,17 +17,28 @@
   </nav>
 
   <h2 class="my-4">Adicionar Alunos</h2>
-  <p>
+  <p class="text-center">
     A adição de alunos será realizada em segundo plano e cada aluno receberá um email com uma senha aleatória
-  para acessar o COJ. Uma vez que você desative ou remova o aluno da turma, ele perderá acesso ao sistema até que
-  seja adicionado novamente em outra turma. Veja no exemplo abaixo as possíveis formatações para cada entrada de aluno.
+    para acessar o COJ. Uma vez que você desative ou remova o aluno da turma, ele perderá acesso ao sistema até que
+    seja adicionado novamente em outra turma. Veja no exemplo abaixo as possíveis formatações para cada entrada de
+    aluno. Espaços ao redor dos ";" serão ignorados. Se o aluno for da UnB, não é necessário inserir o email,
+    caso contrário, é obrigatório.
   </p>
-  <div class="w-75 m-auto text-center bg-light text-secondary p-2">
-    160123451; João Pereira Silva <br>
-    160123452 ; Maria Pereira Silva <br>
-    16/0123453;Pedro Pereira Silva <br>
+  <div class="row m-0 text-center">
+    <div class="col-5 bg-light text-secondary p-3">
+      160123451; João Pereira Silva;joao@email.com <br>
+      160123452 ; Maria Pereira Silva; maria@email.com <br>
+      16/0123453;Pedro Pereira Silva;pedro@email.com <br>
+    </div>
+    <div class="col pt-5">OU</div>
+    <div class="col-5 bg-light text-secondary p-3">
+      160123451; João Pereira Silva <br>
+      160123452 ; Maria Pereira Silva <br>
+      16/0123453;Pedro Pereira Silva <br>
+    </div>
   </div>
-  <form method="post" >
+
+  <form method="post">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
