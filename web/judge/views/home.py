@@ -1,9 +1,11 @@
 from django.db.models import Count, CharField
 from django.db.models.functions import ExtractWeekDay
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from accounts.models import Student
 from judge import helpers
+from judge.decorators import professor_required
 from judge.helpers import *
 from judge.models import ListSchedule, Submission
 
@@ -42,6 +44,7 @@ class HelpView(TemplateView):
     template_name = 'judge/help.html'
 
 
+@method_decorator([professor_required], name='dispatch')
 class StatisticsView(TemplateView):
     template_name = 'judge/class_statistics.html'
 
