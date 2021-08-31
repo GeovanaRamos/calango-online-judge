@@ -112,7 +112,8 @@ def get_students_that_did_not_give_up(schedules, course_class):
         submissions__list_schedule__in=schedules), distinct=True)
     students = course_class.students
     return students.annotate(accepted=accepted).annotate(questions_tried=questions_tried).filter(
-        accepted__gte=questions_tried).count() * 100 / students.count()
+        accepted__gte=questions_tried, questions_tried__gt=0).count() * 100 / students.annotate(questions_tried=questions_tried).filter(
+            questions_tried__gt=0).count()
 
 
 def get_students_that_concluded_less_than_75(schedules, course_class):
