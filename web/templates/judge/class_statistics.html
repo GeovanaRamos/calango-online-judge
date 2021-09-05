@@ -1,7 +1,9 @@
 {% extends "judge/base.html" %}
 {% load static %}
 
-{% block nav_class %}<a href="#" class="list-group-item list-group-item-action active">Turmas</a>{% endblock %}
+{% block nav_class %}
+  <a href="{% url 'class_list' %}" class="list-group-item list-group-item-action active">Turmas</a>
+{% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static  'judge/css/home.css' %}">
@@ -56,26 +58,26 @@
           <div class="box">
             <table class="table table-borderless">
               <tbody>
-                <tr>
-                  <td class="w-75">Alunos que concluíram todas as questões de listas agendadas</td>
-                  <td class="text-center">{{ concluded_all|floatformat:2 }}%</td>
-                </tr>
-                <tr>
-                  <td class="w-75">Alunos que finalizaram todas as questões avaliativas iniciadas</td>
-                  <td class="text-center">{{ not_give_up|floatformat:2 }}%</td>
-                </tr>
-                <tr>
-                  <td class="w-75">Alunos que concluíram menos de 75% das listas agendadas</td>
-                  <td class="text-center">{{ less_than_75|floatformat:2 }}%</td>
-                </tr>
-                <tr>
-                  <td class="w-75">Alunos que tentaram concluir ao menos uma questão avulsa</td>
-                  <td class="text-center">{{ tried_non_evaluative|floatformat:2 }}%</td>
-                </tr>
-                <tr>
-                  <td class="w-75">Alunos que conluíram ao menos uma questão avulsa</td>
-                  <td class="text-center">{{ concluded_non_evaluative|floatformat:2 }}%</td>
-                </tr>
+              <tr>
+                <td class="w-75">Alunos que concluíram todas as questões de listas agendadas</td>
+                <td class="text-center">{{ concluded_all|floatformat:2 }}%</td>
+              </tr>
+              <tr>
+                <td class="w-75">Alunos que finalizaram todas as questões avaliativas iniciadas</td>
+                <td class="text-center">{{ not_give_up|floatformat:2 }}%</td>
+              </tr>
+              <tr>
+                <td class="w-75">Alunos que concluíram menos de 75% das listas agendadas</td>
+                <td class="text-center">{{ less_than_75|floatformat:2 }}%</td>
+              </tr>
+              <tr>
+                <td class="w-75">Alunos que tentaram concluir ao menos uma questão avulsa</td>
+                <td class="text-center">{{ tried_non_evaluative|floatformat:2 }}%</td>
+              </tr>
+              <tr>
+                <td class="w-75">Alunos que conluíram ao menos uma questão avulsa</td>
+                <td class="text-center">{{ concluded_non_evaluative|floatformat:2 }}%</td>
+              </tr>
               </tbody>
             </table>
           </div>

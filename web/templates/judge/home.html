@@ -68,7 +68,7 @@
               <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
               <div class="info">
                 <h3>{% if attempts %}{{ attempts|floatformat:2 }}{% else %}0{% endif %}</h3>
-                <p>Sua média de tentativas</p>
+                <p>Sua média de tentativas por questão tentada</p>
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@
               <i class="fas fa-cloud-upload-alt fa-fw bg-primary"></i>
               <div class="info">
                 <h3>{% if class_attempts %}{{ class_attempts|floatformat:2 }}{% else %}0{% endif %}</h3>
-                <p>Média de tentativas da turma</p>
+                <p>Média de tentativas da turma por questão tentada</p>
               </div>
             </div>
           </div>
@@ -90,13 +90,21 @@
       <div class="row">
         <div class="col">
           <div class="chart-container mb-3">
+            {% if user.student %}
             <h5 class="mb-4">Seus resultados</h5>
+            {% else %}
+            <h5 class="mb-4">Resultados</h5>
+            {% endif %}
             <canvas id="resultsChart" height="120"></canvas>
           </div>
         </div>
         <div class="col">
           <div class="chart-container mb-3">
+            {% if user.student %}
             <h5 class="mb-4">Suas submissões por dia</h5>
+            {% else %}
+            <h5 class="mb-4">Submissões por dia</h5>
+            {% endif %}
             <canvas id="weekdayChart" height="120"></canvas>
           </div>
         </div>
