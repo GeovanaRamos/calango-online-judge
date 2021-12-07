@@ -35,16 +35,17 @@ Primeiramente, clone este repositório:
 git clone https://github.com/GeovanaRamos/calango-online-judge.git
 ```
 
-Crie uma márquina virtual:
+Crie uma márquina virtual e entre no ambiente:
 
 ```
 virtualenv venv -p python3
+source venv/bin/activate
 ```
 
 Instale os pacotes necessários:
 
 ```
-pip install -r web/requirements.txt
+(venv) pip install -r web/requirements.txt
 ```
 
 Para prosseguir, você deve ter disponível localmente o PostgreSQL ou o SQLite dentro da pasta _web_. Por default, o _settings.py_ utiliza
@@ -55,7 +56,7 @@ configurar nenhuma variável se seguir os passos descritos aqui. Para configura�
 Agora execute as migrações do banco de dados:
 
 ```
-python manage.py migrate
+(venv) python manage.py migrate
 ```
 
 Se não desejar popular o banco de dados, siga para o próximo passo.
@@ -63,13 +64,13 @@ Caso contrário, execute o comando abaixo para popular o banco com dados
 falsos e ter uma visão de como a aplicação se comporta em situações reais.
 
 ```
-python manage.py seed
+(venv) python manage.py seed
 ```
 
 Por fim, execute a aplicação:
 
 ```
-python manage.py runserver
+(venv) python manage.py runserver
 ```
 
 Acesse _localhost:8000_ e verá a aplicação em execução. Para ter acesso
@@ -100,7 +101,7 @@ microserviço está em execução na porta 8080, execute obrigatoriamente
 o qcluster em um outro terminal
 para lidar com as submissões assincronamente:
 ```
-python manage.py qcluster
+(venv) python manage.py qcluster
 ```
 
 Para testar o envio de emails, execute o seguinte comando
