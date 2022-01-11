@@ -16,7 +16,7 @@
 
   {% if course_class.is_active %}
     <a class="mt-2 btn btn-danger float-right" href="{% url 'class_delete' course_class.pk %}">
-      Desativar turma</a>
+      Concluir turma</a>
     <a class="mt-2 btn btn-primary float-right mr-4" href="{% url 'student_form' course_class.pk %}">
       Adicionar alunos</a>
   {% endif %}
