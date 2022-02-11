@@ -56,7 +56,21 @@
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
-      <button type="submit" class="btn btn-primary">Submeter</button>
+      <button id="submit-code" type="submit" class="btn btn-primary">Submeter</button>
     </div>
   </form>
+{% endblock %}
+
+{% block js %}
+  <script>
+    var enableSubmit = function(button) {
+        $(button).removeAttr("disabled");
+    }
+
+    $("#submit-code").click(function() {
+        var that = this;
+        $(this).attr("disabled", true);
+        setTimeout(function() { enableSubmit(that) }, 30000);
+    });
+  </script>
 {% endblock %}
