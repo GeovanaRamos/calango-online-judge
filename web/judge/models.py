@@ -10,6 +10,7 @@ class CourseClass(models.Model):
     class Disciplines(models.TextChoices):
         TEST = 'TESTE', "Teste"
         APC = 'APC', "Algoritmos e Programação para Computadores"
+        MONITOR = 'APC-MONITORIA', "Monitoria de APC"
 
     discipline = models.CharField(verbose_name='Disciplina', max_length=50, choices=Disciplines.choices)
     year = models.PositiveSmallIntegerField(verbose_name='Ano')
