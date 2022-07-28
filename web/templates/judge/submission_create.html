@@ -52,7 +52,7 @@
       <li>Testou os exemplos de entradas e saídas.</li>
     </ol>
   </div>
-  <form method="post">
+  <form method="post" id="code-form">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="d-flex justify-content-center">
@@ -63,14 +63,8 @@
 
 {% block js %}
   <script>
-    var enableSubmit = function(button) {
-        $(button).removeAttr("disabled");
-    }
-
-    $("#submit-code").click(function() {
-        var that = this;
-        $(this).attr("disabled", true);
-        setTimeout(function() { enableSubmit(that) }, 30000);
+    $('#code-form').one('submit', function() {
+        $(this).find('#submit-code').attr('disabled', 'disabled');
     });
   </script>
 {% endblock %}
