@@ -25,6 +25,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", '=mg#v3s^sb(+399adjxv2j_#q6x)(bop47b6s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False) == 'True'
 
+ENABLE_HTTPS = os.environ.get("ENABLE_HTTPS", not DEBUG) == 'True'
+
 ALLOWED_HOSTS = [] if DEBUG else os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
 
 # Application definition
@@ -199,6 +201,6 @@ CKEDITOR_CONFIGS = {
 COJ_SERVICE_URL = os.environ.get("COJ_SERVICE_URL", "http://localhost:8080/judge")
 #############################
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = ENABLE_HTTPS
+CSRF_COOKIE_SECURE = ENABLE_HTTPS
+SECURE_SSL_REDIRECT = ENABLE_HTTPS
