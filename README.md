@@ -135,6 +135,7 @@ POSTGRES_PASSWORD=(senha do banco)
 POSTGRES_DB=(nome do banco)
 
 DEBUG=False
+ENABLE_HTTPS=True
 SECRET_KEY=(chave aleatória do Django)
 DJANGO_ALLOWED_HOSTS=(domínio ou domínios separado por espaços)
 EMAIL_HOST_USER=(email do site)
